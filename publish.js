@@ -10,8 +10,9 @@ const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
 const CHAT_ID = process.env.TLDR_DIGEST_CHAT_ID || "370423423";
-const SITE_DIR = path.join(__dirname, "site");
-const SITE_URL_BASE = process.env.TLDR_DIGEST_SITE_URL || "https://tldr-digest.pages.dev";
+const SITE_DIR = path.join(__dirname, "docs");
+const SITE_URL_BASE =
+  process.env.TLDR_DIGEST_SITE_URL || "https://theborednerd0.github.io/tldr-digest";
 
 async function run() {
   const editions = [];
@@ -45,7 +46,7 @@ async function run() {
     .map((s) => ({ slug: s, isoDate: slugToIso(s) }));
   fs.writeFileSync(path.join(SITE_DIR, "index.html"), buildIndexHtml(days));
 
-  await execFileP("git", ["add", "site/"], { cwd: __dirname });
+  await execFileP("git", ["add", "docs/"], { cwd: __dirname });
   const commitResult = await execFileP(
     "git",
     ["commit", "-m", `Publish digest for ${isoDate}`],
