@@ -7,8 +7,9 @@ const EDITION_EMOJI = {
   "TLDR Tech": "💻", "TLDR AI": "🤖", "TLDR Data": "📊", "TLDR Dev": "👨‍💻", "TLDR Design": "🎨",
   "TLDR DevOps": "🛠️", "TLDR Marketing": "📣", "TLDR Product": "📦", "TLDR Founders": "🚀",
   "TLDR Infosec": "🔒", "TLDR Crypto": "₿", "TLDR Fintech": "💳", "TLDR Hardware": "⚙️", "TLDR IT": "🖥️",
-  "Hacker News": "🔶", "The Rundown AI": "⚡", Featured: "⭐",
+  "Hacker News": "🔶", "The Rundown AI": "⚡", Featured: "⭐", "GitHub Trending": "🐙",
   "BBC World": "🌍", "Guardian World": "🇬🇧", "Al Jazeera": "🕌", "NYT World": "🗽", "NPR World": "🎙️",
+  "Straits Times": "🇸🇬", Mothership: "🚢",
 };
 
 // "2026-07-09" -> "09-july-2026" (matches the requested filename convention)

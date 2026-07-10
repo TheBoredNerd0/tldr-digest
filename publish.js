@@ -9,6 +9,8 @@ const { fetchEdition, attachImages } = require("./scrape");
 const { fetchHackerNews } = require("./sources/hackernews");
 const { fetchRundownAI } = require("./sources/rundown");
 const { fetchAllWorldNews } = require("./sources/worldnews");
+const { fetchAllSingaporeNews } = require("./sources/singapore");
+const { fetchGitHubTrending } = require("./sources/github");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -40,6 +42,7 @@ async function run() {
   const extraSources = [
     { label: "hackernews", fn: () => fetchHackerNews(15) },
     { label: "rundown", fn: () => fetchRundownAI(8) },
+    { label: "github", fn: () => fetchGitHubTrending(12) },
   ];
   for (const { label, fn } of extraSources) {
     try {
@@ -50,10 +53,12 @@ async function run() {
     }
   }
 
-  // World news is several outlets at once (each already error-isolated internally),
-  // one edition per outlet so provenance stays visible per card.
+  // World and Singapore news are each several outlets at once (already
+  // error-isolated internally), one edition per outlet so provenance stays visible.
   const worldNewsEditions = await fetchAllWorldNews(12);
   editions.push(...worldNewsEditions);
+  const singaporeEditions = await fetchAllSingaporeNews(12);
+  editions.push(...singaporeEditions);
 
   const featured = buildFeatured(editions);
   if (featured.sections[0].articles.length > 0) editions.unshift(featured);
@@ -123,7 +128,9 @@ function buildFeatured(editions) {
     ...firstArticles(byName("BBC World"), 2),
     ...firstArticles(byName("Guardian World"), 1),
     ...firstArticles(byName("Al Jazeera"), 1),
-    ...firstArticles(byName("Hacker News"), 3),
+    ...firstArticles(byName("Straits Times"), 2),
+    ...firstArticles(byName("Hacker News"), 2),
+    ...firstArticles(byName("GitHub Trending"), 2),
     ...firstArticles(byName("TLDR Tech"), 1),
     ...firstArticles(byName("TLDR AI"), 1),
     ...firstArticles(byName("The Rundown AI"), 1),
