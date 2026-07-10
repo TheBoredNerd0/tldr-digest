@@ -3,10 +3,43 @@
 Scrapes all 14 tldr.tech newsletter editions (Tech, AI, Data, Dev, Design, DevOps,
 Marketing, Product, Founders, Infosec, Crypto, Fintech, Hardware, IT — Hardware is
 "Launching Soon" upstream and currently returns no content, handled gracefully),
-plus Hacker News and The Rundown AI (see "Additional sources" below), and publishes
-a daily static HTML digest, with a short Telegram message linking to it (the full
-per-article text no longer goes to Telegram — that was the point, to stop flooding
-the chat).
+plus Hacker News, The Rundown AI, and 5 world-news outlets (see "Additional sources"
+below), and publishes a daily static HTML digest — a Featured front page pinned at
+the top, then every source as its own section — with a short Telegram message
+linking to it (the full per-article text no longer goes to Telegram — that was the
+point, to stop flooding the chat).
+
+## Featured section
+`buildFeatured()` in `publish.js` curates a "front page" from across every source —
+2 BBC World + 1 Guardian + 1 Al Jazeera (world impact), top 3 Hacker News by score,
+the lead story from TLDR Tech/AI, and Rundown AI's top pick — and unshifts it to the
+front of the editions list *before* the cross-source dedupe runs, so featured picks
+simply don't repeat further down the page. Each featured card keeps its **true**
+source badge (`sourceLabel`), not a generic "Featured" tag, via a shallow clone at
+pick time — `renderArticle()` in `html.js` prefers `a.sourceLabel` over the
+containing edition's name for exactly this reason.
+
+## World news (5 outlets)
+Added on request for "impactful news, what's going on around the world" — the
+existing sources were all tech/startup-flavored. `sources/worldnews.js` lists 5
+official public RSS feeds, each becoming its own edition/section like every other
+source (own badge, own emoji), via a shared `sources/rss.js` helper:
+- **BBC World**, **Guardian World**, **NYT World**, **NPR World** — mainstream
+  Western coverage, all with real headlines/descriptions; BBC/Guardian/NYT also
+  carry `media:content`/`media:thumbnail` images directly in the feed (no extra
+  fetch needed), NPR doesn't (falls back to `attachImages()`'s og:image scrape).
+- **Al Jazeera** — added deliberately for actual perspective diversity, not just
+  more Western headlines saying the same thing about the same stories; no feed
+  image, relies on the og:image fallback.
+- Checked and skipped: **Reuters** (public RSS discontinued, 404), **AP News** (no
+  real RSS, just an HTML page). **NewsAPI.org**/**GNews** would need an API key
+  handed over by the user and NewsAPI's free tier explicitly bars production use
+  per their ToS, so didn't pursue either without checking with the user first.
+- `sources/rss.js`'s `stripHtml()` matters here: the Guardian wraps its
+  `<description>` in nested `<p>` tags, and cheerio's plain `.text()` concatenates
+  adjacent block elements with **no separator**, producing glued-together text
+  ("corruptionA fictitious..."). Fixed by extracting text per block element and
+  joining with a space.
 
 ## Additional sources
 Added on request for "combine everything into the ultimate newsletter." Researched
