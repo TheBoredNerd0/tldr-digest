@@ -6,6 +6,8 @@ const execFileP = promisify(execFile);
 
 const { EDITIONS } = require("./editions");
 const { fetchEdition, attachImages } = require("./scrape");
+const { fetchHackerNews } = require("./sources/hackernews");
+const { fetchRundownAI } = require("./sources/rundown");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -30,6 +32,21 @@ async function run() {
   }
 
   if (!isoDate) throw new Error("Could not determine today's date from any edition — aborting.");
+
+  // Non-TLDR sources: kept separate from the TLDR fetch loop above since they don't
+  // share its slug/error shape, but merge into the same {name, sections} structure.
+  const extraSources = [
+    { label: "hackernews", fn: () => fetchHackerNews(15) },
+    { label: "rundown", fn: () => fetchRundownAI(8) },
+  ];
+  for (const { label, fn } of extraSources) {
+    try {
+      const data = await fn();
+      if (data.sections.some((s) => s.articles.length > 0)) editions.push(data);
+    } catch (err) {
+      console.error(`[${label}] fetch failed: ${err.message}`);
+    }
+  }
 
   const deduped = dedupeAcrossEditions(editions);
 

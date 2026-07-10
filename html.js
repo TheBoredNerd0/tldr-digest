@@ -7,6 +7,7 @@ const EDITION_EMOJI = {
   Tech: "💻", AI: "🤖", Data: "📊", Dev: "👨‍💻", Design: "🎨",
   DevOps: "🛠️", Marketing: "📣", Product: "📦", Founders: "🚀",
   Infosec: "🔒", Crypto: "₿", Fintech: "💳", Hardware: "⚙️", IT: "🖥️",
+  "Hacker News": "🔶", "The Rundown AI": "⚡",
 };
 
 // "2026-07-09" -> "09-july-2026" (matches the requested filename convention)

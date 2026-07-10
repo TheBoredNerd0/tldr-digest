@@ -99,7 +99,9 @@ async function mapWithConcurrency(items, limit, fn) {
 }
 
 async function attachImages(editions, concurrency = 10) {
-  const articles = editions.flatMap((e) => e.sections.flatMap((s) => s.articles));
+  const articles = editions
+    .flatMap((e) => e.sections.flatMap((s) => s.articles))
+    .filter((a) => !a.image); // some sources (e.g. Rundown AI) already resolved their own image
   await mapWithConcurrency(articles, concurrency, async (a) => {
     a.image = await fetchOgImage(a.url);
   });
