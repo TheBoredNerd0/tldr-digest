@@ -17,12 +17,13 @@
   .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
 
   .quicknav {
-    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.4rem;
+    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
     padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
   .quicknav a {
-    font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
+    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
   }
   @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }

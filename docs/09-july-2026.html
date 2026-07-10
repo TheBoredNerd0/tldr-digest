@@ -17,12 +17,13 @@
   .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
 
   .quicknav {
-    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.4rem;
+    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
     padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
   .quicknav a {
-    font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
+    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
   }
   @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
@@ -118,7 +119,7 @@
     <img class="cover" src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/79f8/live/a982feb0-7c23-11f1-bee8-53ce494e1abc.jpg" loading="lazy" alt="">
     <span class="source">🌍 BBC World</span>
     <details>
-      <summary>Twelve die in Spain wildfire as heatwave continues in southern Europe</summary>
+      <summary>At least 11 die in Spain wildfire as heatwave continues in Southern Europe</summary>
       <p class="blurb">Six people were injured in the blaze in Los Gallardos, in the province of Almería. <a href="https://www.bbc.co.uk/news/articles/c8e2382jk7jo" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
@@ -155,11 +156,11 @@
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/511c28be580e477e8906e5672f32ae5a22a69bafae2b39f0e12123b47230c969/JustVugg/colibri" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/a7f365e86fe63994c843407a7013459f94bdd17b210dd46963f2f8346457488f/JustVugg/colibri" loading="lazy" alt="">
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Show HN: Getting GLM 5.2 running on my slow computer</summary>
-      <p class="blurb">537 points, 133 comments on Hacker News <a href="https://github.com/JustVugg/colibri" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">538 points, 133 comments on Hacker News <a href="https://github.com/JustVugg/colibri" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -167,22 +168,22 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>EU Parliament greenlights Chat Control 1.0</summary>
-      <p class="blurb">1212 points, 578 comments on Hacker News <a href="https://www.patrick-breyer.de/en/eu-parliament-greenlights-chat-control-1-0-breyer-our-children-lose-out/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">1214 points, 579 comments on Hacker News <a href="https://www.patrick-breyer.de/en/eu-parliament-greenlights-chat-control-1-0-breyer-our-children-lose-out/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/4635e0b8b3b91195e714a80f7ae08c2419cc4365cbfa57419de5c8c39172c00b/SmartlyDressedGames/U3-SDK" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/9a4617b2452d1fab6543c52b10ffec8d7b00ef15c965cf1aacdac82b47e89659/SmartlyDressedGames/U3-SDK" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>SmartlyDressedGames/U3-SDK<span class="readtime">C# · ⭐ 2155</span></summary>
+      <summary>SmartlyDressedGames/U3-SDK<span class="readtime">C# · ⭐ 2158</span></summary>
       <p class="blurb">Source code for Unturned, a free open-world zombie survival sandbox game. <a href="https://github.com/SmartlyDressedGames/U3-SDK" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/625ca96106d6b2a8656ec6fa9dcb1b071d4d2a7abefcffa865b7b2b1cce6c62a/addyosmani/agent-skills" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/3aeb38de8f9940e076cea2d60a95731b249007b51a19d1eb6387d5b1e91514cc/addyosmani/agent-skills" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>addyosmani/agent-skills<span class="readtime">JavaScript · ⭐ 76162</span></summary>
+      <summary>addyosmani/agent-skills<span class="readtime">JavaScript · ⭐ 76164</span></summary>
       <p class="blurb">Production-grade engineering skills for AI coding agents. <a href="https://github.com/addyosmani/agent-skills" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
@@ -846,7 +847,7 @@
 <h3 class="section">Resources &amp; Tools</h3>
 <div class="grid">
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/dee80dde73e74ce938f6d717b39fd8a6f70a29e1c495161c3c82c5f4be1880d0/bradautomates/claude-video" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/352eabd7f674ece82aac53b2fd7bfd573080f36d252a67497c85425e7fedc09e/bradautomates/claude-video" loading="lazy" alt="">
     <span class="source">🛠️ TLDR DevOps</span>
     <details>
       <summary>Claude-video (GitHub Repo)</summary>
@@ -1732,7 +1733,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Show HN: 18 Words</summary>
-      <p class="blurb">926 points, 301 comments on Hacker News <a href="https://18words.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">928 points, 302 comments on Hacker News <a href="https://18words.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1740,15 +1741,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Train sim created by just one person is being called the best ever made</summary>
-      <p class="blurb">446 points, 158 comments on Hacker News <a href="https://kotaku.com/a-train-sim-created-by-just-one-person-is-being-called-the-best-ever-made-2000699429" target="_blank" rel="noopener noreferrer">Read more →</a></p>
-    </details>
-  </div>
-<div class="card">
-    <img class="cover" src="https://images.macrumors.com/t/J46PnqFon6uZq7AZIAThCrBf36g=/2500x/article-new/2024/04/apple-silicon-feature-joeblue.jpg" loading="lazy" alt="">
-    <span class="source">🔶 Hacker News</span>
-    <details>
-      <summary>Apple Silicon Exec Explains Mac Mini AI Demand and On-Device Future</summary>
-      <p class="blurb">50 points, 29 comments on Hacker News <a href="https://www.macrumors.com/2026/07/06/apple-silicon-exec-explains-mac-mini-ai-demand/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">449 points, 159 comments on Hacker News <a href="https://kotaku.com/a-train-sim-created-by-just-one-person-is-being-called-the-best-ever-made-2000699429" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1756,7 +1749,15 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>GPT-5.6</summary>
-      <p class="blurb">1184 points, 845 comments on Hacker News <a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">1185 points, 845 comments on Hacker News <a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+    </details>
+  </div>
+<div class="card">
+    <img class="cover" src="https://images.macrumors.com/t/J46PnqFon6uZq7AZIAThCrBf36g=/2500x/article-new/2024/04/apple-silicon-feature-joeblue.jpg" loading="lazy" alt="">
+    <span class="source">🔶 Hacker News</span>
+    <details>
+      <summary>Apple Silicon Exec Explains Mac Mini AI Demand and On-Device Future</summary>
+      <p class="blurb">52 points, 30 comments on Hacker News <a href="https://www.macrumors.com/2026/07/06/apple-silicon-exec-explains-mac-mini-ai-demand/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1764,15 +1765,15 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Study: &quot;Mommy, do you love your phone more than me?&quot;</summary>
-      <p class="blurb">75 points, 37 comments on Hacker News <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1766665/full" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">77 points, 38 comments on Hacker News <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1766665/full" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/4a885827be0873a28253a8a1ddcd3299465f71e5901be3bcf359f814b8aa5454/malisper/pgrust" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/e9a43baf6f7965860c1bdd3ae9d25f8a47848e9254f9dd046e1545bc8f578c65/malisper/pgrust" loading="lazy" alt="">
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Postgres rewritten in Rust, now passing 100% of the Postgres regression tests</summary>
-      <p class="blurb">570 points, 476 comments on Hacker News <a href="https://github.com/malisper/pgrust" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">571 points, 476 comments on Hacker News <a href="https://github.com/malisper/pgrust" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1780,7 +1781,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Interview with Mitchell Hashimoto about Ghostty and Zig</summary>
-      <p class="blurb">193 points, 80 comments on Hacker News <a href="https://alexalejandre.com/programming/interview-with-mitchell-hashimoto/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">196 points, 81 comments on Hacker News <a href="https://alexalejandre.com/programming/interview-with-mitchell-hashimoto/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1800,11 +1801,19 @@
     </details>
   </div>
 <div class="card">
+    <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(149,55%,45%), hsl(189,55%,30%));">📰</div>
+    <span class="source">🔶 Hacker News</span>
+    <details>
+      <summary>Common prefix skipping, adaptive sort</summary>
+      <p class="blurb">12 points, 0 comments on Hacker News <a href="http://smalldatum.blogspot.com/2026/01/common-prefix-skipping-adaptive-sort.html" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+    </details>
+  </div>
+<div class="card">
     <img class="cover" src="https://mwi.westpoint.edu/wp-content/uploads/2026/06/9522808.jpg?w=1080" loading="lazy" alt="">
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>The glass backbone: Why the Army's logistics will break in the next war</summary>
-      <p class="blurb">351 points, 428 comments on Hacker News <a href="https://mwi.westpoint.edu/the-glass-backbone-why-the-armys-logistics-will-break-in-the-next-war/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">351 points, 430 comments on Hacker News <a href="https://mwi.westpoint.edu/the-glass-backbone-why-the-armys-logistics-will-break-in-the-next-war/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1812,15 +1821,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>No leap second will be introduced at the end of December 2026</summary>
-      <p class="blurb">266 points, 202 comments on Hacker News <a href="https://datacenter.iers.org/data/latestVersion/bulletinC.txt" target="_blank" rel="noopener noreferrer">Read more →</a></p>
-    </details>
-  </div>
-<div class="card">
-    <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(149,55%,45%), hsl(189,55%,30%));">📰</div>
-    <span class="source">🔶 Hacker News</span>
-    <details>
-      <summary>Common prefix skipping, adaptive sort</summary>
-      <p class="blurb">10 points, 0 comments on Hacker News <a href="http://smalldatum.blogspot.com/2026/01/common-prefix-skipping-adaptive-sort.html" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">266 points, 203 comments on Hacker News <a href="https://datacenter.iers.org/data/latestVersion/bulletinC.txt" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1906,18 +1907,18 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
 <h3 class="section">Trending Today</h3>
 <div class="grid">
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/f6af1345001eb906f3e59394c303340d4be9761a983f19b3a6e38065626c33cb/VoltAgent/awesome-design-md" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/b0c142b6bef8985e04535d820c806036ff0f8673f98324e403121f8c441fa43a/VoltAgent/awesome-design-md" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>VoltAgent/awesome-design-md<span class="readtime">⭐ 100108</span></summary>
+      <summary>VoltAgent/awesome-design-md<span class="readtime">⭐ 100113</span></summary>
       <p class="blurb">A collection of DESIGN.md files analysis by popular brand design systems. Drop one into your project and let coding agents generate a matching UI. <a href="https://github.com/VoltAgent/awesome-design-md" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/7e93de8d3bd82a89b548b72c92d66068bfc51ab037ccda0cd36a824a1954e893/iOfficeAI/OfficeCLI" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/c4e12956c866f8f9c4dd9b57b69d3242be73c9de390b2905dc40a631f5b5123e/iOfficeAI/OfficeCLI" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>iOfficeAI/OfficeCLI<span class="readtime">C# · ⭐ 13762</span></summary>
+      <summary>iOfficeAI/OfficeCLI<span class="readtime">C# · ⭐ 13763</span></summary>
       <p class="blurb">OfficeCLI is the first and best Office suite purpose-built for AI agents to read, edit, and automate Word, Excel, and PowerPoint files. Free, open-source, single binary, no Office installation required. <a href="https://github.com/iOfficeAI/OfficeCLI" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
@@ -1941,7 +1942,7 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <img class="cover" src="https://repository-images.githubusercontent.com/913030762/c8502908-380f-4897-aaba-87cfa16d67b4" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>vxcontrol/pentagi<span class="readtime">Go · ⭐ 19595</span></summary>
+      <summary>vxcontrol/pentagi<span class="readtime">Go · ⭐ 19599</span></summary>
       <p class="blurb">Fully autonomous AI Agents system capable of performing complex penetration testing tasks <a href="https://github.com/vxcontrol/pentagi" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
@@ -1954,10 +1955,10 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/93ac5d7babde344e4782f6c7ca4b6bbf56e964cd7739c7869a4ddcd141291a4d/imthenachoman/How-To-Secure-A-Linux-Server" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/95a64c1012d9c2c7ab37bec9124dc0c64cb34f68d9d8de6bb5b19ac5c46ec415/imthenachoman/How-To-Secure-A-Linux-Server" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>imthenachoman/How-To-Secure-A-Linux-Server<span class="readtime">⭐ 29214</span></summary>
+      <summary>imthenachoman/How-To-Secure-A-Linux-Server<span class="readtime">⭐ 29215</span></summary>
       <p class="blurb">An evolving how-to guide for securing a Linux server. <a href="https://github.com/imthenachoman/How-To-Secure-A-Linux-Server" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
@@ -1973,7 +1974,7 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <img class="cover" src="https://repository-images.githubusercontent.com/192925833/e5721600-60ad-11eb-8c41-bd105ac8e8b7" loading="lazy" alt="">
     <span class="source">🐙 GitHub Trending</span>
     <details>
-      <summary>prisma/prisma<span class="readtime">TypeScript · ⭐ 46963</span></summary>
+      <summary>prisma/prisma<span class="readtime">TypeScript · ⭐ 46964</span></summary>
       <p class="blurb">Next-generation ORM for Node.js &amp; TypeScript | PostgreSQL, MySQL, MariaDB, SQL Server, SQLite, MongoDB and CockroachDB <a href="https://github.com/prisma/prisma" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
