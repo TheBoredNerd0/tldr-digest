@@ -8,7 +8,7 @@ const { EDITIONS } = require("./editions");
 const { fetchEdition, attachImages } = require("./scrape");
 const { fetchHackerNews } = require("./sources/hackernews");
 const { fetchRundownAI } = require("./sources/rundown");
-const { fetchWorldNews } = require("./sources/worldnews");
+const { fetchAllWorldNews } = require("./sources/worldnews");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -34,12 +34,12 @@ async function run() {
 
   if (!isoDate) throw new Error("Could not determine today's date from any edition — aborting.");
 
-  // Non-TLDR sources: kept separate from the TLDR fetch loop above since they don't
-  // share its slug/error shape, but merge into the same {name, sections} structure.
+  // Non-TLDR single-edition sources: kept separate from the TLDR fetch loop above
+  // since they don't share its slug/error shape, but merge into the same
+  // {name, sections} structure.
   const extraSources = [
     { label: "hackernews", fn: () => fetchHackerNews(15) },
     { label: "rundown", fn: () => fetchRundownAI(8) },
-    { label: "worldnews", fn: () => fetchWorldNews(15) },
   ];
   for (const { label, fn } of extraSources) {
     try {
@@ -49,6 +49,11 @@ async function run() {
       console.error(`[${label}] fetch failed: ${err.message}`);
     }
   }
+
+  // World news is several outlets at once (each already error-isolated internally),
+  // one edition per outlet so provenance stays visible per card.
+  const worldNewsEditions = await fetchAllWorldNews(12);
+  editions.push(...worldNewsEditions);
 
   const featured = buildFeatured(editions);
   if (featured.sections[0].articles.length > 0) editions.unshift(featured);
@@ -115,7 +120,9 @@ function buildFeatured(editions) {
       : [];
 
   const picks = [
-    ...firstArticles(byName("World News"), 3),
+    ...firstArticles(byName("BBC World"), 2),
+    ...firstArticles(byName("Guardian World"), 1),
+    ...firstArticles(byName("Al Jazeera"), 1),
     ...firstArticles(byName("Hacker News"), 3),
     ...firstArticles(byName("TLDR Tech"), 1),
     ...firstArticles(byName("TLDR AI"), 1),

@@ -1,33 +1,29 @@
-const cheerio = require("cheerio");
+const { fetchRssSource } = require("./rss");
 
-// BBC's public World News RSS feed — official syndication feed (not a scrape), and
-// unlike every other source here it carries its own image (media:thumbnail) and
-// description inline, so no extra per-article fetch is needed at all.
-async function fetchWorldNews(limit = 15) {
-  const res = await fetch("https://feeds.bbci.co.uk/news/world/rss.xml", {
-    headers: { "User-Agent": "Mozilla/5.0" },
-  });
-  if (!res.ok) throw new Error(`world news RSS: HTTP ${res.status}`);
-  const xml = await res.text();
-  const $ = cheerio.load(xml, { xmlMode: true });
+// Official public RSS feeds only — no scraping, no API keys. Reuters' public feed
+// was discontinued (404) and AP has no real RSS, so those aren't here. Each outlet
+// becomes its own "edition" (own source badge) rather than one merged "World News"
+// blob, same as every other source in this project, so provenance stays visible
+// per card and each outlet's own editorial picks stay distinguishable.
+const WORLD_NEWS_FEEDS = [
+  { name: "BBC World", url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+  { name: "Guardian World", url: "https://www.theguardian.com/world/rss" },
+  { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
+  { name: "NYT World", url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
+  { name: "NPR World", url: "https://feeds.npr.org/1004/rss.xml" },
+];
 
-  const articles = [];
-  $("item")
-    .slice(0, limit)
-    .each((_, el) => {
-      const item = $(el);
-      const headline = item.find("title").first().text().trim();
-      const url = item.find("link").first().text().trim().split("?")[0];
-      const blurb = item.find("description").first().text().trim();
-      const rawImage = item.find("media\\:thumbnail").attr("url") || null;
-      // BBC's ichef CDN serves multiple sizes off the same path; upgrade the tiny
-      // default RSS thumbnail (240px) to something that won't look blurry in a card.
-      const image = rawImage ? rawImage.replace("/standard/240/", "/standard/976/") : null;
-      if (!headline || !url) return;
-      articles.push({ headline, url, readTime: null, blurb, image });
-    });
-
-  return { name: "World News", sections: [{ title: "Top Stories", articles }] };
+async function fetchAllWorldNews(limitPerFeed = 12) {
+  const results = [];
+  for (const feed of WORLD_NEWS_FEEDS) {
+    try {
+      const data = await fetchRssSource({ ...feed, limit: limitPerFeed });
+      if (data.sections[0].articles.length > 0) results.push(data);
+    } catch (err) {
+      console.error(`[${feed.name}] fetch failed: ${err.message}`);
+    }
+  }
+  return results;
 }
 
-module.exports = { fetchWorldNews };
+module.exports = { fetchAllWorldNews, WORLD_NEWS_FEEDS };
