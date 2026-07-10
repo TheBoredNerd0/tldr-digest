@@ -5,7 +5,7 @@ const { promisify } = require("util");
 const execFileP = promisify(execFile);
 
 const { EDITIONS } = require("./editions");
-const { fetchEdition } = require("./scrape");
+const { fetchEdition, attachImages } = require("./scrape");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -30,6 +30,9 @@ async function run() {
   }
 
   if (!isoDate) throw new Error("Could not determine today's date from any edition — aborting.");
+
+  console.log(`Fetching cover images for ${editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
+  await attachImages(editions);
 
   const slug = dateToSlug(isoDate);
   const html = buildDailyHtml(isoDate, editions);

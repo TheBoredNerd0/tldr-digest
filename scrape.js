@@ -61,4 +61,48 @@ function parseEdition(html, date = null) {
   return { date, sections };
 }
 
-module.exports = { fetchEdition, parseEdition };
+// Best-effort cover image for an article: pull og:image / twitter:image from the
+// linked page itself (tldr.tech's own markup carries no images). Many sites block
+// or rate-limit scrapers, so failures are expected and just mean no image, not
+// a fatal error for the whole digest.
+async function fetchOgImage(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const $ = cheerio.load(html);
+    return (
+      $('meta[property="og:image"]').attr("content") ||
+      $('meta[name="twitter:image"]').attr("content") ||
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
+// Runs `fn` over `items` with at most `limit` in flight at once.
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i], i);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
+async function attachImages(editions, concurrency = 10) {
+  const articles = editions.flatMap((e) => e.sections.flatMap((s) => s.articles));
+  await mapWithConcurrency(articles, concurrency, async (a) => {
+    a.image = await fetchOgImage(a.url);
+  });
+}
+
+module.exports = { fetchEdition, parseEdition, fetchOgImage, attachImages };
