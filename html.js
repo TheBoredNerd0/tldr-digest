@@ -17,6 +17,10 @@ function dateToSlug(isoDate) {
   return `${d}-${MONTHS[parseInt(m, 10) - 1]}-${y}`;
 }
 
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
 function escapeHtml(text) {
   return String(text)
     .replace(/&/g, "&amp;")
@@ -43,13 +47,34 @@ const PAGE_STYLES = `
   }
   @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
   h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .date { color: #767680; margin-bottom: 2rem; font-size: 0.95rem; }
-  h2.edition {
-    font-size: 1.3rem; margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: 0.5rem;
+  .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
+
+  .quicknav {
+    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.4rem;
+    padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
   }
+  @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
+  .quicknav a {
+    font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
+    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
+  }
+  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
+
+  section[id] { scroll-margin-top: 3.5rem; }
+  details.edition-toggle summary.edition {
+    list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  details.edition-toggle summary.edition::-webkit-details-marker { display: none; }
+  details.edition-toggle summary.edition::after {
+    content: "▾"; margin-left: auto; color: #767680; font-size: 1rem; transition: transform 0.15s;
+  }
+  details.edition-toggle[open] summary.edition::after { transform: rotate(180deg); }
+  details.edition-toggle summary.edition .count { color: #767680; font-weight: 400; font-size: 0.85rem; }
+
   h3.section { font-size: 0.85rem; color: #767680; margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
 
-  h2.edition.featured { font-size: 1.6rem; margin-top: 0; }
+  h2.edition.featured { font-size: 1.6rem; margin: 0 0 1rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
   .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
@@ -110,6 +135,7 @@ function renderArticle(a, edition) {
 function renderEdition(edition) {
   const isFeatured = edition.name === "Featured";
   const gridClass = isFeatured ? "grid featured" : "grid";
+  const count = edition.sections.reduce((n, s) => n + s.articles.length, 0);
   const sections = edition.sections
     .map(
       (s) =>
@@ -119,12 +145,31 @@ function renderEdition(edition) {
     )
     .join("\n");
   const emoji = EDITION_EMOJI[edition.name] || "📰";
-  const headingClass = isFeatured ? "edition featured" : "edition";
-  return `<section>\n<h2 class="${headingClass}">${emoji} ${escapeHtml(edition.name)}</h2>\n${sections}\n</section>`;
+  const id = slugify(edition.name);
+
+  if (isFeatured) {
+    return `<section id="${id}">\n<h2 class="edition featured">${emoji} ${escapeHtml(edition.name)}</h2>\n${sections}\n</section>`;
+  }
+  // Collapsed by default — with 240+ articles across 20 sources, forcing a linear
+  // scroll past everything is the "too much scrolling" problem being fixed here.
+  return `<section id="${id}">
+<details class="edition-toggle">
+<summary class="edition">${emoji} ${escapeHtml(edition.name)} <span class="count">${count}</span></summary>
+${sections}
+</details>
+</section>`;
+}
+
+function renderQuickNav(editions) {
+  const pills = editions
+    .map((e) => `<a href="#${slugify(e.name)}">${EDITION_EMOJI[e.name] || "📰"} ${escapeHtml(e.name)}</a>`)
+    .join("\n");
+  return `<nav class="quicknav">\n${pills}\n</nav>`;
 }
 
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image}] }] }]
 function buildDailyHtml(isoDate, editions) {
+  const nav = renderQuickNav(editions);
   const body = editions.map(renderEdition).join("\n");
   return `<!doctype html>
 <html lang="en">
@@ -137,6 +182,7 @@ function buildDailyHtml(isoDate, editions) {
 <body>
 <h1>TLDR Digest</h1>
 <div class="date">${escapeHtml(isoDate)}</div>
+${nav}
 ${body}
 </body>
 </html>`;
