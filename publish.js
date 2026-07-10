@@ -31,11 +31,13 @@ async function run() {
 
   if (!isoDate) throw new Error("Could not determine today's date from any edition — aborting.");
 
-  console.log(`Fetching cover images for ${editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
-  await attachImages(editions);
+  const deduped = dedupeAcrossEditions(editions);
+
+  console.log(`Fetching cover images for ${deduped.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
+  await attachImages(deduped);
 
   const slug = dateToSlug(isoDate);
-  const html = buildDailyHtml(isoDate, editions);
+  const html = buildDailyHtml(isoDate, deduped);
   fs.mkdirSync(SITE_DIR, { recursive: true });
   fs.writeFileSync(path.join(SITE_DIR, `${slug}.html`), html);
 
@@ -60,8 +62,8 @@ async function run() {
   const pageUrl = `${SITE_URL_BASE}/${slug}.html`;
   console.log(`Published ${pageUrl}`);
 
-  const editionCount = editions.length;
-  const articleCount = editions.reduce(
+  const editionCount = deduped.length;
+  const articleCount = deduped.reduce(
     (n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0),
     0
   );
@@ -71,6 +73,29 @@ async function run() {
       `${editionCount} editions, ${articleCount} articles`
     )}\n${escapeMdV2(pageUrl)}`
   );
+}
+
+// TLDR intentionally cross-posts big stories to multiple editions (e.g. a major AI
+// launch shows up in both Tech and AI the same day), which reads as repeats once
+// every edition is stacked on one page. Keep only the first occurrence of a given
+// article URL, in edition order, and drop any section/edition left empty after that.
+function dedupeAcrossEditions(editions) {
+  const seen = new Set();
+  return editions
+    .map((edition) => ({
+      name: edition.name,
+      sections: edition.sections
+        .map((section) => ({
+          title: section.title,
+          articles: section.articles.filter((a) => {
+            if (seen.has(a.url)) return false;
+            seen.add(a.url);
+            return true;
+          }),
+        }))
+        .filter((section) => section.articles.length > 0),
+    }))
+    .filter((edition) => edition.sections.length > 0);
 }
 
 function slugToIso(slug) {
