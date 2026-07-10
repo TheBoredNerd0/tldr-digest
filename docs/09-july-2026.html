@@ -14,13 +14,34 @@
   }
   @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
   h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .date { color: #767680; margin-bottom: 2rem; font-size: 0.95rem; }
-  h2.edition {
-    font-size: 1.3rem; margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: 0.5rem;
+  .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
+
+  .quicknav {
+    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 0.4rem;
+    padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
   }
+  @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
+  .quicknav a {
+    font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
+    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
+  }
+  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
+
+  section[id] { scroll-margin-top: 3.5rem; }
+  details.edition-toggle summary.edition {
+    list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  details.edition-toggle summary.edition::-webkit-details-marker { display: none; }
+  details.edition-toggle summary.edition::after {
+    content: "▾"; margin-left: auto; color: #767680; font-size: 1rem; transition: transform 0.15s;
+  }
+  details.edition-toggle[open] summary.edition::after { transform: rotate(180deg); }
+  details.edition-toggle summary.edition .count { color: #767680; font-weight: 400; font-size: 0.85rem; }
+
   h3.section { font-size: 0.85rem; color: #767680; margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
 
-  h2.edition.featured { font-size: 1.6rem; margin-top: 0; }
+  h2.edition.featured { font-size: 1.6rem; margin: 0 0 1rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
   .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
@@ -56,7 +77,30 @@
 <body>
 <h1>TLDR Digest</h1>
 <div class="date">2026-07-09</div>
-<section>
+<nav class="quicknav">
+<a href="#featured">⭐ Featured</a>
+<a href="#tldr-tech">💻 TLDR Tech</a>
+<a href="#tldr-ai">🤖 TLDR AI</a>
+<a href="#tldr-data">📊 TLDR Data</a>
+<a href="#tldr-dev">👨‍💻 TLDR Dev</a>
+<a href="#tldr-design">🎨 TLDR Design</a>
+<a href="#tldr-devops">🛠️ TLDR DevOps</a>
+<a href="#tldr-marketing">📣 TLDR Marketing</a>
+<a href="#tldr-product">📦 TLDR Product</a>
+<a href="#tldr-founders">🚀 TLDR Founders</a>
+<a href="#tldr-infosec">🔒 TLDR Infosec</a>
+<a href="#tldr-crypto">₿ TLDR Crypto</a>
+<a href="#tldr-fintech">💳 TLDR Fintech</a>
+<a href="#tldr-it">🖥️ TLDR IT</a>
+<a href="#hacker-news">🔶 Hacker News</a>
+<a href="#the-rundown-ai">⚡ The Rundown AI</a>
+<a href="#bbc-world">🌍 BBC World</a>
+<a href="#guardian-world">🇬🇧 Guardian World</a>
+<a href="#al-jazeera">🕌 Al Jazeera</a>
+<a href="#nyt-world">🗽 NYT World</a>
+<a href="#npr-world">🎙️ NPR World</a>
+</nav>
+<section id="featured">
 <h2 class="edition featured">⭐ Featured</h2>
 <div class="grid featured">
 <div class="card">
@@ -92,11 +136,11 @@
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/3fa1236bee2fe304ebf6cfb1e88d171a87c928dde9d0999fc07dabbbae04d867/JustVugg/colibri" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/2430d3785a4c9a68e96b6d641bd71f49d18264ea03f5439ef54086a92dfe9a13/JustVugg/colibri" loading="lazy" alt="">
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Show HN: Getting GLM 5.2 running on my slow computer</summary>
-      <p class="blurb">530 points, 131 comments on Hacker News <a href="https://github.com/JustVugg/colibri" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">531 points, 131 comments on Hacker News <a href="https://github.com/JustVugg/colibri" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -104,7 +148,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>EU Parliament greenlights Chat Control 1.0</summary>
-      <p class="blurb">1201 points, 574 comments on Hacker News <a href="https://www.patrick-breyer.de/en/eu-parliament-greenlights-chat-control-1-0-breyer-our-children-lose-out/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">1204 points, 574 comments on Hacker News <a href="https://www.patrick-breyer.de/en/eu-parliament-greenlights-chat-control-1-0-breyer-our-children-lose-out/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -141,8 +185,9 @@
   </div>
 </div>
 </section>
-<section>
-<h2 class="edition">💻 TLDR Tech</h2>
+<section id="tldr-tech">
+<details class="edition-toggle">
+<summary class="edition">💻 TLDR Tech <span class="count">14</span></summary>
 <h3 class="section">Big Tech &amp; Startups</h3>
 <div class="grid">
 <div class="card">
@@ -270,9 +315,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🤖 TLDR AI</h2>
+<section id="tldr-ai">
+<details class="edition-toggle">
+<summary class="edition">🤖 TLDR AI <span class="count">14</span></summary>
 <h3 class="section">Headlines &amp; Launches</h3>
 <div class="grid">
 <div class="card">
@@ -400,9 +447,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">📊 TLDR Data</h2>
+<section id="tldr-data">
+<details class="edition-toggle">
+<summary class="edition">📊 TLDR Data <span class="count">14</span></summary>
 <h3 class="section">Deep Dives</h3>
 <div class="grid">
 <div class="card">
@@ -530,9 +579,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">👨‍💻 TLDR Dev</h2>
+<section id="tldr-dev">
+<details class="edition-toggle">
+<summary class="edition">👨‍💻 TLDR Dev <span class="count">6</span></summary>
 <h3 class="section">Articles &amp; Tutorials</h3>
 <div class="grid">
 <div class="card">
@@ -590,9 +641,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🎨 TLDR Design</h2>
+<section id="tldr-design">
+<details class="edition-toggle">
+<summary class="edition">🎨 TLDR Design <span class="count">14</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -720,9 +773,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🛠️ TLDR DevOps</h2>
+<section id="tldr-devops">
+<details class="edition-toggle">
+<summary class="edition">🛠️ TLDR DevOps <span class="count">11</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -764,7 +819,7 @@
 <h3 class="section">Resources &amp; Tools</h3>
 <div class="grid">
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/789117ac9be335859bf3863f38e946fba0bb7df4a2c805301e1f6cb46a98aaba/bradautomates/claude-video" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/bbd7d7d2329272013b4bc748cf45a30d218b7909beeee7c6e5c3dab3a61f9abd/bradautomates/claude-video" loading="lazy" alt="">
     <span class="source">🛠️ TLDR DevOps</span>
     <details>
       <summary>Claude-video (GitHub Repo)</summary>
@@ -772,7 +827,7 @@
     </details>
   </div>
 <div class="card">
-    <img class="cover" src="https://opengraph.githubassets.com/962a08cbbf79bc8e5e26a2cab28b1a8e864698875ab4eeb7069604c4a5affdf1/TencentCloud/CubeSandbox" loading="lazy" alt="">
+    <img class="cover" src="https://opengraph.githubassets.com/bf06bb1a575d6122695946c618048472e14d8ecdd4e3b380dbb3f25258381834/TencentCloud/CubeSandbox" loading="lazy" alt="">
     <span class="source">🛠️ TLDR DevOps</span>
     <details>
       <summary>Cube Sandbox (GitHub Repo)</summary>
@@ -826,9 +881,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">📣 TLDR Marketing</h2>
+<section id="tldr-marketing">
+<details class="edition-toggle">
+<summary class="edition">📣 TLDR Marketing <span class="count">13</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -948,9 +1005,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">📦 TLDR Product</h2>
+<section id="tldr-product">
+<details class="edition-toggle">
+<summary class="edition">📦 TLDR Product <span class="count">10</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -1046,9 +1105,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🚀 TLDR Founders</h2>
+<section id="tldr-founders">
+<details class="edition-toggle">
+<summary class="edition">🚀 TLDR Founders <span class="count">11</span></summary>
 <h3 class="section">Headlines &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -1152,9 +1213,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🔒 TLDR Infosec</h2>
+<section id="tldr-infosec">
+<details class="edition-toggle">
+<summary class="edition">🔒 TLDR Infosec <span class="count">15</span></summary>
 <h3 class="section">Attacks &amp; Vulnerabilities</h3>
 <div class="grid">
 <div class="card">
@@ -1290,9 +1353,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">₿ TLDR Crypto</h2>
+<section id="tldr-crypto">
+<details class="edition-toggle">
+<summary class="edition">₿ TLDR Crypto <span class="count">11</span></summary>
 <h3 class="section">Markets &amp; Business</h3>
 <div class="grid">
 <div class="card">
@@ -1396,9 +1461,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">💳 TLDR Fintech</h2>
+<section id="tldr-fintech">
+<details class="edition-toggle">
+<summary class="edition">💳 TLDR Fintech <span class="count">13</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -1518,9 +1585,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🖥️ TLDR IT</h2>
+<section id="tldr-it">
+<details class="edition-toggle">
+<summary class="edition">🖥️ TLDR IT <span class="count">11</span></summary>
 <h3 class="section">News &amp; Trends</h3>
 <div class="grid">
 <div class="card">
@@ -1624,9 +1693,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🔶 Hacker News</h2>
+<section id="hacker-news">
+<details class="edition-toggle">
+<summary class="edition">🔶 Hacker News <span class="count">12</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
 <div class="card">
@@ -1634,7 +1705,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Train sim created by just one person is being called the best ever made</summary>
-      <p class="blurb">434 points, 153 comments on Hacker News <a href="https://kotaku.com/a-train-sim-created-by-just-one-person-is-being-called-the-best-ever-made-2000699429" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">437 points, 155 comments on Hacker News <a href="https://kotaku.com/a-train-sim-created-by-just-one-person-is-being-called-the-best-ever-made-2000699429" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1642,7 +1713,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>GPT-5.6</summary>
-      <p class="blurb">1178 points, 835 comments on Hacker News <a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">1179 points, 838 comments on Hacker News <a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1650,7 +1721,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Apple Silicon Exec Explains Mac Mini AI Demand and On-Device Future</summary>
-      <p class="blurb">48 points, 24 comments on Hacker News <a href="https://www.macrumors.com/2026/07/06/apple-silicon-exec-explains-mac-mini-ai-demand/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">48 points, 25 comments on Hacker News <a href="https://www.macrumors.com/2026/07/06/apple-silicon-exec-explains-mac-mini-ai-demand/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1658,7 +1729,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Study: &quot;Mommy, do you love your phone more than me?&quot;</summary>
-      <p class="blurb">70 points, 32 comments on Hacker News <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1766665/full" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">71 points, 33 comments on Hacker News <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1766665/full" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1666,7 +1737,7 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>Postgres rewritten in Rust, now passing 100% of the Postgres regression tests</summary>
-      <p class="blurb">557 points, 474 comments on Hacker News <a href="https://github.com/malisper/pgrust" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">561 points, 474 comments on Hacker News <a href="https://github.com/malisper/pgrust" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1694,14 +1765,6 @@
     </details>
   </div>
 <div class="card">
-    <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(149,55%,45%), hsl(189,55%,30%));">📰</div>
-    <span class="source">🔶 Hacker News</span>
-    <details>
-      <summary>Common prefix skipping, adaptive sort</summary>
-      <p class="blurb">10 points, 0 comments on Hacker News <a href="http://smalldatum.blogspot.com/2026/01/common-prefix-skipping-adaptive-sort.html" target="_blank" rel="noopener noreferrer">Read more →</a></p>
-    </details>
-  </div>
-<div class="card">
     <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(183,55%,45%), hsl(223,55%,30%));">📰</div>
     <span class="source">🔶 Hacker News</span>
     <details>
@@ -1714,7 +1777,15 @@
     <span class="source">🔶 Hacker News</span>
     <details>
       <summary>The glass backbone: Why the Army's logistics will break in the next war</summary>
-      <p class="blurb">349 points, 427 comments on Hacker News <a href="https://mwi.westpoint.edu/the-glass-backbone-why-the-armys-logistics-will-break-in-the-next-war/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+      <p class="blurb">349 points, 428 comments on Hacker News <a href="https://mwi.westpoint.edu/the-glass-backbone-why-the-armys-logistics-will-break-in-the-next-war/" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+    </details>
+  </div>
+<div class="card">
+    <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(149,55%,45%), hsl(189,55%,30%));">📰</div>
+    <span class="source">🔶 Hacker News</span>
+    <details>
+      <summary>Common prefix skipping, adaptive sort</summary>
+      <p class="blurb">10 points, 0 comments on Hacker News <a href="http://smalldatum.blogspot.com/2026/01/common-prefix-skipping-adaptive-sort.html" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
 <div class="card">
@@ -1726,9 +1797,11 @@
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">⚡ The Rundown AI</h2>
+<section id="the-rundown-ai">
+<details class="edition-toggle">
+<summary class="edition">⚡ The Rundown AI <span class="count">7</span></summary>
 <h3 class="section">Daily AI Briefing</h3>
 <div class="grid">
 <div class="card">
@@ -1790,9 +1863,11 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🌍 BBC World</h2>
+<section id="bbc-world">
+<details class="edition-toggle">
+<summary class="edition">🌍 BBC World <span class="count">10</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
 <div class="card">
@@ -1876,9 +1951,11 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🇬🇧 Guardian World</h2>
+<section id="guardian-world">
+<details class="edition-toggle">
+<summary class="edition">🇬🇧 Guardian World <span class="count">11</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
 <div class="card">
@@ -1970,9 +2047,11 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🕌 Al Jazeera</h2>
+<section id="al-jazeera">
+<details class="edition-toggle">
+<summary class="edition">🕌 Al Jazeera <span class="count">11</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
 <div class="card">
@@ -2064,9 +2143,11 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🗽 NYT World</h2>
+<section id="nyt-world">
+<details class="edition-toggle">
+<summary class="edition">🗽 NYT World <span class="count">12</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
 <div class="card">
@@ -2166,11 +2247,21 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     </details>
   </div>
 </div>
+</details>
 </section>
-<section>
-<h2 class="edition">🎙️ NPR World</h2>
+<section id="npr-world">
+<details class="edition-toggle">
+<summary class="edition">🎙️ NPR World <span class="count">10</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
+<div class="card">
+    <img class="cover" src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/4050x2278+0+211/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fc8%2F72%2F2a6d3d4c4ba7b947fb9154889bd9%2Fap26190542026619.jpg" loading="lazy" alt="">
+    <span class="source">🎙️ NPR World</span>
+    <details>
+      <summary>U.S. and Iran exchange intensifying fire across Mideast, threatening ceasefire deal</summary>
+      <p class="blurb">Back-and-forth attacks have repeatedly threatened the ceasefire, but Thursday's appeared bigger all around. <a href="https://www.npr.org/2026/07/10/g-s1-132927/us-iran-war" target="_blank" rel="noopener noreferrer">Read more →</a></p>
+    </details>
+  </div>
 <div class="card">
     <img class="cover" src="https://media.npr.org/include/images/facebook-default-wide-s1400-c85.jpg" loading="lazy" alt="">
     <span class="source">🎙️ NPR World</span>
@@ -2243,15 +2334,8 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
       <p class="blurb">President Trump threatened more strikes against Iran after saying he believes the ceasefire is dead at the end of the NATO summit. <a href="https://www.npr.org/2026/07/08/nx-s1-5886102/trump-threatens-iran-as-nato-summit-wraps" target="_blank" rel="noopener noreferrer">Read more →</a></p>
     </details>
   </div>
-<div class="card">
-    <img class="cover" src="https://npr.brightspotcdn.com/dims3/default/strip/false/crop/5556x3126+0+574/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F76%2Fc8%2F38ea37d04de19c9a8a9457236407%2Fimg-1681-copy.jpeg" loading="lazy" alt="">
-    <span class="source">🎙️ NPR World</span>
-    <details>
-      <summary>New U.S. passports with Trump's image are available. Here's how to get (or avoid) one</summary>
-      <p class="blurb">The passports feature an image of President Trump and are only available in person at the Washington Passport Agency — and only by appointment. <a href="https://www.npr.org/2026/07/08/g-s1-132497/passports-trump-image" target="_blank" rel="noopener noreferrer">Read more →</a></p>
-    </details>
-  </div>
 </div>
+</details>
 </section>
 </body>
 </html>
