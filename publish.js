@@ -8,6 +8,7 @@ const { EDITIONS } = require("./editions");
 const { fetchEdition, attachImages } = require("./scrape");
 const { fetchHackerNews } = require("./sources/hackernews");
 const { fetchRundownAI } = require("./sources/rundown");
+const { fetchWorldNews } = require("./sources/worldnews");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -38,6 +39,7 @@ async function run() {
   const extraSources = [
     { label: "hackernews", fn: () => fetchHackerNews(15) },
     { label: "rundown", fn: () => fetchRundownAI(8) },
+    { label: "worldnews", fn: () => fetchWorldNews(15) },
   ];
   for (const { label, fn } of extraSources) {
     try {
@@ -47,6 +49,9 @@ async function run() {
       console.error(`[${label}] fetch failed: ${err.message}`);
     }
   }
+
+  const featured = buildFeatured(editions);
+  if (featured.sections[0].articles.length > 0) editions.unshift(featured);
 
   const deduped = dedupeAcrossEditions(editions);
 
@@ -90,6 +95,34 @@ async function run() {
       `${editionCount} editions, ${articleCount} articles`
     )}\n${escapeMdV2(pageUrl)}`
   );
+}
+
+// Pulls a curated "front page" from across every source: the day's biggest world
+// events, the highest-engagement Hacker News stories, and each flagship TLDR
+// edition's own lead pick. Runs before dedupeAcrossEditions and gets unshifted to
+// the front of the editions list, so anything picked here is simply not repeated
+// further down the page (same first-occurrence-wins rule as everything else).
+function buildFeatured(editions) {
+  const byName = (name) => editions.find((e) => e.name === name);
+  // Tag each pick with its true origin so the card badge still shows "World News" /
+  // "Hacker News" etc. instead of just "Featured" once it's moved to the front.
+  const firstArticles = (edition, n) =>
+    edition
+      ? edition.sections
+          .flatMap((s) => s.articles)
+          .slice(0, n)
+          .map((a) => ({ ...a, sourceLabel: edition.name }))
+      : [];
+
+  const picks = [
+    ...firstArticles(byName("World News"), 3),
+    ...firstArticles(byName("Hacker News"), 3),
+    ...firstArticles(byName("TLDR Tech"), 1),
+    ...firstArticles(byName("TLDR AI"), 1),
+    ...firstArticles(byName("The Rundown AI"), 1),
+  ];
+
+  return { name: "Featured", sections: [{ title: "Today's Top Stories", articles: picks }] };
 }
 
 // TLDR intentionally cross-posts big stories to multiple editions (e.g. a major AI

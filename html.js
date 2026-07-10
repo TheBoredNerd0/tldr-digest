@@ -7,7 +7,7 @@ const EDITION_EMOJI = {
   "TLDR Tech": "💻", "TLDR AI": "🤖", "TLDR Data": "📊", "TLDR Dev": "👨‍💻", "TLDR Design": "🎨",
   "TLDR DevOps": "🛠️", "TLDR Marketing": "📣", "TLDR Product": "📦", "TLDR Founders": "🚀",
   "TLDR Infosec": "🔒", "TLDR Crypto": "₿", "TLDR Fintech": "💳", "TLDR Hardware": "⚙️", "TLDR IT": "🖥️",
-  "Hacker News": "🔶", "The Rundown AI": "⚡",
+  "Hacker News": "🔶", "The Rundown AI": "⚡", "World News": "🌍", Featured: "⭐",
 };
 
 // "2026-07-09" -> "09-july-2026" (matches the requested filename convention)
@@ -48,7 +48,12 @@ const PAGE_STYLES = `
   }
   h3.section { font-size: 0.85rem; color: #767680; margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
 
+  h2.edition.featured { font-size: 1.6rem; margin-top: 0; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+  .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
+  .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
+  @media (prefers-color-scheme: dark) { .grid.featured .card { border-color: #3a3b45; } }
+  .grid.featured .card summary { font-size: 1.05rem; }
   .card {
     background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   }
@@ -84,15 +89,16 @@ function renderCover(a, hue) {
 }
 
 function renderArticle(a, edition) {
-  const hue = hashHue(edition.name + a.headline);
-  const emoji = EDITION_EMOJI[edition.name] || "📰";
+  const sourceName = a.sourceLabel || edition.name;
+  const hue = hashHue(sourceName + a.headline);
+  const emoji = EDITION_EMOJI[sourceName] || "📰";
   const readTime = a.readTime ? `<span class="readtime">${escapeHtml(a.readTime)}</span>` : "";
   const blurb = a.blurb
     ? `<p class="blurb">${escapeHtml(a.blurb)} <a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`
     : `<p class="blurb"><a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`;
   return `<div class="card">
     ${renderCover(a, hue)}
-    <span class="source">${emoji} ${escapeHtml(edition.name)}</span>
+    <span class="source">${emoji} ${escapeHtml(sourceName)}</span>
     <details>
       <summary>${escapeHtml(a.headline)}${readTime}</summary>
       ${blurb}
@@ -101,16 +107,19 @@ function renderArticle(a, edition) {
 }
 
 function renderEdition(edition) {
+  const isFeatured = edition.name === "Featured";
+  const gridClass = isFeatured ? "grid featured" : "grid";
   const sections = edition.sections
     .map(
       (s) =>
-        `<h3 class="section">${escapeHtml(s.title)}</h3>\n<div class="grid">\n${s.articles
+        `${isFeatured ? "" : `<h3 class="section">${escapeHtml(s.title)}</h3>\n`}<div class="${gridClass}">\n${s.articles
           .map((a) => renderArticle(a, edition))
           .join("\n")}\n</div>`
     )
     .join("\n");
   const emoji = EDITION_EMOJI[edition.name] || "📰";
-  return `<section>\n<h2 class="edition">${emoji} ${escapeHtml(edition.name)}</h2>\n${sections}\n</section>`;
+  const headingClass = isFeatured ? "edition featured" : "edition";
+  return `<section>\n<h2 class="${headingClass}">${emoji} ${escapeHtml(edition.name)}</h2>\n${sections}\n</section>`;
 }
 
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image}] }] }]
