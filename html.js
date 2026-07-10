@@ -4,9 +4,9 @@ const MONTHS = [
 ];
 
 const EDITION_EMOJI = {
-  Tech: "💻", AI: "🤖", Data: "📊", Dev: "👨‍💻", Design: "🎨",
-  DevOps: "🛠️", Marketing: "📣", Product: "📦", Founders: "🚀",
-  Infosec: "🔒", Crypto: "₿", Fintech: "💳", Hardware: "⚙️", IT: "🖥️",
+  "TLDR Tech": "💻", "TLDR AI": "🤖", "TLDR Data": "📊", "TLDR Dev": "👨‍💻", "TLDR Design": "🎨",
+  "TLDR DevOps": "🛠️", "TLDR Marketing": "📣", "TLDR Product": "📦", "TLDR Founders": "🚀",
+  "TLDR Infosec": "🔒", "TLDR Crypto": "₿", "TLDR Fintech": "💳", "TLDR Hardware": "⚙️", "TLDR IT": "🖥️",
   "Hacker News": "🔶", "The Rundown AI": "⚡",
 };
 
@@ -57,8 +57,12 @@ const PAGE_STYLES = `
   .card .cover.placeholder {
     display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
   }
+  .card .source {
+    display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; color: #767680; padding: 0.7rem 0.9rem 0;
+  }
   .card summary {
-    list-style: none; cursor: pointer; padding: 0.85rem 0.9rem; font-weight: 600; font-size: 0.95rem;
+    list-style: none; cursor: pointer; padding: 0.3rem 0.9rem 0.85rem; font-weight: 600; font-size: 0.95rem;
   }
   .card summary::-webkit-details-marker { display: none; }
   .card summary::after { content: "＋"; float: right; color: #767680; font-weight: 400; }
@@ -81,12 +85,14 @@ function renderCover(a, hue) {
 
 function renderArticle(a, edition) {
   const hue = hashHue(edition.name + a.headline);
+  const emoji = EDITION_EMOJI[edition.name] || "📰";
   const readTime = a.readTime ? `<span class="readtime">${escapeHtml(a.readTime)}</span>` : "";
   const blurb = a.blurb
     ? `<p class="blurb">${escapeHtml(a.blurb)} <a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`
     : `<p class="blurb"><a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`;
   return `<div class="card">
     ${renderCover(a, hue)}
+    <span class="source">${emoji} ${escapeHtml(edition.name)}</span>
     <details>
       <summary>${escapeHtml(a.headline)}${readTime}</summary>
       ${blurb}

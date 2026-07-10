@@ -25,7 +25,7 @@ async function run() {
       const data = await fetchEdition(edition.slug);
       if (data.sections.length === 0) continue; // e.g. "hardware" not launched yet
       if (!isoDate) isoDate = data.date;
-      editions.push({ name: edition.name, sections: data.sections });
+      editions.push({ name: `TLDR ${edition.name}`, sections: data.sections });
     } catch (err) {
       console.error(`[${edition.slug}] fetch failed: ${err.message}`);
     }
