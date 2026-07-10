@@ -41,6 +41,29 @@ source (own badge, own emoji), via a shared `sources/rss.js` helper:
   ("corruptionA fictitious..."). Fixed by extracting text per block element and
   joining with a space.
 
+## Singapore news + GitHub Trending
+Two more requests in the same session: Singapore-local news, and "scrape social
+media (X/Facebook/Instagram) for golden AI info like someone building a great tool."
+- `sources/singapore.js` — Straits Times + Mothership, both official RSS, same
+  `fetchRssSource` helper as world news. (Note: CNA's RSS category IDs looked
+  promising by URL pattern but category 6511/10296 both actually returned
+  Asia-region/sports content, not Singapore-local — verified by content, not just
+  by guessing the URL, before trusting either. Straits Times' `/news/singapore/`
+  path and Mothership's own feed were both verified to be genuinely local by
+  checking actual returned headlines.)
+- **Social media (X, Facebook, Instagram): checked and not pursued.** All three are
+  locked down against unauthenticated scraping — X's free API tier is effectively
+  write-only (meaningful read access is a paid tier), Facebook/Instagram's Graph API
+  needs an approved developer app + access token, and Nitter (the open-source
+  Twitter-scraping proxy people used to use) is functionally dead since X's 2024
+  crackdown. None of this is fixable without the user paying for API access or
+  handing over login credentials, so didn't force a fragile workaround.
+- `sources/github.js` (GitHub Trending, `github.com/trending?since=daily`) instead —
+  this is the actually-feasible version of the same underlying ask. No login, no API
+  key, official public page, and it's the literal mechanism by which "someone built
+  something great" (the example given was Graphify itself) becomes visible: trending
+  repos, stars, description, straight from GitHub.
+
 ## Additional sources
 Added on request for "combine everything into the ultimate newsletter." Researched
 several candidates (Techmeme, Hacker Newsletter, Pragmatic Engineer, The Rundown AI,
