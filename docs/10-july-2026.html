@@ -56,6 +56,24 @@
   :root[data-theme="light"] .quicknav a { background: #fff; }
   .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
 
+  #category-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem; margin: 0.5rem 0 2.5rem;
+  }
+  .category-tile {
+    position: relative; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden;
+    text-decoration: none; color: #fff; background-size: cover; background-position: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .tile-overlay {
+    position: absolute; inset: 0; padding: 0.6rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .tile-emoji { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 1.3rem; }
+  .tile-name { font-weight: 700; font-size: 0.95rem; line-height: 1.25; }
+  .tile-count { font-size: 0.75rem; opacity: 0.85; margin-top: 0.15rem; }
+
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
     list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
@@ -160,6 +178,169 @@
 <a href="#straits-times" data-target="straits-times">🇸🇬 Straits Times</a>
 <a href="#mothership" data-target="mothership">🚢 Mothership</a>
 </nav>
+<div id="category-grid">
+<a href="#tldr-tech" class="category-tile" data-target="tldr-tech" style="background-image: url('https://storage.ghost.io/c/2a/1b/2a1b1782-8506-4d7d-bf53-ad3fb52e2a0f/content/images/size/w1200/2026/07/OAI_ChatGPTWork_ModelBlog_OpenGraph_16x9_1200x630.webp');">
+    <span class="tile-emoji">💻</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Tech</span>
+      <span class="tile-count">13 articles</span>
+    </div>
+  </a>
+<a href="#tldr-ai" class="category-tile" data-target="tldr-ai" style="background-image: url('https://scontent.fsin10-1.fna.fbcdn.net/v/t39.2365-6/741906678_873652302465180_7764547737953411008_n.png?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=OlBvaYygvIUQ7kNvwFPvA5w&amp;_nc_oc=AdrbgKC8wfJor6BvasyM0jSg9ZJbXlQ5tRdK1RHPtkpWUJtqxhHKFCiFJzOtQnPURkw&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin10-1.fna&amp;_nc_gid=M6vqr0j6zEF3MpGDBp7ajg&amp;_nc_ss=72180&amp;oh=00_AQCjgIlSy1m0u9c_kDl60tTBVZpjuhqzTDWoQLSAp-fRAQ&amp;oe=6A6C1926');">
+    <span class="tile-emoji">🤖</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR AI</span>
+      <span class="tile-count">16 articles</span>
+    </div>
+  </a>
+<a href="#tldr-data" class="category-tile" data-target="tldr-data" style="background-image: url('https://iceberglakehouse.com/posts/the-variant-type-in-apache-iceberg-how-shredding-turns-messy-json-into-fast-analytics.png');">
+    <span class="tile-emoji">📊</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Data</span>
+      <span class="tile-count">14 articles</span>
+    </div>
+  </a>
+<a href="#tldr-dev" class="category-tile" data-target="tldr-dev" style="background-image: url('https://substackcdn.com/image/fetch/$s_!8gvg!,w_1200,h_675,c_fill,f_jpg,q_auto:good,fl_progressive:steep,g_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F1b922fce-0984-4104-86fa-6cf9913a5542_1498x838.png');">
+    <span class="tile-emoji">👨‍💻</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Dev</span>
+      <span class="tile-count">12 articles</span>
+    </div>
+  </a>
+<a href="#tldr-design" class="category-tile" data-target="tldr-design" style="background-image: url('https://techcrunch.com/wp-content/uploads/2026/07/c.ai-Series-1.jpg?resize=1200,675');">
+    <span class="tile-emoji">🎨</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Design</span>
+      <span class="tile-count">13 articles</span>
+    </div>
+  </a>
+<a href="#tldr-devops" class="category-tile" data-target="tldr-devops" style="background-image: url('https://cf-assets.www.cloudflare.com/zkvhlag99gkb/2A9ejBpMURvmM6vDwgua8A/8d3da5a728f9890fcfb7888f1d74d813/BLOG-3339_OG.png');">
+    <span class="tile-emoji">🛠️</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR DevOps</span>
+      <span class="tile-count">11 articles</span>
+    </div>
+  </a>
+<a href="#tldr-marketing" class="category-tile" data-target="tldr-marketing" style="background-image: url('http://static1.squarespace.com/static/55b249cfe4b0a4f7d765fdf1/55b24b5fe4b0b4dd98ff657d/6a4bec045a24886ceed05ef5/1783361993663/Brand_Identity_In_a_modern_graphic_style_a_silhouette_of_a_5VyarsmN.png?format=1500w');">
+    <span class="tile-emoji">📣</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Marketing</span>
+      <span class="tile-count">12 articles</span>
+    </div>
+  </a>
+<a href="#tldr-product" class="category-tile" data-target="tldr-product" style="background-image: url('https://s0.wp.com/_si/?t=eyJpbWciOiJodHRwczpcL1wvaTAud3AuY29tXC9zdHJhdGVjaGVyeS5jb21cL3dwLWNvbnRlbnRcL3VwbG9hZHNcLzIwMThcLzAzXC9jcm9wcGVkLWFuZHJvaWQtY2hyb21lLTUxMng1MTItMS5wbmc_Zml0PTUxMiUyQzUxMiZzc2w9MSIsInR4dCI6IlN0cmF0ZWNoZXJ5IGJ5IEJlbiBUaG9tcHNvbiIsInRlbXBsYXRlIjoiZWRnZSIsImZvbnQiOiIiLCJibG9nX2lkIjoxODgwNDM0MTV9.5VWck4PcKPWCTPe_HVznn3n3xsgn-G0b3d2OeiNNC7cMQ');">
+    <span class="tile-emoji">📦</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Product</span>
+      <span class="tile-count">8 articles</span>
+    </div>
+  </a>
+<a href="#tldr-founders" class="category-tile" data-target="tldr-founders" style="background-image: url('https://pbs.twimg.com/profile_images/1717550889785827328/wgrKCl7p_200x200.jpg');">
+    <span class="tile-emoji">🚀</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Founders</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#tldr-infosec" class="category-tile" data-target="tldr-infosec" style="background-image: url('https://www.propublica.org/wp-content/uploads/2026/06/20260626-Gordon-PR-SSN-breach-3x2_maxHeight_3000_maxWidth_3000.jpg?resize=2000,1333');">
+    <span class="tile-emoji">🔒</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Infosec</span>
+      <span class="tile-count">13 articles</span>
+    </div>
+  </a>
+<a href="#tldr-crypto" class="category-tile" data-target="tldr-crypto" style="background-image: url('https://threadreaderapp.com/images/screenshots/thread/2075246240799842614.jpg');">
+    <span class="tile-emoji">₿</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Crypto</span>
+      <span class="tile-count">11 articles</span>
+    </div>
+  </a>
+<a href="#tldr-fintech" class="category-tile" data-target="tldr-fintech" style="background-image: url('https://image.cnbcfm.com/api/v1/image/108196993-17575237122025-09-10t162504z_731787026_rc22pgainw7b_rtrmadp_0_klarna-ipo.jpeg?v=1783351856&amp;w=1920&amp;h=1080');">
+    <span class="tile-emoji">💳</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR Fintech</span>
+      <span class="tile-count">13 articles</span>
+    </div>
+  </a>
+<a href="#tldr-it" class="category-tile" data-target="tldr-it" style="background-image: url('https://images.ctfassets.net/kftzwdyauwt9/5ZfLwumCHQuauT9D0sPwNT/8a94362eacdf267b7f18dd962dde6111/Frame.png');">
+    <span class="tile-emoji">🖥️</span>
+    <div class="tile-overlay">
+      <span class="tile-name">TLDR IT</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#hacker-news" class="category-tile" data-target="hacker-news" style="background-image: url('https://i0.wp.com/9to5mac.com/wp-content/uploads/sites/6/2026/05/apple-openai.jpg?resize=1200%2C628&amp;quality=82&amp;strip=all&amp;ssl=1');">
+    <span class="tile-emoji">🔶</span>
+    <div class="tile-overlay">
+      <span class="tile-name">Hacker News</span>
+      <span class="tile-count">13 articles</span>
+    </div>
+  </a>
+<a href="#the-rundown-ai" class="category-tile" data-target="the-rundown-ai" style="background-image: url('https://beehiiv-images-production.s3.amazonaws.com/uploads/asset/file/0faea913-cf07-4532-bb82-58c763c93cc5/grok45.png?t=1783546118');">
+    <span class="tile-emoji">⚡</span>
+    <div class="tile-overlay">
+      <span class="tile-name">The Rundown AI</span>
+      <span class="tile-count">7 articles</span>
+    </div>
+  </a>
+<a href="#github-trending" class="category-tile" data-target="github-trending" style="background-image: url('https://opengraph.githubassets.com/85e6c02fa02bb3d998476b2e04833ebb6007878822379bc07330508e872982e5/abseil/abseil-cpp');">
+    <span class="tile-emoji">🐙</span>
+    <div class="tile-overlay">
+      <span class="tile-name">GitHub Trending</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#bbc-world" class="category-tile" data-target="bbc-world" style="background-image: url('https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/235b/live/fb5baae0-7b68-11f1-936a-038dbfe02d14.jpg');">
+    <span class="tile-emoji">🌍</span>
+    <div class="tile-overlay">
+      <span class="tile-name">BBC World</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#guardian-world" class="category-tile" data-target="guardian-world" style="background-image: url('https://i.guim.co.uk/img/media/f80796421f1ba8310e6cf11d9923b0d36fda17d6/584_0_3309_2649/master/3309.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=2c7e4088119348a28d3bdfa3bae10781');">
+    <span class="tile-emoji">🇬🇧</span>
+    <div class="tile-overlay">
+      <span class="tile-name">Guardian World</span>
+      <span class="tile-count">11 articles</span>
+    </div>
+  </a>
+<a href="#al-jazeera" class="category-tile" data-target="al-jazeera" style="background-image: url('https://www.aljazeera.com/wp-content/uploads/2026/07/wide-thumb-1783732320.jpeg?resize=1920%2C1440');">
+    <span class="tile-emoji">🕌</span>
+    <div class="tile-overlay">
+      <span class="tile-name">Al Jazeera</span>
+      <span class="tile-count">11 articles</span>
+    </div>
+  </a>
+<a href="#nyt-world" class="category-tile" data-target="nyt-world" style="background-image: url('https://static01.nyt.com/images/2026/07/10/multimedia/10int-Iran-Supreme-Leader-lpbq/10int-Iran-Supreme-Leader-lpbq-mediumSquareAt3X.jpg');">
+    <span class="tile-emoji">🗽</span>
+    <div class="tile-overlay">
+      <span class="tile-name">NYT World</span>
+      <span class="tile-count">12 articles</span>
+    </div>
+  </a>
+<a href="#npr-world" class="category-tile" data-target="npr-world" style="background-image: url('https://npr.brightspotcdn.com/dims3/default/strip/false/crop/5526x3108+0+288/resize/1400/quality/85/format/jpeg/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fdd%2Fdc%2F3944c9f9485689f02c3dc07171fe%2Fgettyimages-2285414423.jpg');">
+    <span class="tile-emoji">🎙️</span>
+    <div class="tile-overlay">
+      <span class="tile-name">NPR World</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#straits-times" class="category-tile" data-target="straits-times" style="background-image: url('https://cassette.sphdigital.com.sg/image/straitstimes/877505a10b02b2e16c0c44170163d367bf100236430cc0e1f8c390897e0fe4d3');">
+    <span class="tile-emoji">🇸🇬</span>
+    <div class="tile-overlay">
+      <span class="tile-name">Straits Times</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+<a href="#mothership" class="category-tile" data-target="mothership" style="background: linear-gradient(135deg, hsl(279,55%,40%), hsl(319,55%,25%));">
+    <span class="tile-emoji">🚢</span>
+    <div class="tile-overlay">
+      <span class="tile-name">Mothership</span>
+      <span class="tile-count">10 articles</span>
+    </div>
+  </a>
+</div>
 <section id="featured">
 <h2 class="edition featured">⭐ Featured</h2>
 <div class="grid featured">
@@ -227,22 +408,6 @@
       <div class="blurb-wrap"><p class="blurb">Spanish star has scored just one goal in the World Cup, where he has been sharing celebrations with his little brother. <a href="https://www.aljazeera.com/sports/2026/7/11/yamal-does-not-mind-lack-of-goals-if-spain-win-world-cup-2026" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.straitstimes.com/tech/whatsapp-locks-down-usernames-of-spore-politicians-in-latest-privacy-feature-rollout" data-headline="WhatsApp locks down usernames of S’pore politicians in latest privacy feature roll-out" data-blurb="The messaging platform has reserved the names of high-profile people, including lookalike derivatives." data-source="Straits Times">
-    <details>
-      <summary>
-        <div class="cover-wrap">
-          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/877505a10b02b2e16c0c44170163d367bf100236430cc0e1f8c390897e0fe4d3" loading="lazy" alt="">
-          <span class="expand-indicator"></span>
-          <div class="overlay">
-            <span class="source">🇸🇬 Straits Times</span>
-            <span class="headline">WhatsApp locks down usernames of S’pore politicians in latest privacy feature roll-out</span>
-            
-          </div>
-        </div>
-      </summary>
-      <div class="blurb-wrap"><p class="blurb">The messaging platform has reserved the names of high-profile people, including lookalike derivatives. <a href="https://www.straitstimes.com/tech/whatsapp-locks-down-usernames-of-spore-politicians-in-latest-privacy-feature-rollout" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
-    </details>
-  </div>
 <div class="card" data-url="https://www.straitstimes.com/singapore/health/staying-awake-during-spine-surgery-can-be-a-safer-treatment-option-for-the-elderly" data-headline="Staying awake during spine surgery can be a safer treatment option for the elderly" data-blurb="" data-source="Straits Times">
     <details>
       <summary>
@@ -259,7 +424,23 @@
       <div class="blurb-wrap"><p class="blurb"><a href="https://www.straitstimes.com/singapore/health/staying-awake-during-spine-surgery-can-be-a-safer-treatment-option-for-the-elderly" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.brown.edu/news/2026-07-09/chemical-bonds-relativity" data-headline="Einstein's relativity rules chemical bonds in heavy elements, new research shows" data-blurb="143 points, 52 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.straitstimes.com/singapore/community/after-years-of-caring-for-their-ill-parents-these-two-sons-quit-their-jobs-to-care-for-caregivers" data-headline="After years of caring for their ill parents, they quit their jobs to care for other caregivers" data-blurb="The duo behind SG Assist want to help alleviate caregivers' pressures in daily life." data-source="Straits Times">
+    <details>
+      <summary>
+        <div class="cover-wrap">
+          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/68da6ef36f75f186c730dbe232f463addbdcd5f572897d86fb68ca1850c38614" loading="lazy" alt="">
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">🇸🇬 Straits Times</span>
+            <span class="headline">After years of caring for their ill parents, they quit their jobs to care for other caregivers</span>
+            
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap"><p class="blurb">The duo behind SG Assist want to help alleviate caregivers' pressures in daily life. <a href="https://www.straitstimes.com/singapore/community/after-years-of-caring-for-their-ill-parents-these-two-sons-quit-their-jobs-to-care-for-caregivers" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+    </details>
+  </div>
+<div class="card" data-url="https://www.brown.edu/news/2026-07-09/chemical-bonds-relativity" data-headline="Einstein's relativity rules chemical bonds in heavy elements, new research shows" data-blurb="144 points, 52 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -272,10 +453,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">143 points, 52 comments on Hacker News <a href="https://www.brown.edu/news/2026-07-09/chemical-bonds-relativity" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">144 points, 52 comments on Hacker News <a href="https://www.brown.edu/news/2026-07-09/chemical-bonds-relativity" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" data-headline="QuadRF can spot drones and see WiFi through my wall" data-blurb="494 points, 181 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" data-headline="QuadRF can spot drones and see WiFi through my wall" data-blurb="495 points, 181 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -288,19 +469,19 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">494 points, 181 comments on Hacker News <a href="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">495 points, 181 comments on Hacker News <a href="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://github.com/wonderwhy-er/DesktopCommanderMCP" data-headline="wonderwhy-er/DesktopCommanderMCP" data-blurb="This is MCP server for Claude that gives it terminal control, file system search and diff file editing capabilities" data-source="GitHub Trending">
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/6245ad7cd8a727a3a7a65e7fb872798ae94cc65a977e632551a88aa6b128e5ce/wonderwhy-er/DesktopCommanderMCP" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/d917568e699c350cb90deb551bae066940b9837a3fb5640d6d8d3aa0b3c5e500/wonderwhy-er/DesktopCommanderMCP" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">wonderwhy-er/DesktopCommanderMCP</span>
-            <span class="readtime">TypeScript · ⭐ 7389</span>
+            <span class="readtime">TypeScript · ⭐ 7391</span>
           </div>
         </div>
       </summary>
@@ -311,12 +492,12 @@
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/d752409e153eaf52bb17a40742939acb3ac3dc99c060eee370d5d5b82dc521f7/oven-sh/bun" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/f4f8f00d781f74082296e70caf8241db54d8ce3623e7f7a51502269c13f4981b/oven-sh/bun" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">oven-sh/bun</span>
-            <span class="readtime">Rust · ⭐ 94303</span>
+            <span class="readtime">Rust · ⭐ 94305</span>
           </div>
         </div>
       </summary>
@@ -610,7 +791,7 @@
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://scontent.fsin10-1.fna.fbcdn.net/v/t39.2365-6/741906678_873652302465180_7764547737953411008_n.png?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=OlBvaYygvIUQ7kNvwFPvA5w&amp;_nc_oc=AdrbgKC8wfJor6BvasyM0jSg9ZJbXlQ5tRdK1RHPtkpWUJtqxhHKFCiFJzOtQnPURkw&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin10-1.fna&amp;_nc_gid=-lNt3uwSkEjqhj0NId1Vhg&amp;_nc_ss=72180&amp;oh=00_AQBilXllFzjo3aWIhZRMLRrRyXlPErTdvc2ATEUTpaSS9g&amp;oe=6A6C1926" loading="lazy" alt="">
+          <img class="cover" src="https://scontent.fsin10-1.fna.fbcdn.net/v/t39.2365-6/741906678_873652302465180_7764547737953411008_n.png?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=OlBvaYygvIUQ7kNvwFPvA5w&amp;_nc_oc=AdrbgKC8wfJor6BvasyM0jSg9ZJbXlQ5tRdK1RHPtkpWUJtqxhHKFCiFJzOtQnPURkw&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin10-1.fna&amp;_nc_gid=M6vqr0j6zEF3MpGDBp7ajg&amp;_nc_ss=72180&amp;oh=00_AQCjgIlSy1m0u9c_kDl60tTBVZpjuhqzTDWoQLSAp-fRAQ&amp;oe=6A6C1926" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🤖 TLDR AI</span>
@@ -3134,7 +3315,7 @@
 <summary class="edition">🔶 Hacker News <span class="count">13</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
-<div class="card" data-url="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" data-headline="Apple sues OpenAI, accuses ex-employees of stealing trade secrets" data-blurb="708 points, 342 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" data-headline="Apple sues OpenAI, accuses ex-employees of stealing trade secrets" data-blurb="715 points, 347 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3147,7 +3328,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">708 points, 342 comments on Hacker News <a href="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">715 points, 347 comments on Hacker News <a href="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://www.iroh.computer/blog/an-iroh-powered-smart-fan" data-headline="An iroh powered smart fan" data-blurb="46 points, 4 comments on Hacker News" data-source="Hacker News">
@@ -3166,7 +3347,7 @@
       <div class="blurb-wrap"><p class="blurb">46 points, 4 comments on Hacker News <a href="https://www.iroh.computer/blog/an-iroh-powered-smart-fan" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" data-headline="An update on residential proxies and the scraper situation" data-blurb="128 points, 110 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" data-headline="An update on residential proxies and the scraper situation" data-blurb="128 points, 111 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3179,10 +3360,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">128 points, 110 comments on Hacker News <a href="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">128 points, 111 comments on Hacker News <a href="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" data-headline="GPT-5.6 Sol Ultra produces proof of the Cycle Double Cover Conjecture [pdf]" data-blurb="388 points, 303 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" data-headline="GPT-5.6 Sol Ultra produces proof of the Cycle Double Cover Conjecture [pdf]" data-blurb="388 points, 304 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3195,10 +3376,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">388 points, 303 comments on Hacker News <a href="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">388 points, 304 comments on Hacker News <a href="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" data-headline="SpaceX wants to launch 100k more Starlink satellites for 100x the bandwidth" data-blurb="113 points, 352 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" data-headline="SpaceX wants to launch 100k more Starlink satellites for 100x the bandwidth" data-blurb="115 points, 354 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3211,7 +3392,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">113 points, 352 comments on Hacker News <a href="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">115 points, 354 comments on Hacker News <a href="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://vfxblog.com/2017/08/23/the-tech-of-terminator-2-an-oral-history/" data-headline="The tech of 'Terminator 2' – an oral history (2017)" data-blurb="189 points, 69 comments on Hacker News" data-source="Hacker News">
@@ -3246,7 +3427,7 @@
       <div class="blurb-wrap"><p class="blurb">56 points, 21 comments on Hacker News <a href="https://mimo.xiaomi.com/blog/mimo-v2-5-inference" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://combustionlab.net" data-headline="Combustion engine web-based simulator" data-blurb="133 points, 60 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://combustionlab.net" data-headline="Combustion engine web-based simulator" data-blurb="133 points, 61 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3259,10 +3440,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">133 points, 60 comments on Hacker News <a href="https://combustionlab.net" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">133 points, 61 comments on Hacker News <a href="https://combustionlab.net" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" data-headline="Good Tools Are Invisible" data-blurb="380 points, 178 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" data-headline="Good Tools Are Invisible" data-blurb="382 points, 178 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3275,10 +3456,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">380 points, 178 comments on Hacker News <a href="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">382 points, 178 comments on Hacker News <a href="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" data-headline="Late Bronze Age Collapse" data-blurb="342 points, 234 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" data-headline="Late Bronze Age Collapse" data-blurb="343 points, 234 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3291,7 +3472,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">342 points, 234 comments on Hacker News <a href="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">343 points, 234 comments on Hacker News <a href="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" data-headline="New York City to ban deceptive subscription practices" data-blurb="461 points, 229 comments on Hacker News" data-source="Hacker News">
@@ -3310,7 +3491,7 @@
       <div class="blurb-wrap"><p class="blurb">461 points, 229 comments on Hacker News <a href="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://ai-2040.com/" data-headline="AI 2040: Plan A" data-blurb="178 points, 187 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://ai-2040.com/" data-headline="AI 2040: Plan A" data-blurb="179 points, 189 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3323,7 +3504,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">178 points, 187 comments on Hacker News <a href="https://ai-2040.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">179 points, 189 comments on Hacker News <a href="https://ai-2040.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://serialc.github.io/altClocks/" data-headline="Alternate clock designs and time systems" data-blurb="118 points, 61 comments on Hacker News" data-source="Hacker News">
@@ -3494,12 +3675,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/875ec6c63ec02013298a4bb1de52804bb9732d8fd44316ff989ff8ba20e8cd21/addyosmani/agent-skills" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/eb6d082eb7e75cb545e2e4628d4f4c033f10532bc11c71d916f45cf956e2544d/addyosmani/agent-skills" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">addyosmani/agent-skills</span>
-            <span class="readtime">JavaScript · ⭐ 76910</span>
+            <span class="readtime">JavaScript · ⭐ 76914</span>
           </div>
         </div>
       </summary>
@@ -3526,12 +3707,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/2c12d0078e68206b3d98e1138ce9bbf18eb0a0b7588b89e8ea6a14d736acbc11/mattpocock/skills" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/f7944c72fa5574bcd86cea33df867e4318776bd55bef3dd211c81f0062dc6e91/mattpocock/skills" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">mattpocock/skills</span>
-            <span class="readtime">Shell · ⭐ 164799</span>
+            <span class="readtime">Shell · ⭐ 164803</span>
           </div>
         </div>
       </summary>
@@ -3542,12 +3723,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/f88b757e97514bfd650ba174c4ddba1cf935fda86b64f65772e2550d8c5c4262/obra/superpowers" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/1dbc29b31f0b64514901e5abefd866a1ba9f92d227b5529c0b242b7d68697461/obra/superpowers" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">obra/superpowers</span>
-            <span class="readtime">Shell · ⭐ 251882</span>
+            <span class="readtime">Shell · ⭐ 251886</span>
           </div>
         </div>
       </summary>
@@ -3558,12 +3739,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/83dfac588e14efa077a8ce09ed84720c4caf37f58b4a79c64f75650f7fa0aec6/microsoft/TypeScript" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/f32aa7db3bc210138be5b49e0615605474fa5cc65cfe3d84742bb6cccd74f5d9/microsoft/TypeScript" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">microsoft/TypeScript</span>
-            <span class="readtime">TypeScript · ⭐ 109802</span>
+            <span class="readtime">TypeScript · ⭐ 109803</span>
           </div>
         </div>
       </summary>
@@ -3574,12 +3755,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/34201d8391a347b28e1cee6ad596dee855998f66b156e2e1022b44908da96aa2/catchorg/Catch2" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/cbe805fda1ab8e325a3b232515e317ec03387985017dc2285c3e8f45f7bada78/catchorg/Catch2" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">catchorg/Catch2</span>
-            <span class="readtime">C++ · ⭐ 20624</span>
+            <span class="readtime">C++ · ⭐ 20625</span>
           </div>
         </div>
       </summary>
@@ -3606,12 +3787,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/a96e0db8768e003bdbcfac3199af1e7bf8cd6adf0ae28806ee52d9d78701146a/TencentCloud/TencentDB-Agent-Memory" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/71bba8c87325d34b17325247ebdf4f92c2fad21edf7d4e3dc1736f23a82ffe96/TencentCloud/TencentDB-Agent-Memory" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">TencentCloud/TencentDB-Agent-Memory</span>
-            <span class="readtime">TypeScript · ⭐ 8284</span>
+            <span class="readtime">TypeScript · ⭐ 8285</span>
           </div>
         </div>
       </summary>
@@ -3622,12 +3803,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/a2e62a214feec8f38334cf86d6c8a4a2720f5f59cb47e303e019f489c98d13d2/davila7/claude-code-templates" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/fdcab26771dee91f8dc2f7c5d92a87e588830901811f723609185e9ce7a3534a/davila7/claude-code-templates" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">davila7/claude-code-templates</span>
-            <span class="readtime">Python · ⭐ 28795</span>
+            <span class="readtime">Python · ⭐ 28796</span>
           </div>
         </div>
       </summary>
@@ -4546,20 +4727,20 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
 <summary class="edition">🇸🇬 Straits Times <span class="count">10</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
-<div class="card" data-url="https://www.straitstimes.com/singapore/community/after-years-of-caring-for-their-ill-parents-these-two-sons-quit-their-jobs-to-care-for-caregivers" data-headline="After years of caring for their ill parents, they quit their jobs to care for other caregivers" data-blurb="The duo behind SG Assist want to help alleviate caregivers' pressures in daily life." data-source="Straits Times">
+<div class="card" data-url="https://www.straitstimes.com/tech/whatsapp-locks-down-usernames-of-spore-politicians-in-latest-privacy-feature-rollout" data-headline="WhatsApp locks down usernames of S’pore politicians in latest privacy feature roll-out" data-blurb="The messaging platform has reserved the names of high-profile people, including lookalike derivatives." data-source="Straits Times">
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/68da6ef36f75f186c730dbe232f463addbdcd5f572897d86fb68ca1850c38614" loading="lazy" alt="">
+          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/877505a10b02b2e16c0c44170163d367bf100236430cc0e1f8c390897e0fe4d3" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🇸🇬 Straits Times</span>
-            <span class="headline">After years of caring for their ill parents, they quit their jobs to care for other caregivers</span>
+            <span class="headline">WhatsApp locks down usernames of S’pore politicians in latest privacy feature roll-out</span>
             
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">The duo behind SG Assist want to help alleviate caregivers' pressures in daily life. <a href="https://www.straitstimes.com/singapore/community/after-years-of-caring-for-their-ill-parents-these-two-sons-quit-their-jobs-to-care-for-caregivers" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">The messaging platform has reserved the names of high-profile people, including lookalike derivatives. <a href="https://www.straitstimes.com/tech/whatsapp-locks-down-usernames-of-spore-politicians-in-latest-privacy-feature-rollout" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://www.straitstimes.com/singapore/courts-crime/judge-calls-out-man-for-using-ai-to-cite-fictitious-case-in-singapore-lawsuit-against-wife" data-headline="Judge calls out man for using AI to cite fictitious case in Singapore lawsuit against wife" data-blurb="The man claimed his wife had controlled him for over a decade, and denied him food and money." data-source="Straits Times">
@@ -4674,6 +4855,22 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
       <div class="blurb-wrap"><p class="blurb">The taxi driver had passed out while driving on ECP on July 6. <a href="https://www.straitstimes.com/singapore/73-year-old-taxi-driver-who-lost-consciousness-while-ferrying-passengers-on-ecp-dies" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
+<div class="card" data-url="https://www.straitstimes.com/singapore/environment/nparks-advising-east-coast-town-council-on-cicada-management" data-headline="NParks advising East Coast Town Council on cicada management" data-blurb="NParks has received a rising number of reports about cicadas, most of which relate to noise." data-source="Straits Times">
+    <details>
+      <summary>
+        <div class="cover-wrap">
+          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/af9f8ed8fc2f727aa0fa2ab0f33de1127dcdeb2d1a866629e29090012382d195" loading="lazy" alt="">
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">🇸🇬 Straits Times</span>
+            <span class="headline">NParks advising East Coast Town Council on cicada management</span>
+            
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap"><p class="blurb">NParks has received a rising number of reports about cicadas, most of which relate to noise. <a href="https://www.straitstimes.com/singapore/environment/nparks-advising-east-coast-town-council-on-cicada-management" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+    </details>
+  </div>
 <div class="card" data-url="https://www.straitstimes.com/singapore/courts-crime/agencies-in-spore-among-dozens-involved-in-interpol-anti-fraud-operation-held-in-97-jurisdictions" data-headline="Agencies in S’pore among dozens involved in Interpol anti-fraud operation held in 97 jurisdictions" data-blurb="Over 142,000 victims globally were identified during Operation First Light 2026." data-source="Straits Times">
     <details>
       <summary>
@@ -4690,22 +4887,6 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
       <div class="blurb-wrap"><p class="blurb">Over 142,000 victims globally were identified during Operation First Light 2026. <a href="https://www.straitstimes.com/singapore/courts-crime/agencies-in-spore-among-dozens-involved-in-interpol-anti-fraud-operation-held-in-97-jurisdictions" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.straitstimes.com/singapore/community/almost-1-in-5-couples-cite-new-reason-for-divorce-that-does-not-pin-blame-on-other-party" data-headline="Nearly 1 in 5 civil divorces in S’pore granted by mutual agreement, without assigning blame" data-blurb="The figure refers to non-Muslim, or civil, divorces in Singapore." data-source="Straits Times">
-    <details>
-      <summary>
-        <div class="cover-wrap">
-          <img class="cover" src="https://cassette.sphdigital.com.sg/image/straitstimes/c903155e644226401ae5f57382355198ccb40aff61240b7ec4b5aac9a1613090" loading="lazy" alt="">
-          <span class="expand-indicator"></span>
-          <div class="overlay">
-            <span class="source">🇸🇬 Straits Times</span>
-            <span class="headline">Nearly 1 in 5 civil divorces in S’pore granted by mutual agreement, without assigning blame</span>
-            
-          </div>
-        </div>
-      </summary>
-      <div class="blurb-wrap"><p class="blurb">The figure refers to non-Muslim, or civil, divorces in Singapore. <a href="https://www.straitstimes.com/singapore/community/almost-1-in-5-couples-cite-new-reason-for-divorce-that-does-not-pin-blame-on-other-party" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
-    </details>
-  </div>
 </div>
 </details>
 </section>
@@ -4714,6 +4895,38 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
 <summary class="edition">🚢 Mothership <span class="count">10</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
+<div class="card" data-url="https://mothership.sg/2026/07/yahui-mum-parents-day/" data-headline="S'pore actress Ya Hui, 39, reveals she felt ‘paiseh’ when classmates thought her mum was her grandma" data-blurb="&quot;When I was younger, my friends would tease me every time my mum came to pick me up from school, saying, 'Your grandma is here!'&quot;" data-source="Mothership">
+    <details>
+      <summary>
+        <div class="cover-wrap">
+          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(223,55%,45%), hsl(263,55%,30%));">📰</div>
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">🚢 Mothership</span>
+            <span class="headline">S'pore actress Ya Hui, 39, reveals she felt ‘paiseh’ when classmates thought her mum was her grandma</span>
+            
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap"><p class="blurb">&quot;When I was younger, my friends would tease me every time my mum came to pick me up from school, saying, 'Your grandma is here!'&quot; <a href="https://mothership.sg/2026/07/yahui-mum-parents-day/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+    </details>
+  </div>
+<div class="card" data-url="https://mothership.sg/2026/07/nus-ntu-smu-increase-hostel-fees/" data-headline="Some universities in S'pore increase hostel fees by up to S$80 a month" data-blurb="Increase." data-source="Mothership">
+    <details>
+      <summary>
+        <div class="cover-wrap">
+          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(145,55%,45%), hsl(185,55%,30%));">📰</div>
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">🚢 Mothership</span>
+            <span class="headline">Some universities in S'pore increase hostel fees by up to S$80 a month</span>
+            
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap"><p class="blurb">Increase. <a href="https://mothership.sg/2026/07/nus-ntu-smu-increase-hostel-fees/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+    </details>
+  </div>
 <div class="card" data-url="https://mothership.sg/2026/07/four-boys-fatally-abuse-dogs-china/" data-headline="4 boys, under 14 years old, fatally hit &amp; set fire to stray dog &amp; puppies in China, case highlighted by national media" data-blurb="Sparked public outrage." data-source="Mothership">
     <details>
       <summary>
@@ -4842,38 +5055,6 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
       <div class="blurb-wrap"><p class="blurb">Johoreans choose. <a href="https://mothership.sg/2026/07/ms-explains-johor-state-election/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://mothership.sg/2026/07/dogs-saved-house-fire-ebike/" data-headline="Electric bicycle causes house fire in Thailand, 3 chihuahuas left alone inside saved" data-blurb="They were all visibly terrified and trembling after the ordeal." data-source="Mothership">
-    <details>
-      <summary>
-        <div class="cover-wrap">
-          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(314,55%,45%), hsl(354,55%,30%));">📰</div>
-          <span class="expand-indicator"></span>
-          <div class="overlay">
-            <span class="source">🚢 Mothership</span>
-            <span class="headline">Electric bicycle causes house fire in Thailand, 3 chihuahuas left alone inside saved</span>
-            
-          </div>
-        </div>
-      </summary>
-      <div class="blurb-wrap"><p class="blurb">They were all visibly terrified and trembling after the ordeal. <a href="https://mothership.sg/2026/07/dogs-saved-house-fire-ebike/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
-    </details>
-  </div>
-<div class="card" data-url="https://mothership.sg/2026/07/man-press-karambit-daughter-neck-jail/" data-headline="S’pore man, 46, presses karambit onto neck of daughter, 11, for oversleeping &amp; missing school, gets 15 months’ jail" data-blurb="She had missed school as she overslept and woke up at about noon." data-source="Mothership">
-    <details>
-      <summary>
-        <div class="cover-wrap">
-          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(238,55%,45%), hsl(278,55%,30%));">📰</div>
-          <span class="expand-indicator"></span>
-          <div class="overlay">
-            <span class="source">🚢 Mothership</span>
-            <span class="headline">S’pore man, 46, presses karambit onto neck of daughter, 11, for oversleeping &amp; missing school, gets 15 months’ jail</span>
-            
-          </div>
-        </div>
-      </summary>
-      <div class="blurb-wrap"><p class="blurb">She had missed school as she overslept and woke up at about noon. <a href="https://mothership.sg/2026/07/man-press-karambit-daughter-neck-jail/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
-    </details>
-  </div>
 </div>
 </details>
 </section>
@@ -4931,41 +5112,73 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
   } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
 
   try {
-    // Tab filter: clicking a quicknav pill shows *only* that source's section and
-    // force-opens it (instead of just scrolling to it while everything else still
-    // sits there collapsed) — the point is fewer sections to scroll past as more
-    // sources get added over time, not just faster navigation to one of many.
+    // Tab filter: clicking a quicknav pill or a category tile shows *only* that
+    // source's section (instead of just scrolling to it while everything else
+    // still sits there collapsed) — the point is fewer sections to scroll past as
+    // more sources get added over time, not just faster navigation to one of many.
+    // "All" is special: it shows Featured + the category-grid browse view, not a
+    // flat stack of every collapsed section (that flat list was the actual
+    // complaint — filtering already worked, the *default* view just looked boring).
     var navLinks = document.querySelectorAll('.quicknav a[data-target]');
+    var tileLinks = document.querySelectorAll('.category-tile[data-target]');
     var allSections = document.querySelectorAll('section[id]');
+    var grid = document.getElementById('category-grid');
+
+    function applyFilter(target) {
+      navLinks.forEach(function (l) { l.classList.toggle('active', l.dataset.target === target); });
+      var targetSection = null;
+      allSections.forEach(function (section) {
+        var visible = section.id === target || (target === 'all' && section.id === 'featured');
+        section.hidden = !visible;
+        if (target !== 'all' && section.id === target) targetSection = section;
+      });
+      if (grid) grid.hidden = target !== 'all';
+      if (targetSection) {
+        var d = targetSection.querySelector('details.edition-toggle');
+        if (d) d.open = true;
+        try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      }
+    }
+
     navLinks.forEach(function (link) {
       link.addEventListener('click', function (evt) {
         evt.preventDefault();
-        navLinks.forEach(function (l) { l.classList.remove('active'); });
-        link.classList.add('active');
-        var target = link.dataset.target;
-        var targetSection = null;
-        allSections.forEach(function (section) {
-          var visible = target === 'all' || section.id === target;
-          section.hidden = !visible;
-          if (target !== 'all' && section.id === target) targetSection = section;
-        });
-        if (targetSection) {
-          var d = targetSection.querySelector('details.edition-toggle');
-          if (d) d.open = true;
-          try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
-        }
+        applyFilter(link.dataset.target);
       });
     });
-  } catch (e) { /* tab filter unavailable, sections still reachable via scroll */ }
+    tileLinks.forEach(function (tile) {
+      tile.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        applyFilter(tile.dataset.target);
+      });
+    });
+
+    // Graceful degradation: the server-rendered page has every section visible
+    // (so it works with JS disabled/broken). Once we know JS actually ran, switch
+    // to the nicer default view — Featured + browse grid — immediately on load.
+    applyFilter('all');
+  } catch (e) { /* tab filter unavailable, full page (every section) still visible and readable */ }
 
   try {
     // Live search across headline + blurb + source, expanding collapsed sections
     // that contain a match so results are visible without manually opening each one.
+    // Deliberately re-queries sections/grid itself rather than reusing the tab
+    // filter's variables, so search still works even if that other feature failed.
     var search = document.getElementById('search-input');
     var countEl = document.getElementById('search-count');
     if (search) {
       search.addEventListener('input', function () {
         var q = search.value.trim().toLowerCase();
+        var searchSections = document.querySelectorAll('section[id]');
+        var searchGrid = document.getElementById('category-grid');
+
+        if (q !== '') {
+          // A search spans every source, so whatever single-tab/all-tiles view is
+          // currently active needs to give way to "everything visible" first.
+          searchSections.forEach(function (section) { section.hidden = false; });
+          if (searchGrid) searchGrid.hidden = true;
+        }
+
         var shown = 0;
         var sectionsWithMatch = new Set();
         cards.forEach(function (card) {
@@ -4978,6 +5191,7 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
             if (section) sectionsWithMatch.add(section);
           }
         });
+
         if (q !== '') {
           sectionsWithMatch.forEach(function (section) {
             var d = section.querySelector('details.edition-toggle');
@@ -4985,6 +5199,14 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
           });
           countEl.textContent = shown + ' matching article' + (shown === 1 ? '' : 's');
         } else {
+          // Query cleared — hand back to the tab filter's default ("All") view
+          // rather than leaving every section stuck open from the search above.
+          var allPill = document.querySelector('.quicknav a[data-target="all"]');
+          if (allPill) {
+            allPill.dispatchEvent(new Event('click'));
+          } else if (searchGrid) {
+            searchGrid.hidden = false;
+          }
           countEl.textContent = '';
         }
       });

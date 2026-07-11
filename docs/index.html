@@ -56,6 +56,24 @@
   :root[data-theme="light"] .quicknav a { background: #fff; }
   .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
 
+  #category-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem; margin: 0.5rem 0 2.5rem;
+  }
+  .category-tile {
+    position: relative; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden;
+    text-decoration: none; color: #fff; background-size: cover; background-position: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .tile-overlay {
+    position: absolute; inset: 0; padding: 0.6rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .tile-emoji { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 1.3rem; }
+  .tile-name { font-weight: 700; font-size: 0.95rem; line-height: 1.25; }
+  .tile-count { font-size: 0.75rem; opacity: 0.85; margin-top: 0.15rem; }
+
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
     list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
