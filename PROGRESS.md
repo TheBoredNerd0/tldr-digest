@@ -88,6 +88,29 @@ the problem; the default view's visual design was.
   pill rather than duplicating that logic. Re-verified end-to-end with jsdom:
   initial load → tile click → search-while-filtered → clear-search-restores-default.
 
+## Merged same-topic outlets into single tiles
+"Some [tiles] are like the same, can you merge them together" — the 5 world-news
+outlets (BBC/Guardian/Al Jazeera/NYT/NPR) and 2 Singapore outlets (Straits Times/
+Mothership) each had their own tile, reading as duplicate topics on the browse grid
+even though they're genuinely different sources underneath.
+- `mergeEditions()` in `publish.js` combines a list of same-topic outlet editions
+  into one edition keyed by a group name ("World News", "Singapore News"), with
+  each original outlet becoming its own titled sub-section inside the merged
+  edition — same pattern a single TLDR edition already uses internally. Individual
+  cards keep their **true** outlet as the badge (`sourceLabel`), so a card inside
+  the "World News" tile still reads "🌍 BBC World" or "🇬🇧 Guardian World", not a
+  generic "World News" label — only the top-level tile/tab is consolidated.
+- **Order matters:** `buildFeatured()` runs *before* the merge, against the
+  individual outlet list — so Featured picks still say "2 BBC World + 1 Guardian +
+  1 Al Jazeera" specifically, not "4 World News." Merging happens only for the
+  main browsable body afterward. Tile count went from 23 down to 18.
+- Also fixed while in there: the BBC-specific image-upsize hack (240px → 976px,
+  since BBC's default RSS thumbnail is tiny) had been silently dropped when
+  `sources/worldnews.js` was generalized to the shared `sources/rss.js` fetcher for
+  all 5 outlets — moved into `fetchRssSource()` itself (matches on
+  `ichef.bbci.co.uk` so it's a no-op for the other 4 outlets) so it isn't lost again
+  if more RSS outlets get added later.
+
 ## Featured section
 `buildFeatured()` in `publish.js` curates a "front page" from across every source —
 2 BBC World + 1 Guardian + 1 Al Jazeera (world impact), top 3 Hacker News by score,
