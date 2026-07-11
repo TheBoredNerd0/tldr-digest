@@ -47,8 +47,30 @@ const PAGE_STYLES = `
     background: #f2f2f5; color: #1a1a1a;
   }
   @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
-  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
+  :root[data-theme="dark"] body { background: #0d0e12; color: #e8e8ea; }
+  :root[data-theme="light"] body { background: #f2f2f5; color: #1a1a1a; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+  h1 { font-size: 1.6rem; margin: 0; }
+  .date { color: #767680; margin-bottom: 1rem; font-size: 0.95rem; }
+
+  .theme-toggle {
+    flex: none; border: none; cursor: pointer; font-size: 1.1rem; background: #fff;
+    border-radius: 999px; width: 2.25rem; height: 2.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  @media (prefers-color-scheme: dark) { .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; } }
+  :root[data-theme="dark"] .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .theme-toggle { background: #fff; border: none; }
+
+  .searchbar { margin-bottom: 1rem; }
+  .searchbar input {
+    width: 100%; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid #d5d5da;
+    background: #fff; color: inherit;
+  }
+  @media (prefers-color-scheme: dark) { .searchbar input { background: #1b1c22; border-color: #2a2b33; } }
+  :root[data-theme="dark"] .searchbar input { background: #1b1c22; border-color: #2a2b33; }
+  :root[data-theme="light"] .searchbar input { background: #fff; border-color: #d5d5da; }
+  .search-count { font-size: 0.8rem; color: #767680; margin: 0.4rem 0 0; }
 
   .quicknav {
     position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
@@ -56,11 +78,15 @@ const PAGE_STYLES = `
     overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
+  :root[data-theme="dark"] .quicknav { background: #0d0e12; }
+  :root[data-theme="light"] .quicknav { background: #f2f2f5; }
   .quicknav a {
     flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
   }
   @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
+  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .quicknav a { background: #fff; border: none; }
 
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
@@ -81,32 +107,140 @@ const PAGE_STYLES = `
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
   .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
   @media (prefers-color-scheme: dark) { .grid.featured .card { border-color: #3a3b45; } }
-  .grid.featured .card summary { font-size: 1.05rem; }
+  .grid.featured .card .headline { font-size: 1.1rem; }
+
   .card {
     background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    transition: opacity 0.15s;
   }
   @media (prefers-color-scheme: dark) { .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; } }
-  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
-  .card .cover.placeholder {
-    display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-  }
-  .card .source {
-    display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: #767680; padding: 0.7rem 0.9rem 0;
-  }
-  .card summary {
-    list-style: none; cursor: pointer; padding: 0.3rem 0.9rem 0.85rem; font-weight: 600; font-size: 0.95rem;
-  }
+  :root[data-theme="dark"] .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border: none; }
+  .card.is-read { opacity: 0.55; }
+  .card[hidden] { display: none; }
+
+  .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
-  .card summary::after { content: "＋"; float: right; color: #767680; font-weight: 400; }
-  .card details[open] summary::after { content: "－"; }
-  .card .readtime { display: block; font-weight: 400; color: #767680; font-size: 0.8em; margin-top: 0.15rem; }
-  .card .blurb { margin: 0 0.9rem 0.9rem; color: #3a3a3f; font-size: 0.9rem; }
+
+  .cover-wrap { position: relative; }
+  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
+  .card .cover.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .overlay {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem 0.9rem 0.6rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0));
+    color: #fff;
+  }
+  .overlay .source {
+    display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; color: rgba(255,255,255,0.85);
+  }
+  .overlay .headline { display: block; font-weight: 700; font-size: 1rem; margin-top: 0.2rem; line-height: 1.3; }
+  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.75); font-size: 0.78rem; margin-top: 0.2rem; }
+  .expand-indicator {
+    position: absolute; top: 0.6rem; right: 0.6rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: rgba(0,0,0,0.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+  }
+  .expand-indicator::before { content: "＋"; }
+  details[open] .expand-indicator { background: rgba(0,0,0,0.75); }
+  details[open] .expand-indicator::before { content: "－"; }
+
+  .blurb-wrap { padding: 0.85rem 0.9rem; }
+  .card .blurb { margin: 0; color: #3a3a3f; font-size: 1rem; }
   @media (prefers-color-scheme: dark) { .card .blurb { color: #b9b9c2; } }
+  :root[data-theme="dark"] .card .blurb { color: #b9b9c2; }
+  :root[data-theme="light"] .card .blurb { color: #3a3a3f; }
   .card .blurb a { color: inherit; }
 
   nav.days { margin-bottom: 2rem; }
   nav.days a { margin-right: 0.75rem; }
+`;
+
+const PAGE_SCRIPT = `
+(function () {
+  // Each feature below is independently wrapped — a failure in one (e.g. a browser
+  // without matchMedia, or localStorage disabled in a privacy mode) must not take
+  // down the other two, since they were originally one shared try-less block and
+  // a single throw silently disabled search and read-tracking along with theme.
+
+  try {
+    var root = document.documentElement;
+    var stored = null;
+    try { stored = localStorage.getItem('tldr-theme'); } catch (e) {}
+    if (stored) root.setAttribute('data-theme', stored);
+
+    var toggle = document.getElementById('theme-toggle');
+    function currentIsDark() {
+      var attr = root.getAttribute('data-theme');
+      if (attr) return attr === 'dark';
+      try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; }
+    }
+    function updateToggleLabel() { toggle.textContent = currentIsDark() ? '☀️' : '🌙'; }
+    updateToggleLabel();
+    toggle.addEventListener('click', function () {
+      var next = currentIsDark() ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('tldr-theme', next); } catch (e) {}
+      updateToggleLabel();
+    });
+  } catch (e) { /* theme toggle unavailable, rest of the page still works */ }
+
+  var cards = document.querySelectorAll('.card[data-url]');
+
+  try {
+    // Read-state: mark a card faded once its details has been opened, persisted
+    // across visits by article URL so re-opening the same day's page still shows
+    // what you've already looked at.
+    var READ_KEY = 'tldr-read-urls';
+    var readUrls = {};
+    try { readUrls = JSON.parse(localStorage.getItem(READ_KEY) || '{}'); } catch (e) {}
+    cards.forEach(function (card) {
+      if (readUrls[card.dataset.url]) card.classList.add('is-read');
+      var details = card.querySelector('details');
+      if (details) {
+        details.addEventListener('toggle', function () {
+          if (details.open) {
+            readUrls[card.dataset.url] = 1;
+            try { localStorage.setItem(READ_KEY, JSON.stringify(readUrls)); } catch (e) {}
+            card.classList.add('is-read');
+          }
+        });
+      }
+    });
+  } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
+
+  try {
+    // Live search across headline + blurb + source, expanding collapsed sections
+    // that contain a match so results are visible without manually opening each one.
+    var search = document.getElementById('search-input');
+    var countEl = document.getElementById('search-count');
+    if (search) {
+      search.addEventListener('input', function () {
+        var q = search.value.trim().toLowerCase();
+        var shown = 0;
+        var sectionsWithMatch = new Set();
+        cards.forEach(function (card) {
+          var haystack = (card.dataset.headline + ' ' + card.dataset.blurb + ' ' + card.dataset.source).toLowerCase();
+          var match = q === '' || haystack.indexOf(q) !== -1;
+          card.hidden = !match;
+          if (match) {
+            shown++;
+            var section = card.closest('section[id]');
+            if (section) sectionsWithMatch.add(section);
+          }
+        });
+        if (q !== '') {
+          sectionsWithMatch.forEach(function (section) {
+            var d = section.querySelector('details.edition-toggle');
+            if (d) d.open = true;
+          });
+          countEl.textContent = shown + ' matching article' + (shown === 1 ? '' : 's');
+        } else {
+          countEl.textContent = '';
+        }
+      });
+    }
+  } catch (e) { /* search unavailable, rest of the page still works */ }
+})();
 `;
 
 function renderCover(a, hue) {
@@ -124,12 +258,26 @@ function renderArticle(a, edition) {
   const blurb = a.blurb
     ? `<p class="blurb">${escapeHtml(a.blurb)} <a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`
     : `<p class="blurb"><a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`;
-  return `<div class="card">
-    ${renderCover(a, hue)}
-    <span class="source">${emoji} ${escapeHtml(sourceName)}</span>
+  const searchAttrs = [
+    `data-url="${escapeHtml(a.url)}"`,
+    `data-headline="${escapeHtml(a.headline)}"`,
+    `data-blurb="${escapeHtml(a.blurb || "")}"`,
+    `data-source="${escapeHtml(sourceName)}"`,
+  ].join(" ");
+  return `<div class="card" ${searchAttrs}>
     <details>
-      <summary>${escapeHtml(a.headline)}${readTime}</summary>
-      ${blurb}
+      <summary>
+        <div class="cover-wrap">
+          ${renderCover(a, hue)}
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">${emoji} ${escapeHtml(sourceName)}</span>
+            <span class="headline">${escapeHtml(a.headline)}</span>
+            ${readTime}
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap">${blurb}</div>
     </details>
   </div>`;
 }
@@ -182,10 +330,18 @@ function buildDailyHtml(isoDate, editions) {
 <style>${PAGE_STYLES}</style>
 </head>
 <body>
+<div class="topbar">
 <h1>TLDR Digest</h1>
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+</div>
 <div class="date">${escapeHtml(isoDate)}</div>
+<div class="searchbar">
+<input id="search-input" type="text" placeholder="Search today's articles…" autocomplete="off">
+<p id="search-count" class="search-count"></p>
+</div>
 ${nav}
 ${body}
+<script>${PAGE_SCRIPT}</script>
 </body>
 </html>`;
 }
