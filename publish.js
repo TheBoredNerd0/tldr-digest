@@ -14,6 +14,18 @@ const { fetchGitHubTrending } = require("./sources/github");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
+// Sorts tiles by topic instead of by publisher — confirmed with the user before
+// building, since this is an editorial call with no single objectively-correct
+// answer (e.g. Crypto could reasonably sit under either Business or Tech).
+const TOPIC_GROUPS = [
+  { name: "AI", members: ["TLDR AI", "The Rundown AI"] },
+  { name: "Tech & Startups", members: ["TLDR Tech", "TLDR Founders", "TLDR Product"] },
+  { name: "Programming & Data", members: ["TLDR Dev", "TLDR DevOps", "TLDR Data", "TLDR Design"] },
+  { name: "Business & Finance", members: ["TLDR Marketing", "TLDR Fintech", "TLDR Crypto"] },
+  { name: "Security & IT", members: ["TLDR Infosec", "TLDR IT"] },
+  { name: "Developer Community", members: ["Hacker News", "GitHub Trending"] },
+];
+
 const CHAT_ID = process.env.TLDR_DIGEST_CHAT_ID || "370423423";
 const SITE_DIR = path.join(__dirname, "docs");
 const SITE_URL_BASE =
@@ -54,21 +66,33 @@ async function run() {
   }
 
   // World and Singapore news are each several outlets at once (already
-  // error-isolated internally). Featured picks are computed against the individual
-  // outlets (so e.g. "BBC World" vs "Guardian World" stays distinguishable there),
-  // *then* the outlets are merged into one browsable "World News" / "Singapore
-  // News" topic tile each — separate tiles per outlet read as duplicate topics on
-  // the browse grid, even though each is a genuinely different source underneath.
+  // error-isolated internally).
   const worldNewsEditions = await fetchAllWorldNews(12);
   const singaporeEditions = await fetchAllSingaporeNews(12);
 
+  // Featured picks are computed against every individual raw source (so e.g. "BBC
+  // World" vs "Guardian World" stays distinguishable there), *before* any topic
+  // grouping below — grouping is purely a browse-view concern for the main body.
   const featured = buildFeatured([...editions, ...worldNewsEditions, ...singaporeEditions]);
-  if (featured.sections[0].articles.length > 0) editions.unshift(featured);
 
-  editions.push(mergeEditions(worldNewsEditions, "World News"));
-  editions.push(mergeEditions(singaporeEditions, "Singapore News"));
+  // Requested: sort tiles by topic, not by which company/outlet publishes them.
+  // TLDR/HN/Rundown/GitHub Trending get regrouped into topic clusters; world/SG
+  // news outlets were already one tile each per topic, so they pass through as-is.
+  const groupedCore = TOPIC_GROUPS.map((group) =>
+    mergeEditions(
+      group.members.map((name) => editions.find((e) => e.name === name)).filter(Boolean),
+      group.name
+    )
+  ).filter((group) => group.sections.length > 0);
 
-  const deduped = dedupeAcrossEditions(editions);
+  const finalEditions = [
+    ...(featured.sections[0].articles.length > 0 ? [featured] : []),
+    ...groupedCore,
+    mergeEditions(worldNewsEditions, "World News"),
+    mergeEditions(singaporeEditions, "Singapore News"),
+  ];
+
+  const deduped = dedupeAcrossEditions(finalEditions);
 
   console.log(`Fetching cover images for ${deduped.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
   await attachImages(deduped);

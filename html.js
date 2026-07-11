@@ -10,6 +10,9 @@ const EDITION_EMOJI = {
   "Hacker News": "🔶", "The Rundown AI": "⚡", Featured: "⭐", "GitHub Trending": "🐙",
   "World News": "🌍", "BBC World": "🌍", "Guardian World": "🇬🇧", "Al Jazeera": "🕌", "NYT World": "🗽", "NPR World": "🎙️",
   "Singapore News": "🇸🇬", "Straits Times": "🇸🇬", Mothership: "🚢",
+  // Topic groups (spanning multiple underlying sources)
+  AI: "🤖", "Tech & Startups": "💻", "Programming & Data": "👨‍💻",
+  "Business & Finance": "💰", "Security & IT": "🔐", "Developer Community": "👥",
 };
 
 // "2026-07-09" -> "09-july-2026" (matches the requested filename convention)
