@@ -90,6 +90,24 @@ const PAGE_STYLES = `
   :root[data-theme="light"] .quicknav a { background: #fff; }
   .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
 
+  #category-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem; margin: 0.5rem 0 2.5rem;
+  }
+  .category-tile {
+    position: relative; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden;
+    text-decoration: none; color: #fff; background-size: cover; background-position: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .tile-overlay {
+    position: absolute; inset: 0; padding: 0.6rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .tile-emoji { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 1.3rem; }
+  .tile-name { font-weight: 700; font-size: 0.95rem; line-height: 1.25; }
+  .tile-count { font-size: 0.75rem; opacity: 0.85; margin-top: 0.15rem; }
+
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
     list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
@@ -211,41 +229,73 @@ const PAGE_SCRIPT = `
   } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
 
   try {
-    // Tab filter: clicking a quicknav pill shows *only* that source's section and
-    // force-opens it (instead of just scrolling to it while everything else still
-    // sits there collapsed) — the point is fewer sections to scroll past as more
-    // sources get added over time, not just faster navigation to one of many.
+    // Tab filter: clicking a quicknav pill or a category tile shows *only* that
+    // source's section (instead of just scrolling to it while everything else
+    // still sits there collapsed) — the point is fewer sections to scroll past as
+    // more sources get added over time, not just faster navigation to one of many.
+    // "All" is special: it shows Featured + the category-grid browse view, not a
+    // flat stack of every collapsed section (that flat list was the actual
+    // complaint — filtering already worked, the *default* view just looked boring).
     var navLinks = document.querySelectorAll('.quicknav a[data-target]');
+    var tileLinks = document.querySelectorAll('.category-tile[data-target]');
     var allSections = document.querySelectorAll('section[id]');
+    var grid = document.getElementById('category-grid');
+
+    function applyFilter(target) {
+      navLinks.forEach(function (l) { l.classList.toggle('active', l.dataset.target === target); });
+      var targetSection = null;
+      allSections.forEach(function (section) {
+        var visible = section.id === target || (target === 'all' && section.id === 'featured');
+        section.hidden = !visible;
+        if (target !== 'all' && section.id === target) targetSection = section;
+      });
+      if (grid) grid.hidden = target !== 'all';
+      if (targetSection) {
+        var d = targetSection.querySelector('details.edition-toggle');
+        if (d) d.open = true;
+        try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      }
+    }
+
     navLinks.forEach(function (link) {
       link.addEventListener('click', function (evt) {
         evt.preventDefault();
-        navLinks.forEach(function (l) { l.classList.remove('active'); });
-        link.classList.add('active');
-        var target = link.dataset.target;
-        var targetSection = null;
-        allSections.forEach(function (section) {
-          var visible = target === 'all' || section.id === target;
-          section.hidden = !visible;
-          if (target !== 'all' && section.id === target) targetSection = section;
-        });
-        if (targetSection) {
-          var d = targetSection.querySelector('details.edition-toggle');
-          if (d) d.open = true;
-          try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
-        }
+        applyFilter(link.dataset.target);
       });
     });
-  } catch (e) { /* tab filter unavailable, sections still reachable via scroll */ }
+    tileLinks.forEach(function (tile) {
+      tile.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        applyFilter(tile.dataset.target);
+      });
+    });
+
+    // Graceful degradation: the server-rendered page has every section visible
+    // (so it works with JS disabled/broken). Once we know JS actually ran, switch
+    // to the nicer default view — Featured + browse grid — immediately on load.
+    applyFilter('all');
+  } catch (e) { /* tab filter unavailable, full page (every section) still visible and readable */ }
 
   try {
     // Live search across headline + blurb + source, expanding collapsed sections
     // that contain a match so results are visible without manually opening each one.
+    // Deliberately re-queries sections/grid itself rather than reusing the tab
+    // filter's variables, so search still works even if that other feature failed.
     var search = document.getElementById('search-input');
     var countEl = document.getElementById('search-count');
     if (search) {
       search.addEventListener('input', function () {
         var q = search.value.trim().toLowerCase();
+        var searchSections = document.querySelectorAll('section[id]');
+        var searchGrid = document.getElementById('category-grid');
+
+        if (q !== '') {
+          // A search spans every source, so whatever single-tab/all-tiles view is
+          // currently active needs to give way to "everything visible" first.
+          searchSections.forEach(function (section) { section.hidden = false; });
+          if (searchGrid) searchGrid.hidden = true;
+        }
+
         var shown = 0;
         var sectionsWithMatch = new Set();
         cards.forEach(function (card) {
@@ -258,6 +308,7 @@ const PAGE_SCRIPT = `
             if (section) sectionsWithMatch.add(section);
           }
         });
+
         if (q !== '') {
           sectionsWithMatch.forEach(function (section) {
             var d = section.querySelector('details.edition-toggle');
@@ -265,6 +316,14 @@ const PAGE_SCRIPT = `
           });
           countEl.textContent = shown + ' matching article' + (shown === 1 ? '' : 's');
         } else {
+          // Query cleared — hand back to the tab filter's default ("All") view
+          // rather than leaving every section stuck open from the search above.
+          var allPill = document.querySelector('.quicknav a[data-target="all"]');
+          if (allPill) {
+            allPill.dispatchEvent(new Event('click'));
+          } else if (searchGrid) {
+            searchGrid.hidden = false;
+          }
           countEl.textContent = '';
         }
       });
@@ -351,9 +410,40 @@ function renderQuickNav(editions) {
   return `<nav class="quicknav">\n${allPill}\n${pills}\n</nav>`;
 }
 
+// The "All" default view: instead of a flat stack of collapsed section headers
+// (functional but visually inert), a tile per source — using that source's own
+// top article image as the tile's background when one's available — so browsing
+// looks like an actual magazine rack rather than a settings-style list.
+function renderCategoryTile(edition) {
+  const emoji = EDITION_EMOJI[edition.name] || "📰";
+  const articles = edition.sections.flatMap((s) => s.articles);
+  const count = articles.length;
+  const withImage = articles.find((a) => a.image);
+  const hue = hashHue(edition.name);
+  const bg = withImage
+    ? `background-image: url('${escapeHtml(withImage.image)}');`
+    : `background: linear-gradient(135deg, hsl(${hue},55%,40%), hsl(${(hue + 40) % 360},55%,25%));`;
+  return `<a href="#${slugify(edition.name)}" class="category-tile" data-target="${slugify(edition.name)}" style="${bg}">
+    <span class="tile-emoji">${emoji}</span>
+    <div class="tile-overlay">
+      <span class="tile-name">${escapeHtml(edition.name)}</span>
+      <span class="tile-count">${count} article${count === 1 ? "" : "s"}</span>
+    </div>
+  </a>`;
+}
+
+function renderCategoryGrid(editions) {
+  const tiles = editions
+    .filter((e) => e.name !== "Featured")
+    .map(renderCategoryTile)
+    .join("\n");
+  return `<div id="category-grid">\n${tiles}\n</div>`;
+}
+
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image}] }] }]
 function buildDailyHtml(isoDate, editions) {
   const nav = renderQuickNav(editions);
+  const grid = renderCategoryGrid(editions);
   const body = editions.map(renderEdition).join("\n");
   return `<!doctype html>
 <html lang="en">
@@ -374,6 +464,7 @@ function buildDailyHtml(isoDate, editions) {
 <p id="search-count" class="search-count"></p>
 </div>
 ${nav}
+${grid}
 ${body}
 <script>${PAGE_SCRIPT}</script>
 </body>
