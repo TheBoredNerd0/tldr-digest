@@ -13,8 +13,30 @@
     background: #f2f2f5; color: #1a1a1a;
   }
   @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
-  h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .date { color: #767680; margin-bottom: 1.25rem; font-size: 0.95rem; }
+  :root[data-theme="dark"] body { background: #0d0e12; color: #e8e8ea; }
+  :root[data-theme="light"] body { background: #f2f2f5; color: #1a1a1a; }
+
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
+  h1 { font-size: 1.6rem; margin: 0; }
+  .date { color: #767680; margin-bottom: 1rem; font-size: 0.95rem; }
+
+  .theme-toggle {
+    flex: none; border: none; cursor: pointer; font-size: 1.1rem; background: #fff;
+    border-radius: 999px; width: 2.25rem; height: 2.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+  @media (prefers-color-scheme: dark) { .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; } }
+  :root[data-theme="dark"] .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .theme-toggle { background: #fff; border: none; }
+
+  .searchbar { margin-bottom: 1rem; }
+  .searchbar input {
+    width: 100%; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid #d5d5da;
+    background: #fff; color: inherit;
+  }
+  @media (prefers-color-scheme: dark) { .searchbar input { background: #1b1c22; border-color: #2a2b33; } }
+  :root[data-theme="dark"] .searchbar input { background: #1b1c22; border-color: #2a2b33; }
+  :root[data-theme="light"] .searchbar input { background: #fff; border-color: #d5d5da; }
+  .search-count { font-size: 0.8rem; color: #767680; margin: 0.4rem 0 0; }
 
   .quicknav {
     position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
@@ -22,11 +44,15 @@
     overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
+  :root[data-theme="dark"] .quicknav { background: #0d0e12; }
+  :root[data-theme="light"] .quicknav { background: #f2f2f5; }
   .quicknav a {
     flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
   }
   @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
+  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .quicknav a { background: #fff; border: none; }
 
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
@@ -47,28 +73,48 @@
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
   .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
   @media (prefers-color-scheme: dark) { .grid.featured .card { border-color: #3a3b45; } }
-  .grid.featured .card summary { font-size: 1.05rem; }
+  .grid.featured .card .headline { font-size: 1.1rem; }
+
   .card {
     background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    transition: opacity 0.15s;
   }
   @media (prefers-color-scheme: dark) { .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; } }
-  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
-  .card .cover.placeholder {
-    display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
-  }
-  .card .source {
-    display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: #767680; padding: 0.7rem 0.9rem 0;
-  }
-  .card summary {
-    list-style: none; cursor: pointer; padding: 0.3rem 0.9rem 0.85rem; font-weight: 600; font-size: 0.95rem;
-  }
+  :root[data-theme="dark"] .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; }
+  :root[data-theme="light"] .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border: none; }
+  .card.is-read { opacity: 0.55; }
+  .card[hidden] { display: none; }
+
+  .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
-  .card summary::after { content: "＋"; float: right; color: #767680; font-weight: 400; }
-  .card details[open] summary::after { content: "－"; }
-  .card .readtime { display: block; font-weight: 400; color: #767680; font-size: 0.8em; margin-top: 0.15rem; }
-  .card .blurb { margin: 0 0.9rem 0.9rem; color: #3a3a3f; font-size: 0.9rem; }
+
+  .cover-wrap { position: relative; }
+  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
+  .card .cover.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .overlay {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem 0.9rem 0.6rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0));
+    color: #fff;
+  }
+  .overlay .source {
+    display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; color: rgba(255,255,255,0.85);
+  }
+  .overlay .headline { display: block; font-weight: 700; font-size: 1rem; margin-top: 0.2rem; line-height: 1.3; }
+  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.75); font-size: 0.78rem; margin-top: 0.2rem; }
+  .expand-indicator {
+    position: absolute; top: 0.6rem; right: 0.6rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    background: rgba(0,0,0,0.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+  }
+  .expand-indicator::before { content: "＋"; }
+  details[open] .expand-indicator { background: rgba(0,0,0,0.75); }
+  details[open] .expand-indicator::before { content: "－"; }
+
+  .blurb-wrap { padding: 0.85rem 0.9rem; }
+  .card .blurb { margin: 0; color: #3a3a3f; font-size: 1rem; }
   @media (prefers-color-scheme: dark) { .card .blurb { color: #b9b9c2; } }
+  :root[data-theme="dark"] .card .blurb { color: #b9b9c2; }
+  :root[data-theme="light"] .card .blurb { color: #3a3a3f; }
   .card .blurb a { color: inherit; }
 
   nav.days { margin-bottom: 2rem; }
