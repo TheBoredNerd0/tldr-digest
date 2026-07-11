@@ -54,14 +54,19 @@ async function run() {
   }
 
   // World and Singapore news are each several outlets at once (already
-  // error-isolated internally), one edition per outlet so provenance stays visible.
+  // error-isolated internally). Featured picks are computed against the individual
+  // outlets (so e.g. "BBC World" vs "Guardian World" stays distinguishable there),
+  // *then* the outlets are merged into one browsable "World News" / "Singapore
+  // News" topic tile each — separate tiles per outlet read as duplicate topics on
+  // the browse grid, even though each is a genuinely different source underneath.
   const worldNewsEditions = await fetchAllWorldNews(12);
-  editions.push(...worldNewsEditions);
   const singaporeEditions = await fetchAllSingaporeNews(12);
-  editions.push(...singaporeEditions);
 
-  const featured = buildFeatured(editions);
+  const featured = buildFeatured([...editions, ...worldNewsEditions, ...singaporeEditions]);
   if (featured.sections[0].articles.length > 0) editions.unshift(featured);
+
+  editions.push(mergeEditions(worldNewsEditions, "World News"));
+  editions.push(mergeEditions(singaporeEditions, "Singapore News"));
 
   const deduped = dedupeAcrossEditions(editions);
 
@@ -137,6 +142,24 @@ function buildFeatured(editions) {
   ];
 
   return { name: "Featured", sections: [{ title: "Today's Top Stories", articles: picks }] };
+}
+
+// Combines several same-topic outlet editions (e.g. 5 world-news feeds) into one
+// browsable edition, keyed by the group name, while each article keeps its own
+// outlet as its card badge (via sourceLabel) — so "World News" is one tile/tab to
+// navigate, but a card still reads "🌍 BBC World" or "🇬🇧 Guardian World", not just
+// "World News". Each outlet becomes its own titled sub-section within the group,
+// same pattern a single TLDR edition already uses for its own sections.
+function mergeEditions(editionsToMerge, groupName) {
+  const sections = editionsToMerge
+    .map((edition) => ({
+      title: edition.name,
+      articles: edition.sections
+        .flatMap((s) => s.articles)
+        .map((a) => ({ ...a, sourceLabel: a.sourceLabel || edition.name })),
+    }))
+    .filter((section) => section.articles.length > 0);
+  return { name: groupName, sections };
 }
 
 // TLDR intentionally cross-posts big stories to multiple editions (e.g. a major AI

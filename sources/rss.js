@@ -31,10 +31,15 @@ async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit =
       const headline = item.find("title").first().text().trim();
       const link = item.find("link").first().text().trim().split("?")[0];
       const blurb = stripHtml(item.find("description").first().text().trim());
-      const image =
+      let image =
         item.find("media\\:content").attr("url") ||
         item.find("media\\:thumbnail").attr("url") ||
         null;
+      // BBC's RSS thumbnail is a tiny 240px default; their ichef CDN serves the
+      // same image at other sizes off the same path, so upgrade it in place.
+      if (image && image.includes("ichef.bbci.co.uk")) {
+        image = image.replace("/standard/240/", "/standard/976/");
+      }
       if (!headline || !link) return;
       articles.push({ headline, url: link, readTime: null, blurb, image });
     });
