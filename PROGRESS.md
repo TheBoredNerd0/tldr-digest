@@ -34,6 +34,31 @@ vanilla JS only (`PAGE_SCRIPT`), no build step or dependency added:
   by wrapping each of the three features in its own `try/catch` and re-verified with
   jsdom that search/read-state still work even when `matchMedia` is unavailable.
 
+## Tab-style filtering (click a source, see only it)
+Requested because the accordion-collapse design still means scrolling past every
+section header to reach one further down, and the user plans to keep adding sources
+over time — that gets linearly worse forever with pure accordion+scroll. Researched
+how multi-feed readers handle this (Feedly/Inoreader: content-focused, minimize
+distractions, categorization tucked into an easy but non-intrusive control) before
+building. The quicknav pills are no longer just scroll-to anchors — clicking one now
+hides every *other* section (`section.hidden = true`) and force-opens the target's
+`<details>`, so browsing one source means literally nothing else is in the DOM's
+visible flow, not just "scrolled past." An "📚 All" pill (default-active) restores
+every section. Search still operates on individual cards within whatever's currently
+visible, so the two features compose.
+- **Found via testing again:** the first version called `section.scrollIntoView()`
+  *inside* the same forEach loop that sets each section's `hidden` state. jsdom
+  doesn't implement `scrollIntoView` at all, and the resulting throw aborted the
+  loop **mid-iteration** — every section after the clicked target (in DOM order)
+  silently kept its previous `hidden` state instead of being hidden, so the "filter"
+  half-applied: the target section plus several trailing ones were all shown
+  together. Real browsers all support `scrollIntoView`, so this specific throw would
+  likely never fire in production, but the underlying lesson generalizes (an
+  unrelated browser API failing mid-loop must not corrupt unrelated state) — fixed
+  by finishing the entire hide/show loop first, then attempting the scroll
+  separately in its own `try/catch` afterward. Re-verified with jsdom that the
+  filter now applies correctly regardless of whether the scroll succeeds.
+
 ## Featured section
 `buildFeatured()` in `publish.js` curates a "front page" from across every source —
 2 BBC World + 1 Guardian + 1 Al Jazeera (world impact), top 3 Hacker News by score,
