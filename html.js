@@ -9,7 +9,11 @@ const EDITION_EMOJI = {
   "TLDR Infosec": "🔒", "TLDR Crypto": "₿", "TLDR Fintech": "💳", "TLDR Hardware": "⚙️", "TLDR IT": "🖥️",
   "Hacker News": "🔶", "The Rundown AI": "⚡", Featured: "⭐", "GitHub Trending": "🐙",
   "World News": "🌍", "BBC World": "🌍", "Guardian World": "🇬🇧", "Al Jazeera": "🕌", "NYT World": "🗽", "NPR World": "🎙️",
+  DW: "🇩🇪", France24: "🇫🇷", "CNN World": "📡", "Washington Post World": "🏛️", SCMP: "🇭🇰",
   "Singapore News": "🇸🇬", "Straits Times": "🇸🇬", Mothership: "🚢",
+  "Krebs on Security": "🕵️", "The Hacker News": "🔓", "Dark Reading": "📕",
+  OpenAI: "🟢", "Google DeepMind": "🔷", "Google Research": "🔬", "Hugging Face": "🤗",
+  "TechCrunch AI": "📰", "VentureBeat AI": "📰",
   // Topic groups (spanning multiple underlying sources)
   AI: "🤖", "Tech & Startups": "💻", "Programming & Data": "👨‍💻",
   "Business & Finance": "💰", "Security & IT": "🔐", "Developer Community": "👥",

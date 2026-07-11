@@ -11,6 +11,8 @@ const { fetchRundownAI } = require("./sources/rundown");
 const { fetchAllWorldNews } = require("./sources/worldnews");
 const { fetchAllSingaporeNews } = require("./sources/singapore");
 const { fetchGitHubTrending } = require("./sources/github");
+const { fetchAllCyberNews } = require("./sources/cybersecurity");
+const { fetchAllAiBlogs } = require("./sources/aiblogs");
 const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
 const { sendTelegramMessage } = require("./send");
 
@@ -66,24 +68,33 @@ async function run() {
   }
 
   // World and Singapore news are each several outlets at once (already
-  // error-isolated internally).
+  // error-isolated internally), same for the cybersecurity and AI-blog additions.
   const worldNewsEditions = await fetchAllWorldNews(12);
   const singaporeEditions = await fetchAllSingaporeNews(12);
+  const cyberEditions = await fetchAllCyberNews(12);
+  const aiBlogEditions = await fetchAllAiBlogs(10);
 
   // Featured picks are computed against every individual raw source (so e.g. "BBC
   // World" vs "Guardian World" stays distinguishable there), *before* any topic
   // grouping below — grouping is purely a browse-view concern for the main body.
-  const featured = buildFeatured([...editions, ...worldNewsEditions, ...singaporeEditions]);
+  const featured = buildFeatured([
+    ...editions,
+    ...worldNewsEditions,
+    ...singaporeEditions,
+    ...cyberEditions,
+    ...aiBlogEditions,
+  ]);
 
   // Requested: sort tiles by topic, not by which company/outlet publishes them.
-  // TLDR/HN/Rundown/GitHub Trending get regrouped into topic clusters; world/SG
-  // news outlets were already one tile each per topic, so they pass through as-is.
-  const groupedCore = TOPIC_GROUPS.map((group) =>
-    mergeEditions(
-      group.members.map((name) => editions.find((e) => e.name === name)).filter(Boolean),
-      group.name
-    )
-  ).filter((group) => group.sections.length > 0);
+  // TLDR/HN/Rundown/GitHub Trending get regrouped into topic clusters; some
+  // groups also pull in raw RSS outlets fetched above (e.g. Krebs on Security
+  // folds into "Security & IT" alongside TLDR Infosec/IT, not a separate tile).
+  const TOPIC_EXTRAS = { AI: aiBlogEditions, "Security & IT": cyberEditions };
+  const groupedCore = TOPIC_GROUPS.map((group) => {
+    const named = group.members.map((name) => editions.find((e) => e.name === name)).filter(Boolean);
+    const extra = TOPIC_EXTRAS[group.name] || [];
+    return mergeEditions([...named, ...extra], group.name);
+  }).filter((group) => group.sections.length > 0);
 
   const finalEditions = [
     ...(featured.sections[0].articles.length > 0 ? [featured] : []),
@@ -163,6 +174,8 @@ function buildFeatured(editions) {
     ...firstArticles(byName("TLDR Tech"), 1),
     ...firstArticles(byName("TLDR AI"), 1),
     ...firstArticles(byName("The Rundown AI"), 1),
+    ...firstArticles(byName("Krebs on Security"), 1),
+    ...firstArticles(byName("OpenAI"), 1),
   ];
 
   return { name: "Featured", sections: [{ title: "Today's Top Stories", articles: picks }] };

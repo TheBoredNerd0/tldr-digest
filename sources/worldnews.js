@@ -11,6 +11,11 @@ const WORLD_NEWS_FEEDS = [
   { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
   { name: "NYT World", url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml" },
   { name: "NPR World", url: "https://feeds.npr.org/1004/rss.xml" },
+  { name: "DW", url: "https://rss.dw.com/xml/rss-en-all" },
+  { name: "France24", url: "https://www.france24.com/en/rss" },
+  { name: "CNN World", url: "http://rss.cnn.com/rss/cnn_world.rss" },
+  { name: "Washington Post World", url: "https://feeds.washingtonpost.com/rss/world" },
+  { name: "SCMP", url: "https://www.scmp.com/rss/91/feed" },
 ];
 
 async function fetchAllWorldNews(limitPerFeed = 12) {
