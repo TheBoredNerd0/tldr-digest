@@ -88,6 +88,29 @@ the problem; the default view's visual design was.
   pill rather than duplicating that logic. Re-verified end-to-end with jsdom:
   initial load → tile click → search-while-filtered → clear-search-restores-default.
 
+## Sort by topic instead of by publisher (8 tiles, down from 18)
+Follow-up to the merge above: "sort it by topic instead of where it is from."
+Confirmed the grouping with the user before rebuilding — this is an editorial call
+with no single correct answer (Crypto could sit under Business or under Tech), so
+proposed the taxonomy first and got a "yeap" rather than guessing:
+- **AI** = TLDR AI + The Rundown AI
+- **Tech & Startups** = TLDR Tech + TLDR Founders + TLDR Product
+- **Programming & Data** = TLDR Dev + TLDR DevOps + TLDR Data + TLDR Design
+- **Business & Finance** = TLDR Marketing + TLDR Fintech + TLDR Crypto
+- **Security & IT** = TLDR Infosec + TLDR IT
+- **Developer Community** = Hacker News + GitHub Trending (kept separate from the
+  curated topic buckets — these are mixed-topic link aggregators, not
+  single-subject publications, so folding them into e.g. "Programming & Data"
+  would have diluted a clean topic with random Show-HN/trending-repo noise)
+- World News / Singapore News unchanged from the previous merge
+`TOPIC_GROUPS` in `publish.js` is just a `{name, members}` list consumed by the
+same `mergeEditions()` from the outlet-merge above — no new merging mechanism
+needed, topic grouping and outlet grouping are the same operation at different
+granularities. Order still matters the same way: `buildFeatured()` runs against
+the raw ungrouped 23-source list first (so Featured still says "TLDR AI" or
+"Hacker News" specifically), grouping happens only for the main browsable body
+afterward. Live: 8 tiles, 273 unique articles, dedup unaffected.
+
 ## Merged same-topic outlets into single tiles
 "Some [tiles] are like the same, can you merge them together" — the 5 world-news
 outlets (BBC/Guardian/Al Jazeera/NYT/NPR) and 2 Singapore outlets (Straits Times/
