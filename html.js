@@ -83,10 +83,12 @@ const PAGE_STYLES = `
   .quicknav a {
     flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
+    border: 2px solid transparent;
   }
-  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .quicknav a { background: #fff; border: none; }
+  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border-color: #2a2b33; } }
+  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border-color: #2a2b33; }
+  :root[data-theme="light"] .quicknav a { background: #fff; }
+  .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
 
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
@@ -209,6 +211,34 @@ const PAGE_SCRIPT = `
   } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
 
   try {
+    // Tab filter: clicking a quicknav pill shows *only* that source's section and
+    // force-opens it (instead of just scrolling to it while everything else still
+    // sits there collapsed) — the point is fewer sections to scroll past as more
+    // sources get added over time, not just faster navigation to one of many.
+    var navLinks = document.querySelectorAll('.quicknav a[data-target]');
+    var allSections = document.querySelectorAll('section[id]');
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        navLinks.forEach(function (l) { l.classList.remove('active'); });
+        link.classList.add('active');
+        var target = link.dataset.target;
+        var targetSection = null;
+        allSections.forEach(function (section) {
+          var visible = target === 'all' || section.id === target;
+          section.hidden = !visible;
+          if (target !== 'all' && section.id === target) targetSection = section;
+        });
+        if (targetSection) {
+          var d = targetSection.querySelector('details.edition-toggle');
+          if (d) d.open = true;
+          try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+        }
+      });
+    });
+  } catch (e) { /* tab filter unavailable, sections still reachable via scroll */ }
+
+  try {
     // Live search across headline + blurb + source, expanding collapsed sections
     // that contain a match so results are visible without manually opening each one.
     var search = document.getElementById('search-input');
@@ -311,10 +341,14 @@ ${sections}
 }
 
 function renderQuickNav(editions) {
+  const allPill = `<a href="#" data-target="all" class="active">📚 All</a>`;
   const pills = editions
-    .map((e) => `<a href="#${slugify(e.name)}">${EDITION_EMOJI[e.name] || "📰"} ${escapeHtml(e.name)}</a>`)
+    .map(
+      (e) =>
+        `<a href="#${slugify(e.name)}" data-target="${slugify(e.name)}">${EDITION_EMOJI[e.name] || "📰"} ${escapeHtml(e.name)}</a>`
+    )
     .join("\n");
-  return `<nav class="quicknav">\n${pills}\n</nav>`;
+  return `<nav class="quicknav">\n${allPill}\n${pills}\n</nav>`;
 }
 
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image}] }] }]
