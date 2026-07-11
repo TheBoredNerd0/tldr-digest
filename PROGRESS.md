@@ -9,6 +9,31 @@ the top, then every source as its own section — with a short Telegram message
 linking to it (the full per-article text no longer goes to Telegram — that was the
 point, to stop flooding the chat).
 
+## Interactive frontend (search, theme toggle, read-state, image overlay)
+Researched news-app UX conventions (Flipboard/Apple News/Google News patterns) before
+building rather than guessing: card layout (already had it), headline-over-image with
+a dark gradient for legibility, 16px+ body text, live filtering, and dark mode as a
+user-controlled toggle rather than just following system preference. All in `html.js`,
+vanilla JS only (`PAGE_SCRIPT`), no build step or dependency added:
+- **Search bar** — filters all 273 cards live by headline/blurb/source text, and
+  auto-expands any collapsed section that contains a match.
+- **Headline-over-image cards** — redesigned so the whole card is one `<details>`,
+  with the cover image, source badge, and headline overlaid via a bottom gradient
+  (`.overlay`) inside `<summary>`, and the blurb revealed on click, same as before.
+- **Manual dark/light toggle** — a button in the top bar; `data-theme` on `<html>`
+  persisted via `localStorage`, with explicit `:root[data-theme="dark/light"]` CSS
+  overrides that take priority over the `prefers-color-scheme` media query default.
+- **Read-state tracking** — opening a card's details marks its URL as read in
+  `localStorage`; already-read cards render at reduced opacity on future visits to
+  the same day's page.
+- **Found via testing, not assumption:** the theme-toggle code originally called
+  `window.matchMedia(...)` unguarded in one shared top-level function. Actually
+  running the script in `jsdom` (no real browser available in this container — see
+  the earlier screenshot section) surfaced that a throw there aborted the *entire*
+  script, silently breaking search and read-tracking too, not just the toggle. Fixed
+  by wrapping each of the three features in its own `try/catch` and re-verified with
+  jsdom that search/read-state still work even when `matchMedia` is unavailable.
+
 ## Featured section
 `buildFeatured()` in `publish.js` curates a "front page" from across every source —
 2 BBC World + 1 Guardian + 1 Al Jazeera (world impact), top 3 Hacker News by score,
