@@ -9,6 +9,42 @@ the top, then every source as its own section — with a short Telegram message
 linking to it (the full per-article text no longer goes to Telegram — that was the
 point, to stop flooding the chat).
 
+## 30 sources, 8 topic tiles, 415 articles/day
+User asked to research and add "any more sources... world news, AI, cyber, business
+ideas, AI video/photo editing, agent-setup content" — researched and test-fetched
+each candidate (real RSS check, not just "this site probably has one") before
+recommending, then added everything that actually worked:
+- **World News** (`sources/worldnews.js`) grew from 5 to 10 outlets: added DW
+  (German/European lens), France24, CNN World, Washington Post World, and SCMP
+  (Hong Kong/Asian lens — arguably the most relevant addition given Singapore
+  focus). Still one "World News" tile, 10 sub-sections.
+- **Cybersecurity** (`sources/cybersecurity.js`, new file) — Krebs on Security,
+  The Hacker News, Dark Reading. Folded into the existing "Security & IT" topic
+  group alongside TLDR Infosec/IT rather than becoming its own tile (see
+  `TOPIC_EXTRAS` in `publish.js`). BleepingComputer blocks unauthenticated
+  requests (403) and was skipped rather than fought.
+- **AI blogs** (`sources/aiblogs.js`, new file) — OpenAI's own blog, Google
+  DeepMind, Google Research, Hugging Face, TechCrunch AI, VentureBeat AI. Folded
+  into the existing "AI" topic group alongside TLDR AI/Rundown AI. OpenAI's and
+  Hugging Face's feeds are large full archives (1000+/800+ items) rather than
+  just recent posts — relying on RSS's newest-first ordering + the existing
+  `limit` param to only pull current items. **Anthropic has no RSS feed at all**
+  (confirmed 404) — not addable without a different approach (scraping their news
+  page directly), left out rather than force something fragile.
+- **Checked and explicitly not added** (weak/no results, told the user why rather
+  than silently skipping): "business ideas" has no clean free source — Trends.vc's
+  RSS is paywalled teasers only, IndieHackers/Product Hunt expose no working RSS
+  at any URL tried. "AI video/photo editing" has no dedicated outlet RSS either
+  (Runway/PixVerse/Stability AI all lack real feeds) — that content will surface
+  incidentally through the AI blogs above when newsworthy, not as its own tile.
+  "Agent setup / OpenClaw-style" content isn't a distinct beat with dedicated
+  sources — GitHub Trending + Hacker News + TLDR Dev already are that beat.
+- `TOPIC_EXTRAS` in `publish.js` is the mechanism that let new raw RSS outlets
+  join an *existing* topic group's merge rather than needing their own tile —
+  same `mergeEditions()` as before, just also fed a second list per topic name.
+- Now: **30 total underlying sources, 8 topic tiles, 415 unique articles/day**
+  (verified: 415 `data-url` attributes, 415 unique).
+
 ## Interactive frontend (search, theme toggle, read-state, image overlay)
 Researched news-app UX conventions (Flipboard/Apple News/Google News patterns) before
 building rather than guessing: card layout (already had it), headline-over-image with
