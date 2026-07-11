@@ -49,10 +49,12 @@
   .quicknav a {
     flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
     border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
+    border: 2px solid transparent;
   }
-  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .quicknav a { background: #fff; border: none; }
+  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border-color: #2a2b33; } }
+  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border-color: #2a2b33; }
+  :root[data-theme="light"] .quicknav a { background: #fff; }
+  .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
 
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
@@ -132,30 +134,31 @@
 <p id="search-count" class="search-count"></p>
 </div>
 <nav class="quicknav">
-<a href="#featured">⭐ Featured</a>
-<a href="#tldr-tech">💻 TLDR Tech</a>
-<a href="#tldr-ai">🤖 TLDR AI</a>
-<a href="#tldr-data">📊 TLDR Data</a>
-<a href="#tldr-dev">👨‍💻 TLDR Dev</a>
-<a href="#tldr-design">🎨 TLDR Design</a>
-<a href="#tldr-devops">🛠️ TLDR DevOps</a>
-<a href="#tldr-marketing">📣 TLDR Marketing</a>
-<a href="#tldr-product">📦 TLDR Product</a>
-<a href="#tldr-founders">🚀 TLDR Founders</a>
-<a href="#tldr-infosec">🔒 TLDR Infosec</a>
-<a href="#tldr-crypto">₿ TLDR Crypto</a>
-<a href="#tldr-fintech">💳 TLDR Fintech</a>
-<a href="#tldr-it">🖥️ TLDR IT</a>
-<a href="#hacker-news">🔶 Hacker News</a>
-<a href="#the-rundown-ai">⚡ The Rundown AI</a>
-<a href="#github-trending">🐙 GitHub Trending</a>
-<a href="#bbc-world">🌍 BBC World</a>
-<a href="#guardian-world">🇬🇧 Guardian World</a>
-<a href="#al-jazeera">🕌 Al Jazeera</a>
-<a href="#nyt-world">🗽 NYT World</a>
-<a href="#npr-world">🎙️ NPR World</a>
-<a href="#straits-times">🇸🇬 Straits Times</a>
-<a href="#mothership">🚢 Mothership</a>
+<a href="#" data-target="all" class="active">📚 All</a>
+<a href="#featured" data-target="featured">⭐ Featured</a>
+<a href="#tldr-tech" data-target="tldr-tech">💻 TLDR Tech</a>
+<a href="#tldr-ai" data-target="tldr-ai">🤖 TLDR AI</a>
+<a href="#tldr-data" data-target="tldr-data">📊 TLDR Data</a>
+<a href="#tldr-dev" data-target="tldr-dev">👨‍💻 TLDR Dev</a>
+<a href="#tldr-design" data-target="tldr-design">🎨 TLDR Design</a>
+<a href="#tldr-devops" data-target="tldr-devops">🛠️ TLDR DevOps</a>
+<a href="#tldr-marketing" data-target="tldr-marketing">📣 TLDR Marketing</a>
+<a href="#tldr-product" data-target="tldr-product">📦 TLDR Product</a>
+<a href="#tldr-founders" data-target="tldr-founders">🚀 TLDR Founders</a>
+<a href="#tldr-infosec" data-target="tldr-infosec">🔒 TLDR Infosec</a>
+<a href="#tldr-crypto" data-target="tldr-crypto">₿ TLDR Crypto</a>
+<a href="#tldr-fintech" data-target="tldr-fintech">💳 TLDR Fintech</a>
+<a href="#tldr-it" data-target="tldr-it">🖥️ TLDR IT</a>
+<a href="#hacker-news" data-target="hacker-news">🔶 Hacker News</a>
+<a href="#the-rundown-ai" data-target="the-rundown-ai">⚡ The Rundown AI</a>
+<a href="#github-trending" data-target="github-trending">🐙 GitHub Trending</a>
+<a href="#bbc-world" data-target="bbc-world">🌍 BBC World</a>
+<a href="#guardian-world" data-target="guardian-world">🇬🇧 Guardian World</a>
+<a href="#al-jazeera" data-target="al-jazeera">🕌 Al Jazeera</a>
+<a href="#nyt-world" data-target="nyt-world">🗽 NYT World</a>
+<a href="#npr-world" data-target="npr-world">🎙️ NPR World</a>
+<a href="#straits-times" data-target="straits-times">🇸🇬 Straits Times</a>
+<a href="#mothership" data-target="mothership">🚢 Mothership</a>
 </nav>
 <section id="featured">
 <h2 class="edition featured">⭐ Featured</h2>
@@ -272,7 +275,7 @@
       <div class="blurb-wrap"><p class="blurb">143 points, 51 comments on Hacker News <a href="https://www.brown.edu/news/2026-07-09/chemical-bonds-relativity" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" data-headline="QuadRF can spot drones and see WiFi through my wall" data-blurb="493 points, 181 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" data-headline="QuadRF can spot drones and see WiFi through my wall" data-blurb="494 points, 181 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -285,19 +288,19 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">493 points, 181 comments on Hacker News <a href="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">494 points, 181 comments on Hacker News <a href="https://www.jeffgeerling.com/blog/2026/quadrf-can-spot-drones-and-see-wifi-through-my-wall/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://github.com/wonderwhy-er/DesktopCommanderMCP" data-headline="wonderwhy-er/DesktopCommanderMCP" data-blurb="This is MCP server for Claude that gives it terminal control, file system search and diff file editing capabilities" data-source="GitHub Trending">
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/cdabc83857ede720e5b222dd2977e113a4fddd1d232f1adc3b7d71c4ff9477a8/wonderwhy-er/DesktopCommanderMCP" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/6245ad7cd8a727a3a7a65e7fb872798ae94cc65a977e632551a88aa6b128e5ce/wonderwhy-er/DesktopCommanderMCP" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">wonderwhy-er/DesktopCommanderMCP</span>
-            <span class="readtime">TypeScript · ⭐ 7388</span>
+            <span class="readtime">TypeScript · ⭐ 7389</span>
           </div>
         </div>
       </summary>
@@ -308,12 +311,12 @@
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/bde855ba16568936a1f9102591eef4406dd5b852d3d2a7b6d9faf5ed5d64731f/oven-sh/bun" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/d752409e153eaf52bb17a40742939acb3ac3dc99c060eee370d5d5b82dc521f7/oven-sh/bun" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">oven-sh/bun</span>
-            <span class="readtime">Rust · ⭐ 94302</span>
+            <span class="readtime">Rust · ⭐ 94303</span>
           </div>
         </div>
       </summary>
@@ -607,7 +610,7 @@
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://scontent.fsin10-1.fna.fbcdn.net/v/t39.2365-6/741906678_873652302465180_7764547737953411008_n.png?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=OlBvaYygvIUQ7kNvwFPvA5w&amp;_nc_oc=AdrbgKC8wfJor6BvasyM0jSg9ZJbXlQ5tRdK1RHPtkpWUJtqxhHKFCiFJzOtQnPURkw&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin10-1.fna&amp;_nc_gid=v2RqKxx59aPatzzGC5QOdQ&amp;_nc_ss=72180&amp;oh=00_AQCPAPzHxOCM3B86IUeaEwqKIiNIE-vg83C27i6loFsAig&amp;oe=6A6C1926" loading="lazy" alt="">
+          <img class="cover" src="https://scontent.fsin10-1.fna.fbcdn.net/v/t39.2365-6/741906678_873652302465180_7764547737953411008_n.png?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=e280be&amp;_nc_ohc=OlBvaYygvIUQ7kNvwFPvA5w&amp;_nc_oc=AdrbgKC8wfJor6BvasyM0jSg9ZJbXlQ5tRdK1RHPtkpWUJtqxhHKFCiFJzOtQnPURkw&amp;_nc_zt=14&amp;_nc_ht=scontent.fsin10-1.fna&amp;_nc_gid=I_8Au1-ZmnwcDD4gixzSJw&amp;_nc_ss=72180&amp;oh=00_AQAWO8sepnIMqTSUtkdWGie7hiY6eQMCKTW7-uGlgieqfw&amp;oe=6A6C1926" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🤖 TLDR AI</span>
@@ -3131,7 +3134,7 @@
 <summary class="edition">🔶 Hacker News <span class="count">13</span></summary>
 <h3 class="section">Top Stories</h3>
 <div class="grid">
-<div class="card" data-url="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" data-headline="Apple sues OpenAI, accuses ex-employees of stealing trade secrets" data-blurb="705 points, 341 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" data-headline="Apple sues OpenAI, accuses ex-employees of stealing trade secrets" data-blurb="708 points, 340 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3144,7 +3147,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">705 points, 341 comments on Hacker News <a href="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">708 points, 340 comments on Hacker News <a href="https://9to5mac.com/2026/07/10/apple-sues-openai-trade-secret-theft/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://www.iroh.computer/blog/an-iroh-powered-smart-fan" data-headline="An iroh powered smart fan" data-blurb="46 points, 4 comments on Hacker News" data-source="Hacker News">
@@ -3163,7 +3166,7 @@
       <div class="blurb-wrap"><p class="blurb">46 points, 4 comments on Hacker News <a href="https://www.iroh.computer/blog/an-iroh-powered-smart-fan" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" data-headline="An update on residential proxies and the scraper situation" data-blurb="126 points, 108 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" data-headline="An update on residential proxies and the scraper situation" data-blurb="128 points, 109 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3176,10 +3179,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">126 points, 108 comments on Hacker News <a href="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">128 points, 109 comments on Hacker News <a href="https://lwn.net/SubscriberLink/1080822/990a8a5e2d379085/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" data-headline="GPT-5.6 Sol Ultra produces proof of the Cycle Double Cover Conjecture [pdf]" data-blurb="386 points, 303 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" data-headline="GPT-5.6 Sol Ultra produces proof of the Cycle Double Cover Conjecture [pdf]" data-blurb="388 points, 303 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3192,10 +3195,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">386 points, 303 comments on Hacker News <a href="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">388 points, 303 comments on Hacker News <a href="https://cdn.openai.com/pdf/04d1d1e4-bc75-476a-97cf-49055cd98d31/cdc_proof.pdf" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" data-headline="SpaceX wants to launch 100k more Starlink satellites for 100x the bandwidth" data-blurb="113 points, 345 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" data-headline="SpaceX wants to launch 100k more Starlink satellites for 100x the bandwidth" data-blurb="113 points, 351 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3208,7 +3211,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">113 points, 345 comments on Hacker News <a href="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">113 points, 351 comments on Hacker News <a href="https://www.zdnet.com/home-and-office/networking/spacex-wants-to-launch-100000-more-starlink-satellites/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://vfxblog.com/2017/08/23/the-tech-of-terminator-2-an-oral-history/" data-headline="The tech of 'Terminator 2' – an oral history (2017)" data-blurb="189 points, 69 comments on Hacker News" data-source="Hacker News">
@@ -3227,7 +3230,7 @@
       <div class="blurb-wrap"><p class="blurb">189 points, 69 comments on Hacker News <a href="https://vfxblog.com/2017/08/23/the-tech-of-terminator-2-an-oral-history/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://mimo.xiaomi.com/blog/mimo-v2-5-inference" data-headline="Inference Optimization for MiMo v2.5: Pushing Hybrid SWA Efficiency to the Limit" data-blurb="55 points, 21 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://mimo.xiaomi.com/blog/mimo-v2-5-inference" data-headline="Inference Optimization for MiMo v2.5: Pushing Hybrid SWA Efficiency to the Limit" data-blurb="56 points, 21 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3240,23 +3243,7 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">55 points, 21 comments on Hacker News <a href="https://mimo.xiaomi.com/blog/mimo-v2-5-inference" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
-    </details>
-  </div>
-<div class="card" data-url="https://combustionlab.net" data-headline="Combustion engine web-based simulator" data-blurb="132 points, 58 comments on Hacker News" data-source="Hacker News">
-    <details>
-      <summary>
-        <div class="cover-wrap">
-          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(96,55%,45%), hsl(136,55%,30%));">📰</div>
-          <span class="expand-indicator"></span>
-          <div class="overlay">
-            <span class="source">🔶 Hacker News</span>
-            <span class="headline">Combustion engine web-based simulator</span>
-            
-          </div>
-        </div>
-      </summary>
-      <div class="blurb-wrap"><p class="blurb">132 points, 58 comments on Hacker News <a href="https://combustionlab.net" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">56 points, 21 comments on Hacker News <a href="https://mimo.xiaomi.com/blog/mimo-v2-5-inference" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 <div class="card" data-url="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" data-headline="Good Tools Are Invisible" data-blurb="380 points, 177 comments on Hacker News" data-source="Hacker News">
@@ -3275,7 +3262,23 @@
       <div class="blurb-wrap"><p class="blurb">380 points, 177 comments on Hacker News <a href="https://www.gingerbill.org/article/2026/07/10/good-tools-are-invisible/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" data-headline="Late Bronze Age Collapse" data-blurb="341 points, 234 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://combustionlab.net" data-headline="Combustion engine web-based simulator" data-blurb="132 points, 58 comments on Hacker News" data-source="Hacker News">
+    <details>
+      <summary>
+        <div class="cover-wrap">
+          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(96,55%,45%), hsl(136,55%,30%));">📰</div>
+          <span class="expand-indicator"></span>
+          <div class="overlay">
+            <span class="source">🔶 Hacker News</span>
+            <span class="headline">Combustion engine web-based simulator</span>
+            
+          </div>
+        </div>
+      </summary>
+      <div class="blurb-wrap"><p class="blurb">132 points, 58 comments on Hacker News <a href="https://combustionlab.net" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+    </details>
+  </div>
+<div class="card" data-url="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" data-headline="Late Bronze Age Collapse" data-blurb="342 points, 234 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3288,10 +3291,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">341 points, 234 comments on Hacker News <a href="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">342 points, 234 comments on Hacker News <a href="https://acoup.blog/2026/01/30/collections-the-late-bronze-age-collapse-a-very-brief-introduction/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" data-headline="New York City to ban deceptive subscription practices" data-blurb="458 points, 229 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" data-headline="New York City to ban deceptive subscription practices" data-blurb="461 points, 229 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3304,10 +3307,10 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">458 points, 229 comments on Hacker News <a href="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">461 points, 229 comments on Hacker News <a href="https://www.theguardian.com/us-news/2026/jul/10/new-york-city-deceptive-subscriptions-ban" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://ai-2040.com/" data-headline="AI 2040: Plan A" data-blurb="178 points, 184 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://ai-2040.com/" data-headline="AI 2040: Plan A" data-blurb="178 points, 187 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
@@ -3320,23 +3323,23 @@
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">178 points, 184 comments on Hacker News <a href="https://ai-2040.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">178 points, 187 comments on Hacker News <a href="https://ai-2040.com/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
-<div class="card" data-url="https://pvk.ca/Blog/2019/01/09/preemption-is-gc-for-memory-reordering/" data-headline="Preemption is GC for memory reordering (2019)" data-blurb="18 points, 3 comments on Hacker News" data-source="Hacker News">
+<div class="card" data-url="https://serialc.github.io/altClocks/" data-headline="Alternate clock designs and time systems" data-blurb="118 points, 61 comments on Hacker News" data-source="Hacker News">
     <details>
       <summary>
         <div class="cover-wrap">
-          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(44,55%,45%), hsl(84,55%,30%));">📰</div>
+          <div class="cover placeholder" style="background: linear-gradient(135deg, hsl(66,55%,45%), hsl(106,55%,30%));">📰</div>
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🔶 Hacker News</span>
-            <span class="headline">Preemption is GC for memory reordering (2019)</span>
+            <span class="headline">Alternate clock designs and time systems</span>
             
           </div>
         </div>
       </summary>
-      <div class="blurb-wrap"><p class="blurb">18 points, 3 comments on Hacker News <a href="https://pvk.ca/Blog/2019/01/09/preemption-is-gc-for-memory-reordering/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
+      <div class="blurb-wrap"><p class="blurb">118 points, 61 comments on Hacker News <a href="https://serialc.github.io/altClocks/" target="_blank" rel="noopener noreferrer">Read more →</a></p></div>
     </details>
   </div>
 </div>
@@ -3491,12 +3494,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/6dc58c4757c4afae62c612b1d5af57a439f7f53007249f0fe5d665f6b6f4db3e/addyosmani/agent-skills" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/6245ad7cd8a727a3a7a65e7fb872798ae94cc65a977e632551a88aa6b128e5ce/addyosmani/agent-skills" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">addyosmani/agent-skills</span>
-            <span class="readtime">JavaScript · ⭐ 76907</span>
+            <span class="readtime">JavaScript · ⭐ 76910</span>
           </div>
         </div>
       </summary>
@@ -3523,12 +3526,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/f2d8e51efeea4a8d55922fb7721b1d82f19976c08bca3454519c09068ca16c10/mattpocock/skills" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/2a2c37b89c4f362fff199aa88ff259eeea3b8098cbec86a7435d574d730fe011/mattpocock/skills" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">mattpocock/skills</span>
-            <span class="readtime">Shell · ⭐ 164794</span>
+            <span class="readtime">Shell · ⭐ 164797</span>
           </div>
         </div>
       </summary>
@@ -3539,12 +3542,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/8003ef9cd53500d22e776078ec17246fa06519440c92ab9f3d131e940b263c8e/obra/superpowers" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/dffc63b17f3d859f0c114dc7c6b3aaf9cac82c2dfa07fd87ae4563c97f2fd479/obra/superpowers" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">obra/superpowers</span>
-            <span class="readtime">Shell · ⭐ 251879</span>
+            <span class="readtime">Shell · ⭐ 251881</span>
           </div>
         </div>
       </summary>
@@ -3555,12 +3558,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/1f5e9d3237efcb7b9a071d2205de6b9dddbc41f5aa79b1f9420ae69637bd0f4c/microsoft/TypeScript" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/83dfac588e14efa077a8ce09ed84720c4caf37f58b4a79c64f75650f7fa0aec6/microsoft/TypeScript" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">microsoft/TypeScript</span>
-            <span class="readtime">TypeScript · ⭐ 109801</span>
+            <span class="readtime">TypeScript · ⭐ 109802</span>
           </div>
         </div>
       </summary>
@@ -3603,12 +3606,12 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/f83fbc23e1b6a0b77d8372b7d5229b5107f80770b68ffe213075f6df2c383977/TencentCloud/TencentDB-Agent-Memory" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/a96e0db8768e003bdbcfac3199af1e7bf8cd6adf0ae28806ee52d9d78701146a/TencentCloud/TencentDB-Agent-Memory" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
             <span class="headline">TencentCloud/TencentDB-Agent-Memory</span>
-            <span class="readtime">TypeScript · ⭐ 8283</span>
+            <span class="readtime">TypeScript · ⭐ 8284</span>
           </div>
         </div>
       </summary>
@@ -3619,7 +3622,7 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
     <details>
       <summary>
         <div class="cover-wrap">
-          <img class="cover" src="https://opengraph.githubassets.com/87f84519d81bca980b15c1782a06f00c1badf9a148c92bd889b848f2000c0782/davila7/claude-code-templates" loading="lazy" alt="">
+          <img class="cover" src="https://opengraph.githubassets.com/a2e62a214feec8f38334cf86d6c8a4a2720f5f59cb47e303e019f489c98d13d2/davila7/claude-code-templates" loading="lazy" alt="">
           <span class="expand-indicator"></span>
           <div class="overlay">
             <span class="source">🐙 GitHub Trending</span>
@@ -4926,6 +4929,35 @@ The researchers say a newly found “J-space” holds Claude’s unspoken though
       }
     });
   } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
+
+  try {
+    // Tab filter: clicking a quicknav pill shows *only* that source's section and
+    // force-opens it (instead of just scrolling to it while everything else still
+    // sits there collapsed) — the point is fewer sections to scroll past as more
+    // sources get added over time, not just faster navigation to one of many.
+    var navLinks = document.querySelectorAll('.quicknav a[data-target]');
+    var allSections = document.querySelectorAll('section[id]');
+    navLinks.forEach(function (link) {
+      link.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        navLinks.forEach(function (l) { l.classList.remove('active'); });
+        link.classList.add('active');
+        var target = link.dataset.target;
+        allSections.forEach(function (section) {
+          if (target === 'all') {
+            section.hidden = false;
+          } else {
+            section.hidden = section.id !== target;
+            if (section.id === target) {
+              var d = section.querySelector('details.edition-toggle');
+              if (d) d.open = true;
+              section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      });
+    });
+  } catch (e) { /* tab filter unavailable, sections still reachable via scroll */ }
 
   try {
     // Live search across headline + blurb + source, expanding collapsed sections
