@@ -59,6 +59,35 @@ visible, so the two features compose.
   separately in its own `try/catch` afterward. Re-verified with jsdom that the
   filter now applies correctly regardless of whether the scroll succeeds.
 
+## Category-tile browse grid (replaced the flat "All" list)
+User feedback after seeing it live: the tab filter itself worked, but the default
+"All" view — a flat stack of 23 collapsed accordion headers with a count and an
+arrow — just looked like a settings list, not "interactive." The filtering wasn't
+the problem; the default view's visual design was.
+- `renderCategoryGrid()`/`renderCategoryTile()` in `html.js`: one tile per source
+  (skips Featured, which renders separately above), each using that source's own
+  first available article image as the tile background (falls back to the same
+  hue-based gradient as article placeholder covers when none exists), with a dark
+  gradient + emoji + name + article count overlaid — a magazine-rack "browse"
+  screen instead of a text list. Clicking a tile filters exactly like clicking a
+  quicknav pill (both call the same `applyFilter()`).
+- **"All" now means "Featured + tile grid"**, not "every section stacked and
+  collapsed." Selecting any specific source hides Featured and the grid, shows only
+  that source's full section, force-opened.
+- **No-JS graceful degradation preserved:** the static HTML still renders every
+  section visible with no `hidden` attributes baked in (verified: 0 in the raw
+  output) — `applyFilter('all')` only runs *from inside* the tab-filter script's own
+  try/catch, once JS has actually executed successfully. If JS fails entirely, the
+  page falls back to showing everything, not an empty/broken shell.
+- **Search had to be updated for this:** with individual sections hidden by default
+  in "All" mode, a search query would previously have found matches only within
+  Featured (the one visible section) since a hidden parent suppresses all children
+  regardless of the child's own state. Fixed: typing a non-empty query now reveals
+  every section and hides the grid first, then filters by card; clearing the query
+  hands back to the tab filter's default view via a synthetic click on the "All"
+  pill rather than duplicating that logic. Re-verified end-to-end with jsdom:
+  initial load → tile click → search-while-filtered → clear-search-restores-default.
+
 ## Featured section
 `buildFeatured()` in `publish.js` curates a "front page" from across every source —
 2 BBC World + 1 Guardian + 1 Al Jazeera (world impact), top 3 Hacker News by score,
