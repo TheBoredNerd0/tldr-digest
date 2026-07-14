@@ -1,5 +1,21 @@
 # tldr-digest
 
+## Bug fixed 2026-07-14: date was tracking TLDR's publish lag, not the actual day
+`isoDate` (used for the filename and page title) was set from the first
+successfully-fetched TLDR edition's own self-reported date, not from the real
+calendar date. When TLDR's own "latest" edition stayed on the same date for
+several days running (their publish cadence lagged Singapore's clock), this
+site's daily file silently kept the same stale filename too — meaning each day's
+scheduled run **overwrote the previous day's file** instead of creating a new
+one, even though the other 29 non-TLDR sources were always fresh. July 11 and
+12's actual snapshots were lost this way (overwritten before being visible,
+unrecoverable — confirmed via `scheduler.log`: three consecutive runs all wrote
+to `10-july-2026.html`, then the next run jumped straight to `13-july-2026.html`).
+Fixed: `todayInSingapore()` in `publish.js` now derives the date from the real
+clock (`Intl.DateTimeFormat` in the `Asia/Singapore` zone) independent of any
+single source's own publish timestamp.
+
+
 Scrapes all 14 tldr.tech newsletter editions (Tech, AI, Data, Dev, Design, DevOps,
 Marketing, Product, Founders, Infosec, Crypto, Fintech, Hardware, IT — Hardware is
 "Launching Soon" upstream and currently returns no content, handled gracefully),
