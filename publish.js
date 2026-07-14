@@ -33,22 +33,38 @@ const SITE_DIR = path.join(__dirname, "docs");
 const SITE_URL_BASE =
   process.env.TLDR_DIGEST_SITE_URL || "https://theborednerd0.github.io/tldr-digest";
 
+// The digest's date is *today, in Singapore*, not whatever date TLDR's own feed
+// happens to self-report. TLDR was previously the sole source of `isoDate`, so
+// when their publish cadence lagged (their "latest" stayed on the same date for
+// several days in a row), this site's filename lagged right along with it —
+// silently overwriting each prior day's file under the same stale name, even
+// though the other 29 sources were always current. This is a snapshot of what's
+// out there *right now*, dated by when it was collected, independent of any one
+// source's own publish timestamp.
+function todayInSingapore() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Singapore",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const get = (type) => parts.find((p) => p.type === type).value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 async function run() {
   const editions = [];
-  let isoDate = null;
+  const isoDate = todayInSingapore();
 
   for (const edition of EDITIONS) {
     try {
       const data = await fetchEdition(edition.slug);
       if (data.sections.length === 0) continue; // e.g. "hardware" not launched yet
-      if (!isoDate) isoDate = data.date;
       editions.push({ name: `TLDR ${edition.name}`, sections: data.sections });
     } catch (err) {
       console.error(`[${edition.slug}] fetch failed: ${err.message}`);
     }
   }
-
-  if (!isoDate) throw new Error("Could not determine today's date from any edition — aborting.");
 
   // Non-TLDR single-edition sources: kept separate from the TLDR fetch loop above
   // since they don't share its slug/error shape, but merge into the same
