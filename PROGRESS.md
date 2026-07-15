@@ -1,5 +1,17 @@
 # tldr-digest
 
+## Featured refocused on AI models + GitHub repos (2026-07-15)
+User: "the news that matters more to me are the news about the ai, so basically
+the featured should be like which new ai model that is news, and also the github
+repo." `buildFeatured()` in `publish.js` previously mixed world news (BBC/Guardian/
+Al Jazeera/Straits Times), Hacker News, GitHub Trending, and a token AI pick or two.
+Replaced entirely with AI-lab/model news (TLDR AI, Rundown AI, OpenAI, Google
+DeepMind, Google Research, Hugging Face, TechCrunch AI, VentureBeat AI) plus 4
+GitHub Trending picks — nothing else. World news/HN/security etc. are unchanged
+everywhere else on the page, just no longer on the front page. Regenerated and
+pushed the same day so the live site reflects it immediately, not just tomorrow's
+scheduled run.
+
 ## Bug fixed 2026-07-14: date was tracking TLDR's publish lag, not the actual day
 `isoDate` (used for the filename and page title) was set from the first
 successfully-fetched TLDR edition's own self-reported date, not from the real
