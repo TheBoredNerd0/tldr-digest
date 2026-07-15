@@ -163,15 +163,17 @@ async function run() {
   );
 }
 
-// Pulls a curated "front page" from across every source: the day's biggest world
-// events, the highest-engagement Hacker News stories, and each flagship TLDR
-// edition's own lead pick. Runs before dedupeAcrossEditions and gets unshifted to
-// the front of the editions list, so anything picked here is simply not repeated
-// further down the page (same first-occurrence-wins rule as everything else).
+// Pulls a curated "front page" from across every source. Re-focused 2026-07-15 on
+// request ("news that matters more to me are about AI... which new AI model that
+// is news, and also the github repo") — Featured is now AI model/lab news plus
+// GitHub Trending repos, not a general world-news front page. Runs before
+// dedupeAcrossEditions and gets unshifted to the front of the editions list, so
+// anything picked here is simply not repeated further down the page (same
+// first-occurrence-wins rule as everything else).
 function buildFeatured(editions) {
   const byName = (name) => editions.find((e) => e.name === name);
-  // Tag each pick with its true origin so the card badge still shows "World News" /
-  // "Hacker News" etc. instead of just "Featured" once it's moved to the front.
+  // Tag each pick with its true origin so the card badge still shows "OpenAI" /
+  // "GitHub Trending" etc. instead of just "Featured" once it's moved to the front.
   const firstArticles = (edition, n) =>
     edition
       ? edition.sections
@@ -181,17 +183,15 @@ function buildFeatured(editions) {
       : [];
 
   const picks = [
-    ...firstArticles(byName("BBC World"), 2),
-    ...firstArticles(byName("Guardian World"), 1),
-    ...firstArticles(byName("Al Jazeera"), 1),
-    ...firstArticles(byName("Straits Times"), 2),
-    ...firstArticles(byName("Hacker News"), 2),
-    ...firstArticles(byName("GitHub Trending"), 2),
-    ...firstArticles(byName("TLDR Tech"), 1),
-    ...firstArticles(byName("TLDR AI"), 1),
-    ...firstArticles(byName("The Rundown AI"), 1),
-    ...firstArticles(byName("Krebs on Security"), 1),
-    ...firstArticles(byName("OpenAI"), 1),
+    ...firstArticles(byName("TLDR AI"), 3),
+    ...firstArticles(byName("The Rundown AI"), 2),
+    ...firstArticles(byName("OpenAI"), 2),
+    ...firstArticles(byName("Google DeepMind"), 1),
+    ...firstArticles(byName("Google Research"), 1),
+    ...firstArticles(byName("Hugging Face"), 1),
+    ...firstArticles(byName("TechCrunch AI"), 1),
+    ...firstArticles(byName("VentureBeat AI"), 1),
+    ...firstArticles(byName("GitHub Trending"), 4),
   ];
 
   return { name: "Featured", sections: [{ title: "Today's Top Stories", articles: picks }] };
