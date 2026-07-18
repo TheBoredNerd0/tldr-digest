@@ -1,0 +1,49 @@
+name: Daily TLDR Digest
+
+# Durable replacement for the in-container tmux scheduler (scheduler.js): that loop
+# only survived as long as the original Claude Code container stayed alive, so the
+# digest stopped sending once the container was reclaimed. GitHub Actions runs on
+# GitHub's infrastructure and needs nothing kept warm.
+on:
+  schedule:
+    # 08:00 Asia/Singapore == 00:00 UTC (Singapore has no DST). Note GitHub may
+    # delay scheduled runs by a few minutes under load.
+    - cron: "0 0 * * *"
+  # Lets you trigger a run by hand from the Actions tab to verify sending works.
+  workflow_dispatch: {}
+
+# publish.js commits today's HTML and pushes it (GitHub Pages rebuilds on push).
+permissions:
+  contents: write
+
+# Never let two runs push docs/ at once.
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      # publish.js runs `git commit` / `git push`; the runner needs an identity.
+      - name: Configure git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Scrape, publish site, and send the Telegram digest
+        env:
+          # Add this under Settings -> Secrets and variables -> Actions.
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          # Optional: overrides the default chat id baked into the code.
+          TLDR_DIGEST_CHAT_ID: ${{ secrets.TLDR_DIGEST_CHAT_ID }}
+        run: node publish.js

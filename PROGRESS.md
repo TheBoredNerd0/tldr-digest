@@ -301,11 +301,20 @@ JS-only SPA or a stale/dead HTML shell:
   today's HTML + refreshes the index, `git add/commit/push`es `docs/` (GitHub Pages
   auto-rebuilds on push, no separate deploy step), then sends **one short Telegram
   message** with the day's link — not the full digest text.
-- `send.js` — posts directly to the Telegram Bot API using the token already at
-  `~/.claude/channels/telegram/.env` (`TELEGRAM_BOT_TOKEN`). Deliberately does **not**
-  shell out to a nested `claude` process or go through the MCP plugin, to stay clear
-  of the bot's polling lock.
-- `scheduler.js` — this container has no system cron, and the `/schedule` skill's
+- `send.js` — posts directly to the Telegram Bot API. Reads the bot token from the
+  `TELEGRAM_BOT_TOKEN` **environment variable first**, falling back to the plugin's
+  `~/.claude/channels/telegram/.env` file. (It used to read *only* that file, which is
+  why the digest stopped sending the moment the original container — the only place
+  that file exists — was reclaimed: `loadBotToken()` threw `ENOENT` and the whole
+  publish aborted.) Deliberately does **not** shell out to a nested `claude` process or
+  go through the MCP plugin, to stay clear of the bot's polling lock.
+- `.github/workflows/daily-digest.yml` — the **durable** daily scheduler. Runs
+  `publish.js` at 00:00 UTC (08:00 SGT) on GitHub's infrastructure, so it no longer
+  depends on any container staying alive. Requires a repo secret `TELEGRAM_BOT_TOKEN`
+  (Settings → Secrets and variables → Actions); optional `TLDR_DIGEST_CHAT_ID` overrides
+  the default chat id. `workflow_dispatch` lets you trigger a run by hand to test.
+- `scheduler.js` — the *old* in-container scheduler, kept as a fallback. This container
+  has no system cron, and the `/schedule` skill's
   cloud routines run in an isolated Anthropic cloud sandbox with no access to this
   container's filesystem, git credentials, or the bot token, so neither fit. Instead
   this is a plain Node loop that sleeps until the next 08:00 Asia/Singapore (fixed
