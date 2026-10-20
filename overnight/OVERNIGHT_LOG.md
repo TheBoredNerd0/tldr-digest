@@ -14,3 +14,15 @@ Ground rules for this run: work only on `overnight/*` branches. GitHub Pages ser
   day pages are dead ends. See before-after/BASELINE.md.
 - Research: 20 sources incl. NN/g, HN Show HN feedback, AIBriefs, Techmeme, TLDR,
   Kagi Kite, CN design writing, arXiv. Plan in research/REDESIGN_PLAN.md.
+
+## 00:52–01:12 Build
+- 498210e npm audit fix. 95c0975 Telegram chunk overflow fix.
+- 1d6bcec data layer (site.js) + template rewrite (html.js) + tests (28) + scripts.
+- 6e3aab3 fresher archive rows, search hand-off, deterministic short dates.
+- d5c74be backfilled 100 days (counts match originals) and rebuilt the site.
+- CI workflow, README, PROGRESS entry; dead-image fallback.
+- Verified in browser: home, day page (cards + compact + dark), search-all
+  ("claude opus" → 14 hits), save → Saved page → remove, "/" + Escape,
+  prev/next links, ?q= hand-off. Contrast: all text ≥ 4.63:1.
+- E2E publish against a fake remote: commit touches 6 files; Telegram 401 as
+  expected with a dummy token.
