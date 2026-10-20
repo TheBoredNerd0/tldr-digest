@@ -66,7 +66,32 @@ async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit =
       articles.push({ headline, url: link, readTime: null, blurb, image });
     });
 
+  // Atom feeds (<entry> instead of <item>, link in an href attribute) — e.g.
+  // The Verge's and Simon Willison's feeds are Atom-only.
+  if (articles.length === 0) {
+    $("entry")
+      .slice(0, limit)
+      .each((_, el) => {
+        const entry = $(el);
+        const headline = entry.find("title").first().text().trim();
+        const linkEl = entry.find('link[rel="alternate"]').first();
+        const href = (linkEl.length ? linkEl : entry.find("link").first()).attr("href") || "";
+        const link = href.trim().split("?")[0];
+        const blurb = truncateText(stripHtml(entry.find("summary").first().text() || entry.find("content").first().text()), 400);
+        const image = entry.find("media\\:thumbnail").attr("url") || entry.find("media\\:content").attr("url") || null;
+        if (!headline || !link) return;
+        articles.push({ headline, url: link, readTime: null, blurb, image });
+      });
+  }
+
   return { name, sections: [{ title: sectionTitle, articles }] };
+}
+
+// Atom <content> is often the full post; keep card blurbs to a summary.
+function truncateText(text, max) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : max).trim()}…`;
 }
 
 module.exports = { fetchRssSource, fetchWithRetry, stripHtml };

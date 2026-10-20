@@ -140,3 +140,17 @@ test("persistentlyMissing needs the source gone today and on the two days before
   assert.deepEqual(persistentlyMissing(["DW", "SCMP", "NPR World"], prev), ["DW"]);
   assert.deepEqual(persistentlyMissing(["DW"], [{ missingSources: ["DW"] }]), [], "not enough history yet");
 });
+
+test("fetchRssSource also reads Atom feeds", async () => {
+  const body = `<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">
+    <entry><title>Atom one</title><link rel="alternate" href="https://a.x/1?ref=feed"/><link rel="self" href="https://a.x/self"/>
+      <summary type="html">&lt;p&gt;Short.&lt;/p&gt;</summary></entry>
+    <entry><title>Atom two</title><link href="https://a.x/2"/><content type="html">${"word ".repeat(200)}</content></entry>
+  </feed>`;
+  await withFetch([{ status: 200, body }], async () => {
+    const [one, two] = (await fetchRssSource({ name: "A", url: "u", retryDelayMs: 0 })).sections[0].articles;
+    assert.deepEqual([one.headline, one.url, one.blurb], ["Atom one", "https://a.x/1", "Short."]);
+    assert.equal(two.url, "https://a.x/2");
+    assert.ok(two.blurb.length <= 401 && two.blurb.endsWith("…"));
+  });
+});
