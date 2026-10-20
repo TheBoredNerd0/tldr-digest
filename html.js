@@ -146,7 +146,7 @@ const PAGE_STYLES = `
   .daynav a[hidden] { display: inline-block; visibility: hidden; }
 
   /* ---- search ---- */
-  .searchbar { margin-bottom: 1rem; }
+  .searchbar { margin-bottom: 0.25rem; }
   .searchbar input {
     width: 100%; font: inherit; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px;
     border: 1px solid var(--border); background: var(--surface); color: inherit;
@@ -324,9 +324,12 @@ const PAGE_SCRIPT = `
   function getItem(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function setItem(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function slugOf(d) { var p = d.split('-'); return p[2] + '-' + MONTHS[+p[1] - 1] + '-' + p[0]; }
+  // "2026-09-24" -> "24 Sep", by hand to match the server-rendered dates
+  // (toLocaleDateString gives "24 Sept" in some browsers).
   function shortDate(d) {
-    try { return new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }); }
-    catch (e) { return d; }
+    var p = d.split('-');
+    var m = MONTHS[+p[1] - 1] || '';
+    return (+p[2]) + ' ' + m.charAt(0).toUpperCase() + m.slice(1, 3);
   }
   function isHttp(u) { return /^https?:\\/\\//i.test(u || ''); }
 
@@ -385,10 +388,18 @@ const PAGE_SCRIPT = `
   var cards = document.querySelectorAll('.card[data-url]');
 
   try {
+    // The page's own date and each card's cover image are read from the DOM
+    // rather than repeated as attributes on all ~400 cards.
+    var dayEl = document.querySelector('.daynav[data-date]');
+    var pageDate = dayEl ? dayEl.getAttribute('data-date') : '';
     var saved = loadSaved();
+    // The ☆ button is added here rather than in the HTML: it only works with JS,
+    // and ~400 copies of its markup were ~30 KB of every page.
     cards.forEach(function (card) {
-      var btn = card.querySelector('.save');
-      if (!btn) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'save';
+      card.insertBefore(btn, card.firstChild);
       var url = card.getAttribute('data-url');
       var paint = function (on) {
         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -403,7 +414,7 @@ const PAGE_SCRIPT = `
         if (s[url]) delete s[url];
         else s[url] = {
           u: url, h: card.getAttribute('data-headline'), s: card.getAttribute('data-source'),
-          d: card.getAttribute('data-date') || '', i: card.getAttribute('data-image') || '', t: Date.now()
+          d: pageDate, i: (card.querySelector('img.cover') || {}).src || '', t: Date.now()
         };
         persistSaved(s);
         paint(!!s[url]);
@@ -518,6 +529,10 @@ const PAGE_SCRIPT = `
           else if (browseGrid) browseGrid.hidden = false;
         }
       });
+      // Arriving from "search every day" (?q=…): show this day's matches straight away.
+      var incoming = '';
+      try { incoming = new URLSearchParams(location.search).get('q') || ''; } catch (e) {}
+      if (incoming) { search.value = incoming; search.dispatchEvent(new Event('input')); }
     }
   } catch (e) {}
 
@@ -580,7 +595,7 @@ const PAGE_SCRIPT = `
     if (item.d) {
       meta.appendChild(document.createTextNode(item.s ? ' · ' : ''));
       var day = el('a', null, shortDate(item.d) + ' digest');
-      day.href = slugOf(item.d) + '.html';
+      day.href = slugOf(item.d) + '.html' + (item.q ? '?q=' + encodeURIComponent(item.q) : '');
       meta.appendChild(day);
     }
     body.appendChild(meta);
@@ -657,7 +672,7 @@ const PAGE_SCRIPT = `
                 if (!ok) continue;
                 seen[row[2]] = 1;
                 found++;
-                list.appendChild(resultRow({ d: row[0], h: row[1], u: row[2], s: row[3] }));
+                list.appendChild(resultRow({ d: row[0], h: row[1], u: row[2], s: row[3], q: allInput.value.trim() }));
               }
               step(i + 1);
             }).catch(function () { step(i + 1); });
@@ -729,7 +744,7 @@ function renderCover(a, hue) {
   return `<div class="cover placeholder" aria-hidden="true" style="background: linear-gradient(135deg, hsl(${hue},55%,45%), hsl(${(hue + 40) % 360},55%,30%));">📰</div>`;
 }
 
-function renderArticle(a, edition, isoDate) {
+function renderArticle(a, edition) {
   const sourceName = a.sourceLabel || edition.name;
   const hue = hashHue(sourceName + a.headline);
   const emoji = EDITION_EMOJI[sourceName] || "📰";
@@ -741,13 +756,8 @@ function renderArticle(a, edition, isoDate) {
     `data-url="${escapeHtml(href)}"`,
     `data-headline="${escapeHtml(a.headline)}"`,
     `data-source="${escapeHtml(sourceName)}"`,
-    isoDate ? `data-date="${escapeHtml(isoDate)}"` : "",
-    safeUrl(a.image) ? `data-image="${escapeHtml(safeUrl(a.image))}"` : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  ].join(" ");
   return `<div class="card" ${attrs}>
-    <button class="save" type="button" aria-pressed="false" aria-label="Save for later">☆</button>
     <details>
       <summary>
         <div class="cover-wrap">
@@ -765,7 +775,7 @@ function renderArticle(a, edition, isoDate) {
   </div>`;
 }
 
-function renderEdition(edition, isoDate) {
+function renderEdition(edition) {
   const isFeatured = edition.name === "Featured";
   const gridClass = isFeatured ? "grid featured" : "grid";
   const count = edition.sections.reduce((n, s) => n + s.articles.length, 0);
@@ -773,7 +783,7 @@ function renderEdition(edition, isoDate) {
     .map(
       (s) =>
         `${isFeatured ? "" : `<h3 class="section">${escapeHtml(s.title)}</h3>\n`}<div class="${gridClass}">\n${s.articles
-          .map((a) => renderArticle(a, edition, isoDate))
+          .map((a) => renderArticle(a, edition))
           .join("\n")}\n</div>`
     )
     .join("\n");
@@ -836,7 +846,7 @@ function renderCategoryGrid(editions) {
 function buildDailyHtml(isoDate, editions, { siteUrl } = {}) {
   const nav = renderQuickNav(editions);
   const grid = renderCategoryGrid(editions);
-  const body = editions.map((e) => renderEdition(e, isoDate)).join("\n");
+  const body = editions.map(renderEdition).join("\n");
   const total = editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0);
   const featured = editions.find((e) => e.name === "Featured");
   const lead = (featured || editions[0] || { sections: [] }).sections.flatMap((s) => s.articles);

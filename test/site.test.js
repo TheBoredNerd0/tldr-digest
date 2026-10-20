@@ -43,9 +43,15 @@ test("summarizeDay leads with Featured and counts every article", () => {
     slug: "20-october-2026",
     count: 2,
     topics: 1,
-    top: ["A"],
+    top: ["A", "A world"],
     image: "https://e.x/i.jpg",
   });
+});
+
+test("summarizeDay prefers stories that are new since the previous day", () => {
+  const editions = day("A");
+  const s = summarizeDay("2026-10-20", editions, new Set(["https://e.x/A"]));
+  assert.deepEqual(s.top, ["A world", "A"], "fresh story first, repeat only as filler");
 });
 
 test("buildSearchIndex splits rows by month", () => {

@@ -60,12 +60,17 @@ function allArticles(editions) {
 }
 
 // One archive row per day: what the home page, RSS feed and prev/next links need,
-// without loading every day's full data in the browser.
-function summarizeDay(isoDate, editions) {
+// without loading every day's full data in the browser. `seenBefore` holds the
+// previous day's article URLs: TLDR re-serves the same "latest" edition over
+// weekends, so without it several archive rows in a row showed the same three
+// headlines. Fresh stories are preferred; repeats only fill remaining slots.
+function summarizeDay(isoDate, editions, seenBefore = new Set()) {
   const articles = allArticles(editions);
   const featured = editions.find((e) => e.name === "Featured");
-  const lead = (featured ? allArticles([featured]) : articles).slice(0, 3);
-  const withImage = (featured ? allArticles([featured]) : []).concat(articles).find((a) => a.image);
+  const pool = featured ? [...allArticles([featured]), ...articles] : articles;
+  const fresh = pool.filter((a) => !seenBefore.has(a.url));
+  const lead = [...new Map([...fresh, ...pool].map((a) => [a.url, a])).values()].slice(0, 3);
+  const withImage = lead.find((a) => a.image) || pool.find((a) => a.image);
   return {
     date: isoDate,
     slug: dateToSlug(isoDate),
@@ -98,7 +103,12 @@ function buildSearchIndex(days) {
 function writeSiteFiles({ dataDir = DATA_DIR, siteDir = SITE_DIR, siteUrl = SITE_URL_BASE } = {}) {
   const dates = listDays(dataDir);
   const days = dates.map((d) => ({ date: d, editions: readDayData(d, dataDir).editions }));
-  const manifest = days.map(({ date, editions }) => summarizeDay(date, editions));
+  // days is newest first, so the "previous day" for days[i] is days[i + 1].
+  const manifest = days.map(({ date, editions }, i) => {
+    const older = days[i + 1];
+    const seen = new Set(older ? allArticles(older.editions).map((a) => a.url) : []);
+    return summarizeDay(date, editions, seen);
+  });
 
   fs.mkdirSync(path.join(siteDir, "search"), { recursive: true });
   fs.writeFileSync(path.join(siteDir, "days.json"), JSON.stringify(manifest));

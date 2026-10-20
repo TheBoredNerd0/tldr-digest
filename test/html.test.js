@@ -74,7 +74,7 @@ test("buildDailyHtml: no duplicate data-blurb payload, labelled search, day nav"
   assert.match(html, /class="daynav" data-date="2026-10-20"/);
   assert.match(html, /<title>TLDR Digest — Tuesday 20 October 2026<\/title>/);
   assert.match(html, /property="og:image" content="https:\/\/example.com\/a.jpg"/);
-  assert.match(html, /class="save"/);
+  assert.ok(!html.includes("<button class=\"save\""), "save buttons are injected by JS, not repeated per card");
 });
 
 test("buildDailyHtml: inline script has no syntax errors", () => {
