@@ -6,7 +6,8 @@
     "test": "node --test",
     "rebuild": "node scripts/rebuild.js",
     "backfill": "node scripts/backfill.js",
-    "publish": "node publish.js"
+    "publish": "node publish.js",
+    "preview": "node scripts/preview.js"
   },
   "keywords": [],
   "author": "",

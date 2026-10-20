@@ -91,8 +91,8 @@ git log --oneline main..overnight/2026-10-21
 git checkout overnight/2026-10-21
 npm ci
 npm test
-npx --yes http-server docs -p 8080
+npm run preview
 ```
-Then open http://localhost:8080/ and look at the home page, a day page (try *Show new
+Then open http://localhost:8080/tldr-digest/ and look at the home page, a day page (try *Show new
 only*, ☰ and `j`/`k`), `search.html?q=claude`, and ☆ → Saved. Without a server, opening
 `docs/index.html` directly also works, but prev/next and search need it served.

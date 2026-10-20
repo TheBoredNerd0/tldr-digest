@@ -63,6 +63,7 @@ npm ci
 npm test            # offline test suite (node:test, no network)
 npm run rebuild     # re-render every page + archive/search/RSS from data/days
 npm run publish     # full run: scrape, publish, git push, Telegram (needs the token)
+npm run preview     # serve docs/ at http://localhost:8080/tldr-digest/
 npm run backfill    # recover data/days from existing docs/*.html (one-off)
 ```
 
