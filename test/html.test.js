@@ -91,7 +91,7 @@ test("buildIndexHtml lists days in the order given and groups by month", () => {
     { date: "2026-07-31", slug: "31-july-2026", count: 8, topics: 8, top: [], image: null },
   ];
   const html = buildIndexHtml(manifest);
-  const order = [...html.matchAll(/class="day-row" href="([^"]+)"/g)].map((m) => m[1]);
+  const order = [...html.matchAll(/class="day-row"[^>]*href="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(order, ["20-october-2026.html", "30-september-2026.html", "31-july-2026.html"]);
   const months = [...html.matchAll(/<h2 id="m-[^"]+">([^<]+)</g)].map((m) => m[1]);
   assert.deepEqual(months, ["October 2026", "September 2026", "July 2026"]);

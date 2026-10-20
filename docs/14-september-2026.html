@@ -230,6 +230,10 @@
   .day-date span { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
   .day-top { font-size: 0.95rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .day-count { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  .day-row.unread .day-date b { color: var(--accent); }
+  .day-row.unread .day-top { font-weight: 650; }
+  .day-row.unread .day-count::before { content: "● "; color: var(--accent); }
+  .day-row.visited .day-top { color: var(--muted); }
 
   /* ---- search-all / saved lists ---- */
   .results { list-style: none; padding: 0; margin: 0; }
@@ -5376,6 +5380,30 @@
     // Previous / next day. Rendered server-side as an "All days" link only, so an
     // old page never points at a stale neighbour; the real neighbours come from
     // days.json, which is rewritten on every publish.
+    // Remember which days have been opened, so the archive can mark the ones
+    // you haven't read yet (only days newer than your first visit count as
+    // unread; the backlog from before you started isn't nagged about).
+    var VISITED_KEY = 'tldr-visited-days';
+    var visited = {};
+    try { visited = JSON.parse(getItem(VISITED_KEY) || '{}') || {}; } catch (e) {}
+    var thisDay = document.querySelector('.daynav[data-date]');
+    if (thisDay) {
+      visited[thisDay.getAttribute('data-date')] = 1;
+      setItem(VISITED_KEY, JSON.stringify(visited));
+    }
+    var rows = document.querySelectorAll('.day-row[data-date]');
+    var seenDays = Object.keys(visited).sort();
+    if (rows.length && seenDays.length) {
+      var firstSeen = seenDays[0];
+      rows.forEach(function (row) {
+        var d = row.getAttribute('data-date');
+        if (visited[d]) row.classList.add('visited');
+        else if (d > firstSeen) row.classList.add('unread');
+      });
+    }
+  } catch (e) {}
+
+  try {
     var dayNav = document.querySelector('.daynav[data-date]');
     if (dayNav && window.fetch) {
       var me = dayNav.getAttribute('data-date');
