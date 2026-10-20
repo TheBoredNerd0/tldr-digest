@@ -27,12 +27,26 @@ Each day's data is stored as JSON in `data/days/`. Every page is rendered from t
 data, so a template change can be applied to the whole archive with `npm run rebuild`.
 
 ### Site features
-- **Day page**: Featured (AI models + GitHub repos), topic tiles, live search (`/`),
-  card or compact list view, dark mode, read tracking, ☆ save, previous/next day.
-- **Home**: the latest digest, then every day grouped by month, newest first.
+- **Day page**: Featured (AI models + GitHub repos), topic tiles and pills (link to one
+  with `#ai`, `#world-news`, …), live search, card or compact list view, dark mode,
+  read tracking, ☆ save, share / copy link, previous/next day.
+- **Repeats**: stories already in the day before's digest are tagged; "Show new only"
+  hides them. TLDR re-serves editions over weekends, so this is often 30–60% of a day.
+- **Muted words**: a panel at the bottom of each day hides stories by keyword.
+- **Keys**: `/` search · `j` / `k` next / previous story · `o` open · `s` save.
+- **Home**: the latest digest, then every day grouped by month, newest first, with days
+  you haven't opened marked.
 - **Search every day** (`search.html`): headlines from every digest.
-- **Saved** (`saved.html`): starred stories. These are stored in your browser only.
+- **Saved** (`saved.html`): starred stories.
 - **RSS** (`feed.xml`): one item per day.
+
+Saved stories, read state, muted words and view settings are kept in your browser
+(localStorage). There are no accounts and no tracking.
+
+### Source health
+Each day records which expected sources returned nothing (`missingSources` in
+`data/days/<date>.json`), lists them at the foot of that day's page, and the Actions
+run shows a warning. A source missing 3 days in a row gets a louder warning.
 
 ## Setup
 
@@ -62,7 +76,7 @@ npm run backfill    # recover data/days from existing docs/*.html (one-off)
 | `html.js` | All page templates, styles and the in-page script |
 | `send.js` | Telegram Bot API sender |
 | `scripts/` | `rebuild.js`, `backfill.js` |
-| `test/` | `npm test` |
+| `test/` | `npm test`: node:test, offline; `client.test.js` runs the page script in jsdom |
 | `index.js`, `format.js`, `state.js`, `scheduler.js` | Legacy per-edition Telegram flow (not scheduled) |
 
 Detailed history and design decisions: [PROGRESS.md](PROGRESS.md).
