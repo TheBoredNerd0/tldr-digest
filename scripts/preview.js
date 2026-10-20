@@ -18,7 +18,13 @@ const TYPES = {
 
 http
   .createServer((req, res) => {
-    let urlPath = decodeURIComponent(req.url.split("?")[0]);
+    let urlPath;
+    try {
+      urlPath = decodeURIComponent(req.url.split("?")[0]);
+    } catch {
+      res.writeHead(400);
+      return res.end("bad request");
+    }
     if (urlPath === "/") {
       res.writeHead(302, { Location: "/tldr-digest/" });
       return res.end();
