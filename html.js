@@ -125,7 +125,7 @@ const PAGE_STYLES = `
 
   /* ---- header ---- */
   .topbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
-  .brand { font-size: 1.35rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; }
+  .brand { font-size: 1.35rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
   .tools { display: flex; gap: 0.4rem; }
   .tool {
     flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.2rem;
@@ -136,13 +136,20 @@ const PAGE_STYLES = `
   .tool[aria-current="page"] { border-color: var(--accent); }
   .tool .count { font-size: 0.75rem; font-weight: 700; }
   .tool .count:empty { display: none; }
+  @media (max-width: 420px) {
+    .brand { font-size: 1.1rem; }
+    .tools { gap: 0.25rem; }
+    .tool { min-width: 2.2rem; height: 2.2rem; padding: 0 0.45rem; font-size: 0.9rem; }
+  }
 
   h1.page-title { font-size: 1.6rem; margin: 0.25rem 0 0.1rem; line-height: 1.2; }
   .subtle { color: var(--muted); font-size: 0.95rem; margin: 0 0 1rem; }
 
   /* ---- day navigation ---- */
-  .daynav { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  .daynav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; margin: 0 0 1rem; font-size: 0.9rem; }
   .daynav a { text-decoration: none; padding: 0.35rem 0.1rem; }
+  .daynav .older { justify-self: start; }
+  .daynav .newer { justify-self: end; }
   .daynav a[hidden] { display: inline-block; visibility: hidden; }
 
   /* ---- search ---- */
