@@ -223,6 +223,7 @@ const PAGE_STYLES = `
   .card.is-read { opacity: 0.55; }
   .card.repeat .overlay .source::after { content: " · also the day before"; text-transform: none; font-weight: 400; letter-spacing: 0; }
   :root[data-newonly] .card.repeat { display: none; }
+  :root[data-newonly] section[id]:not(:has(.card:not(.repeat))) { display: none; }
   :root[data-newonly] .grid:not(:has(.card:not(.repeat))),
   :root[data-newonly] h3.section:has(+ .grid:not(:has(.card:not(.repeat)))) { display: none; }
   .chip {

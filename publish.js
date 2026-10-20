@@ -85,9 +85,6 @@ async function run() {
   const cyberEditions = await fetchAllCyberNews(12);
   const aiBlogEditions = await fetchAllAiBlogs(10);
 
-  // Featured picks are computed against every individual raw source (so e.g. "BBC
-  // World" vs "Guardian World" stays distinguishable there), *before* any topic
-  // grouping below — grouping is purely a browse-view concern for the main body.
   const missingSources = findMissingSources(EXPECTED_SOURCES, [
     ...editions,
     ...worldNewsEditions,
@@ -97,6 +94,9 @@ async function run() {
   ]);
   reportMissingSources(missingSources, isoDate);
 
+  // Featured picks are computed against every individual raw source (so e.g. "BBC
+  // World" vs "Guardian World" stays distinguishable there), *before* any topic
+  // grouping below — grouping is purely a browse-view concern for the main body.
   const featured = buildFeatured([
     ...editions,
     ...worldNewsEditions,
