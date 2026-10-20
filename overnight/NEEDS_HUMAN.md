@@ -57,9 +57,17 @@ Most important first.
   event from a different angle).
 - Why a branch: it hides cards, so it's a taste call. It only changes rendering,
   and the data is untouched, so removing it later is just a rebuild.
-- Both optional branches merge cleanly on top of #2, and together all 56 tests pass:
-  `git merge overnight/feature-story-clusters overnight/feature-more-ai-sources`,
-  then `npm run rebuild`.
+
+## 3c. Put the top 3 headlines in the Telegram message? (branch `overnight/feature-telegram-headlines`)
+- Today's message is title + counts + link. This version adds "· N new" and the day's
+  three freshest headlines as bullets, so it's still short.
+- Why a branch: you cut the message down to just a link once before, to stop it
+  flooding the chat.
+
+All three optional branches merge cleanly on top of #2 (checked together: 57/57 tests).
+Pick any of them:
+`git merge overnight/feature-story-clusters overnight/feature-more-ai-sources overnight/feature-telegram-headlines`,
+then `npm run rebuild`.
 
 ## 4. Washington Post World feed is down
 - `feeds.washingtonpost.com` returns 502 for every feed tonight (world, national).

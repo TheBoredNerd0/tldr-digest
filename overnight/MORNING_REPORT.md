@@ -13,7 +13,7 @@
   regenerated, and the 100 past days were recovered from their HTML.
 - Sources that silently die are now flagged: The Rundown AI and VentureBeat had been
   missing for ~2 months unnoticed (both fixed yesterday).
-- Went from **0 to 52 automated tests**, plus CI. npm audit is clean. Today's page is 15%
+- Went from **0 to 53 automated tests** (57 with the optional branches), plus CI. npm audit is clean. Today's page is 15%
   lighter. Nothing is live until you merge (a merge procedure is in NEEDS_HUMAN, rehearsed twice).
 
 ## Time
@@ -25,6 +25,7 @@
 | `overnight/2026-10-21` | Everything below. Based on `main` @ 5dfd975. |
 | `overnight/feature-more-ai-sources` | On top of the above: six more AI sources. Your call. |
 | `overnight/feature-story-clusters` | On top of the above: one card per story across outlets, with "Also covered by…". Your call. |
+| `overnight/feature-telegram-headlines` | On top of the above: the Telegram message adds "N new" + the top 3 headlines. Your call. |
 
 Nothing was pushed to `main`, and nothing was deployed.
 
@@ -53,11 +54,11 @@ Nothing was pushed to `main`, and nothing was deployed.
   (louder at 3 days in a row).
 - **Atom feed support** (opens up The Verge, Simon Willison and similar feeds).
 - **Shared versioned CSS/JS** instead of inlining in every page.
-- **Tests + CI**: 52 tests (pipeline, site, templates, network stubs, and the real page
+- **Tests + CI**: 53 tests (pipeline, site, templates, network stubs, and the real page
   script in jsdom); `.github/workflows/test.yml`. README rewritten.
 
 ## Before → after
-See `overnight/before-after/BASELINE.md` and `AFTER.md`. Highlights: tests 0 → 52,
+See `overnight/before-after/BASELINE.md` and `AFTER.md`. Highlights: tests 0 → 53,
 audit 1 high → 0, day page 462 KB → 392 KB, contrast 4.02 → 5.91:1, and new archive,
 search, saved, repeats and health features.
 
@@ -77,8 +78,9 @@ AIBriefs, Techmeme, TLDR archives, Kagi Kite, KBlip, Chinese design writing (人
 1. Add the `TELEGRAM_BOT_TOKEN` secret.
 2. Merge `overnight/2026-10-21` → `main`. The exact, rehearsed commands are there.
    Expect one harmless conflict in `docs/index.html`.
-3. Six extra AI sources (`overnight/feature-more-ai-sources`) and cross-outlet story
-   folding (`overnight/feature-story-clusters`): merge either, both or neither. They merge cleanly together.
+3. Three optional branches: six more AI sources, cross-outlet story folding, and
+   headlines in the Telegram message. Merge any of them; all three together merge
+   cleanly and pass 57/57 tests.
 4. The Washington Post feed host has been down (502) since 21 Oct. Watch the new warnings.
 5. Keep or delete the legacy per-edition Telegram flow.
 6. Optional paid AI daily summary.

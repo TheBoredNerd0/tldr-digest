@@ -10,9 +10,8 @@ Each item says why, and what it would take.
 3. **Story clustering across outlets.** Done on branch `overnight/feature-story-clusters`
    (word-overlap, no LLM). Next step if you like it: an embeddings model would catch
    differently-worded duplicates it currently misses, at a small API cost.
-4. **Telegram message with the top 3 headlines**, not just the link (TLDR archives title
-   each issue by its top stories, and so does our new archive). One line in `publish.js`,
-   using `summarizeDay().top`.
+4. **Telegram message with the top 3 headlines**: done on branch
+   `overnight/feature-telegram-headlines`.
 5. **AI "what mattered today" paragraph** (NEEDS_HUMAN #6). Needs an API key and a
    small daily cost.
 6. **GitHub Trending upgrades**: show stars gained today and the repo language as chips;
