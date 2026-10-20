@@ -1,0 +1,22 @@
+name: Tests
+
+# Runs the offline test suite on every push / PR. Deliberately separate from the
+# daily digest workflow: a failing test should flag a broken change, not stop
+# that morning's digest from going out.
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm test
