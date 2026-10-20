@@ -5255,6 +5255,32 @@
   var cards = document.querySelectorAll('.card[data-url]');
 
   try {
+    // Cover images are hotlinked from the publishers. On older days ~8% have
+    // expired or get rate-limited, which left a blank box; swap those for the
+    // same gradient placeholder used when an article never had an image.
+    var hue = function (s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; };
+    var fallback = function (img) {
+      if (!img.parentNode) return;
+      var card = img.closest('.card');
+      var h = hue(card ? (card.getAttribute('data-source') || '') + (card.getAttribute('data-headline') || '') : img.src);
+      var ph = document.createElement('div');
+      ph.className = 'cover placeholder';
+      ph.setAttribute('aria-hidden', 'true');
+      ph.style.background = 'linear-gradient(135deg, hsl(' + h + ',55%,45%), hsl(' + ((h + 40) % 360) + ',55%,30%))';
+      ph.textContent = '📰';
+      img.parentNode.replaceChild(ph, img);
+    };
+    document.addEventListener('error', function (evt) {
+      var t = evt.target;
+      if (t && t.tagName === 'IMG' && /\bcover\b/.test(t.className)) fallback(t);
+    }, true);
+    // Images that already failed before this script ran.
+    document.querySelectorAll('img.cover').forEach(function (img) {
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) fallback(img);
+    });
+  } catch (e) {}
+
+  try {
     // The page's own date and each card's cover image are read from the DOM
     // rather than repeated as attributes on all ~400 cards.
     var dayEl = document.querySelector('.daynav[data-date]');
