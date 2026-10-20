@@ -23,32 +23,34 @@ function formatArticle(a) {
   return lines.join("\n");
 }
 
-function formatSectionBlock(section) {
-  const lines = [`*${escapeMarkdownV2(section.title)}*`, ""];
-  for (const a of section.articles) {
-    lines.push(formatArticle(a));
-    lines.push("");
-  }
-  return lines.join("\n").trim();
+// A section becomes several packable units: its title travels with its first
+// article, then one unit per remaining article. Packing whole sections used to
+// overflow Telegram's 4096-char limit whenever one section alone was too long
+// (the send then fails outright), so the split point is per article instead.
+function sectionUnits(section) {
+  const articles = section.articles.map(formatArticle);
+  const title = `*${escapeMarkdownV2(section.title)}*`;
+  if (articles.length === 0) return [title];
+  return [`${title}\n\n${articles[0]}`, ...articles.slice(1)];
 }
 
 // Builds one "newsletter" style digest per edition instead of one message per section,
-// packing section blocks greedily and only splitting into multiple parts if the whole
+// packing units greedily and only splitting into multiple parts if the whole
 // edition doesn't fit in a single Telegram message.
 function buildEditionDigest(editionName, date, sections) {
-  const blocks = sections.map(formatSectionBlock);
+  const units = sections.flatMap(sectionUnits);
   const chunks = [];
   let current = [];
   let currentLen = 0;
 
-  for (const block of blocks) {
-    const addedLen = block.length + 2;
+  for (const unit of units) {
+    const addedLen = unit.length + 2;
     if (current.length > 0 && currentLen + addedLen > SAFE_LEN) {
       chunks.push(current.join("\n\n"));
       current = [];
       currentLen = 0;
     }
-    current.push(block);
+    current.push(unit);
     currentLen += addedLen;
   }
   if (current.length > 0) chunks.push(current.join("\n\n"));
