@@ -27,3 +27,15 @@ Raw page text for every read is saved under `C:\CLAUDE\Scraper\output\20261021-*
 
 Saturation: design-pattern queries began returning the same NN/g + listicle sites by the
 third query; HN "Show HN digest" saturated after one page (7 items, 2 relevant).
+
+## Round 2 (01:32 SGT)
+| URL | Learned | Status |
+|---|---|---|
+| old.reddit.com/r/rss/search.json | — | **skipped: login wall** (Reddit now requires an account for old.reddit / .json) |
+| HN Algolia "TLDR newsletter" | Mostly launch/stat posts; no recurring complaint threads | ok, low signal |
+| HN item 48886741 (Ask HN: flag AI-generated articles) | Readers want labels/filters on low-quality/AI-generated content | ok → mute/filter idea in ROADMAP |
+| w3.org/WAI/ARIA/apg/patterns/disclosure | Native details/summary already satisfies disclosure keyboard + state semantics | ok, confirms card markup |
+| Search engines (bing, brave) | Rate-limited / cooling down | skipped (no evasion) |
+
+Saturation: with Reddit gated and two engines rate-limited, further general web
+queries returned only already-recorded domains (NN/g, listicles, CSDN) — stopped.
