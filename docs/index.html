@@ -3,59 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TLDR Digest — Archive</title>
+<title>TLDR Digest — daily AI, tech &amp; world news</title>
+<meta name="description" content="A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.">
+<meta name="theme-color" content="#f2f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0e12" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="TLDR Digest">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TLDR Digest — daily AI, tech &amp; world news">
+<meta property="og:description" content="A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.">
+<meta property="og:url" content="https://theborednerd0.github.io/tldr-digest/">
+<link rel="canonical" href="https://theborednerd0.github.io/tldr-digest/">
+<meta property="og:image" content="https://www-cdn.anthropic.com/images/4zrzovbb/website/85648c93880ac27347f8e6a4008650a65c12ede8-1200x630.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%93%B0%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="alternate" type="application/rss+xml" title="TLDR Digest" href="feed.xml">
+<script>try{var r=document.documentElement,t=localStorage.getItem('tldr-theme'),v=localStorage.getItem('tldr-view');if(t)r.setAttribute('data-theme',t);if(v==='compact')r.setAttribute('data-view','compact');}catch(e){}</script>
 <style>
-  :root { color-scheme: light dark; }
+  :root {
+    color-scheme: light;
+    --bg: #f2f2f5; --surface: #ffffff; --surface-2: #e7e7ec; --border: #d5d5da;
+    --text: #1a1a1a; --muted: #5c5c66; --blurb: #3a3a3f; --accent: #2563eb;
+    --shadow: 0 1px 3px rgba(0,0,0,0.12); --shadow-lg: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0d0e12; --surface: #1b1c22; --surface-2: #24252d; --border: #2f3039;
+      --text: #e8e8ea; --muted: #a0a0ab; --blurb: #b9b9c2; --accent: #7aa7ff;
+      --shadow: none; --shadow-lg: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d0e12; --surface: #1b1c22; --surface-2: #24252d; --border: #2f3039;
+    --text: #e8e8ea; --muted: #a0a0ab; --blurb: #b9b9c2; --accent: #7aa7ff;
+    --shadow: none; --shadow-lg: none;
+  }
+
   * { box-sizing: border-box; }
   body {
-    margin: 0; padding: 2rem 1rem 4rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    max-width: 1100px; margin-inline: auto; line-height: 1.5;
-    background: #f2f2f5; color: #1a1a1a;
+    margin: 0 auto; padding: 1.25rem 1rem 4rem; max-width: 1100px; line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
   }
-  @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
-  :root[data-theme="dark"] body { background: #0d0e12; color: #e8e8ea; }
-  :root[data-theme="light"] body { background: #f2f2f5; color: #1a1a1a; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip-link { position: absolute; left: -999px; top: 0.5rem; background: var(--surface); padding: 0.5rem 0.75rem; z-index: 50; }
+  .skip-link:focus { left: 0.5rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 
-  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
-  h1 { font-size: 1.6rem; margin: 0; }
-  .date { color: #767680; margin-bottom: 1rem; font-size: 0.95rem; }
-
-  .theme-toggle {
-    flex: none; border: none; cursor: pointer; font-size: 1.1rem; background: #fff;
-    border-radius: 999px; width: 2.25rem; height: 2.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  /* ---- header ---- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .brand { font-size: 1.35rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; }
+  .tools { display: flex; gap: 0.4rem; }
+  .tool {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.2rem;
+    min-width: 2.4rem; height: 2.4rem; padding: 0 0.6rem; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: 1rem; color: var(--text); text-decoration: none;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
   }
-  @media (prefers-color-scheme: dark) { .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .theme-toggle { background: #fff; border: none; }
+  .tool[aria-current="page"] { border-color: var(--accent); }
+  .tool .count { font-size: 0.75rem; font-weight: 700; }
+  .tool .count:empty { display: none; }
 
-  .searchbar { margin-bottom: 1rem; }
+  h1.page-title { font-size: 1.6rem; margin: 0.25rem 0 0.1rem; line-height: 1.2; }
+  .subtle { color: var(--muted); font-size: 0.95rem; margin: 0 0 1rem; }
+
+  /* ---- day navigation ---- */
+  .daynav { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  .daynav a { text-decoration: none; padding: 0.35rem 0.1rem; }
+  .daynav a[hidden] { display: inline-block; visibility: hidden; }
+
+  /* ---- search ---- */
+  .searchbar { margin-bottom: 0.25rem; }
   .searchbar input {
-    width: 100%; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid #d5d5da;
-    background: #fff; color: inherit;
+    width: 100%; font: inherit; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: inherit;
   }
-  @media (prefers-color-scheme: dark) { .searchbar input { background: #1b1c22; border-color: #2a2b33; } }
-  :root[data-theme="dark"] .searchbar input { background: #1b1c22; border-color: #2a2b33; }
-  :root[data-theme="light"] .searchbar input { background: #fff; border-color: #d5d5da; }
-  .search-count { font-size: 0.8rem; color: #767680; margin: 0.4rem 0 0; }
+  .search-count { font-size: 0.85rem; color: var(--muted); margin: 0.4rem 0 0; min-height: 1.2em; }
+  kbd { font: 0.75rem/1 ui-monospace, monospace; padding: 0.1rem 0.35rem; border: 1px solid var(--border); border-radius: 4px; }
 
+  /* ---- topic pills ---- */
   .quicknav {
     position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
-    padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
+    padding: 0.75rem 0; margin-bottom: 1.5rem; background: var(--bg);
     overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
-  @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
-  :root[data-theme="dark"] .quicknav { background: #0d0e12; }
-  :root[data-theme="light"] .quicknav { background: #f2f2f5; }
   .quicknav a {
-    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
-    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
-    border: 2px solid transparent;
+    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: var(--surface);
+    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: var(--shadow); white-space: nowrap;
+    border: 2px solid var(--border);
   }
-  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border-color: #2a2b33; } }
-  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border-color: #2a2b33; }
-  :root[data-theme="light"] .quicknav a { background: #fff; }
-  .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
+  .quicknav a.active { border-color: var(--accent); font-weight: 600; }
 
+  /* ---- topic tiles ---- */
   #category-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 0.75rem; margin: 0.5rem 0 2.5rem;
@@ -63,65 +104,62 @@
   .category-tile {
     position: relative; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden;
     text-decoration: none; color: #fff; background-size: cover; background-position: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    background-color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
   }
   .tile-overlay {
     position: absolute; inset: 0; padding: 0.6rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
+    background: linear-gradient(to top, rgba(0,0,0,0.78) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
     display: flex; flex-direction: column; justify-content: flex-end;
   }
   .tile-emoji { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 1.3rem; }
   .tile-name { font-weight: 700; font-size: 0.95rem; line-height: 1.25; }
-  .tile-count { font-size: 0.75rem; opacity: 0.85; margin-top: 0.15rem; }
+  .tile-count { font-size: 0.75rem; opacity: 0.9; margin-top: 0.15rem; }
 
+  /* ---- sections ---- */
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
-    list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
+    list-style: none; cursor: pointer; font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
     display: flex; align-items: center; gap: 0.5rem;
   }
   details.edition-toggle summary.edition::-webkit-details-marker { display: none; }
   details.edition-toggle summary.edition::after {
-    content: "▾"; margin-left: auto; color: #767680; font-size: 1rem; transition: transform 0.15s;
+    content: "▾"; margin-left: auto; color: var(--muted); font-size: 1rem; transition: transform 0.15s;
   }
   details.edition-toggle[open] summary.edition::after { transform: rotate(180deg); }
-  details.edition-toggle summary.edition .count { color: #767680; font-weight: 400; font-size: 0.85rem; }
-
-  h3.section { font-size: 0.85rem; color: #767680; margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
-
+  details.edition-toggle summary.edition .count { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+  h3.section { font-size: 0.85rem; color: var(--muted); margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
   h2.edition.featured { font-size: 1.6rem; margin: 0 0 1rem; }
+
+  /* ---- cards ---- */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
-  .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-  @media (prefers-color-scheme: dark) { .grid.featured .card { border-color: #3a3b45; } }
+  .grid.featured .card { box-shadow: var(--shadow-lg); }
   .grid.featured .card .headline { font-size: 1.1rem; }
 
   .card {
-    background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    transition: opacity 0.15s;
+    position: relative; background: var(--surface); border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow); border: 1px solid transparent; transition: opacity 0.15s;
   }
-  @media (prefers-color-scheme: dark) { .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border: none; }
+  :root[data-theme="dark"] .card { border-color: var(--border); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card { border-color: var(--border); } }
   .card.is-read { opacity: 0.55; }
   .card[hidden] { display: none; }
-
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
 
   .cover-wrap { position: relative; }
-  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
+  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: var(--surface-2); }
   .card .cover.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
   .overlay {
     position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem 0.9rem 0.6rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0));
-    color: #fff;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0)); color: #fff;
   }
   .overlay .source {
     display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em; color: rgba(255,255,255,0.9);
   }
   .overlay .headline { display: block; font-weight: 700; font-size: 1rem; margin-top: 0.2rem; line-height: 1.3; }
-  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.75); font-size: 0.78rem; margin-top: 0.2rem; }
+  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.8); font-size: 0.78rem; margin-top: 0.2rem; }
   .expand-indicator {
     position: absolute; top: 0.6rem; right: 0.6rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
     background: rgba(0,0,0,0.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
@@ -130,121 +168,999 @@
   details[open] .expand-indicator { background: rgba(0,0,0,0.75); }
   details[open] .expand-indicator::before { content: "－"; }
 
+  .save {
+    position: absolute; top: 0.55rem; left: 0.55rem; z-index: 2; width: 1.9rem; height: 1.9rem;
+    border-radius: 50%; border: none; cursor: pointer; font-size: 1rem; line-height: 1;
+    background: rgba(0,0,0,0.55); color: #fff;
+  }
+  .save[aria-pressed="true"] { color: #ffcc33; background: rgba(0,0,0,0.75); }
+
   .blurb-wrap { padding: 0.85rem 0.9rem; }
-  .card .blurb { margin: 0; color: #3a3a3f; font-size: 1rem; }
-  @media (prefers-color-scheme: dark) { .card .blurb { color: #b9b9c2; } }
-  :root[data-theme="dark"] .card .blurb { color: #b9b9c2; }
-  :root[data-theme="light"] .card .blurb { color: #3a3a3f; }
+  .card .blurb { margin: 0; color: var(--blurb); font-size: 1rem; }
   .card .blurb a { color: inherit; }
 
-  nav.days { margin-bottom: 2rem; }
-  nav.days a { margin-right: 0.75rem; }
+  /* ---- compact list view (toggle in the header) ----
+     Lists scan faster than cards when you're skimming for something specific
+     (NN/g cards research); the same markup reflows into one row per story. */
+  :root[data-view="compact"] .grid,
+  :root[data-view="compact"] .grid.featured { grid-template-columns: 1fr; gap: 0.4rem; }
+  :root[data-view="compact"] .card { border-radius: 10px; box-shadow: none; border-color: var(--border); }
+  :root[data-view="compact"] .cover-wrap { display: flex; align-items: center; gap: 0.75rem; padding: 0.45rem 2.6rem 0.45rem 2.7rem; }
+  :root[data-view="compact"] .card .cover { width: 64px; height: 64px; aspect-ratio: 1; flex: none; border-radius: 8px; }
+  :root[data-view="compact"] .card .cover.placeholder { font-size: 1.4rem; }
+  :root[data-view="compact"] .overlay { position: static; padding: 0; background: none; color: var(--text); }
+  :root[data-view="compact"] .overlay .source,
+  :root[data-view="compact"] .overlay .readtime { color: var(--muted); }
+  :root[data-view="compact"] .grid.featured .card .headline { font-size: 1rem; }
+  :root[data-view="compact"] .expand-indicator { top: 50%; transform: translateY(-50%); background: var(--surface-2); color: var(--text); }
+  :root[data-view="compact"] .save { top: 50%; transform: translateY(-50%); background: var(--surface-2); color: var(--muted); }
+  :root[data-view="compact"] .save[aria-pressed="true"] { color: #d99a00; }
 
-ul { list-style: none; padding: 0; } li { padding: 0.4rem 0; font-size: 1.05rem; }</style>
+  /* ---- home / archive ---- */
+  .lead {
+    display: grid; grid-template-columns: 1fr; text-decoration: none; color: inherit;
+    background: var(--surface); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border); margin: 0.5rem 0 2rem;
+  }
+  @media (min-width: 720px) { .lead { grid-template-columns: 1.1fr 1fr; } }
+  .lead-image { min-height: 180px; background-size: cover; background-position: center; background-color: var(--surface-2); }
+  .lead-body { padding: 1.25rem 1.25rem 1.4rem; }
+  .eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+  .lead h2 { margin: 0.3rem 0 0.75rem; font-size: 1.5rem; line-height: 1.2; }
+  .lead ul { margin: 0 0 1rem; padding-left: 1.1rem; }
+  .lead li { margin: 0.35rem 0; font-weight: 600; }
+  .cta { display: inline-block; font-weight: 700; color: var(--accent); }
+
+  .month h2 { font-size: 1.05rem; margin: 2rem 0 0.5rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .days { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+  .day-row {
+    display: grid; grid-template-columns: 3.4rem 1fr auto; gap: 0.75rem; align-items: center;
+    padding: 0.7rem 0.25rem; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit;
+  }
+  .day-row:hover .day-top { color: var(--accent); }
+  .day-date { text-align: center; line-height: 1.1; }
+  .day-date b { display: block; font-size: 1.35rem; }
+  .day-date span { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
+  .day-top { font-size: 0.95rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .day-count { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+
+  /* ---- search-all / saved lists ---- */
+  .results { list-style: none; padding: 0; margin: 0; }
+  .result { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+  .result img, .result .thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex: none; background: var(--surface-2); }
+  .result .body { flex: 1; min-width: 0; }
+  .result .title { font-weight: 650; color: var(--text); text-decoration: none; }
+  .result .title:hover { color: var(--accent); }
+  .result .meta { font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; }
+  .result .remove { flex: none; }
+  .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
+  mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
+
+  footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
+</style>
 </head>
 <body>
-<h1>TLDR Digest — Archive</h1>
-<ul>
-<li><a href="31-july-2026.html">2026-07-31</a></li>
-<li><a href="31-august-2026.html">2026-08-31</a></li>
-<li><a href="30-september-2026.html">2026-09-30</a></li>
-<li><a href="30-july-2026.html">2026-07-30</a></li>
-<li><a href="30-august-2026.html">2026-08-30</a></li>
-<li><a href="29-september-2026.html">2026-09-29</a></li>
-<li><a href="29-july-2026.html">2026-07-29</a></li>
-<li><a href="29-august-2026.html">2026-08-29</a></li>
-<li><a href="28-september-2026.html">2026-09-28</a></li>
-<li><a href="28-july-2026.html">2026-07-28</a></li>
-<li><a href="28-august-2026.html">2026-08-28</a></li>
-<li><a href="27-september-2026.html">2026-09-27</a></li>
-<li><a href="27-july-2026.html">2026-07-27</a></li>
-<li><a href="27-august-2026.html">2026-08-27</a></li>
-<li><a href="26-september-2026.html">2026-09-26</a></li>
-<li><a href="26-july-2026.html">2026-07-26</a></li>
-<li><a href="26-august-2026.html">2026-08-26</a></li>
-<li><a href="25-september-2026.html">2026-09-25</a></li>
-<li><a href="25-july-2026.html">2026-07-25</a></li>
-<li><a href="25-august-2026.html">2026-08-25</a></li>
-<li><a href="24-september-2026.html">2026-09-24</a></li>
-<li><a href="24-july-2026.html">2026-07-24</a></li>
-<li><a href="24-august-2026.html">2026-08-24</a></li>
-<li><a href="23-september-2026.html">2026-09-23</a></li>
-<li><a href="23-july-2026.html">2026-07-23</a></li>
-<li><a href="23-august-2026.html">2026-08-23</a></li>
-<li><a href="22-september-2026.html">2026-09-22</a></li>
-<li><a href="22-july-2026.html">2026-07-22</a></li>
-<li><a href="22-august-2026.html">2026-08-22</a></li>
-<li><a href="21-september-2026.html">2026-09-21</a></li>
-<li><a href="21-july-2026.html">2026-07-21</a></li>
-<li><a href="21-august-2026.html">2026-08-21</a></li>
-<li><a href="20-september-2026.html">2026-09-20</a></li>
-<li><a href="20-october-2026.html">2026-10-20</a></li>
-<li><a href="20-july-2026.html">2026-07-20</a></li>
-<li><a href="20-august-2026.html">2026-08-20</a></li>
-<li><a href="19-september-2026.html">2026-09-19</a></li>
-<li><a href="19-october-2026.html">2026-10-19</a></li>
-<li><a href="19-july-2026.html">2026-07-19</a></li>
-<li><a href="19-august-2026.html">2026-08-19</a></li>
-<li><a href="18-september-2026.html">2026-09-18</a></li>
-<li><a href="18-october-2026.html">2026-10-18</a></li>
-<li><a href="18-july-2026.html">2026-07-18</a></li>
-<li><a href="18-august-2026.html">2026-08-18</a></li>
-<li><a href="17-september-2026.html">2026-09-17</a></li>
-<li><a href="17-october-2026.html">2026-10-17</a></li>
-<li><a href="17-august-2026.html">2026-08-17</a></li>
-<li><a href="16-september-2026.html">2026-09-16</a></li>
-<li><a href="16-october-2026.html">2026-10-16</a></li>
-<li><a href="16-august-2026.html">2026-08-16</a></li>
-<li><a href="15-september-2026.html">2026-09-15</a></li>
-<li><a href="15-october-2026.html">2026-10-15</a></li>
-<li><a href="15-july-2026.html">2026-07-15</a></li>
-<li><a href="15-august-2026.html">2026-08-15</a></li>
-<li><a href="14-september-2026.html">2026-09-14</a></li>
-<li><a href="14-october-2026.html">2026-10-14</a></li>
-<li><a href="14-july-2026.html">2026-07-14</a></li>
-<li><a href="14-august-2026.html">2026-08-14</a></li>
-<li><a href="13-september-2026.html">2026-09-13</a></li>
-<li><a href="13-october-2026.html">2026-10-13</a></li>
-<li><a href="13-july-2026.html">2026-07-13</a></li>
-<li><a href="13-august-2026.html">2026-08-13</a></li>
-<li><a href="12-september-2026.html">2026-09-12</a></li>
-<li><a href="12-october-2026.html">2026-10-12</a></li>
-<li><a href="12-august-2026.html">2026-08-12</a></li>
-<li><a href="11-september-2026.html">2026-09-11</a></li>
-<li><a href="11-october-2026.html">2026-10-11</a></li>
-<li><a href="11-august-2026.html">2026-08-11</a></li>
-<li><a href="10-september-2026.html">2026-09-10</a></li>
-<li><a href="10-october-2026.html">2026-10-10</a></li>
-<li><a href="10-july-2026.html">2026-07-10</a></li>
-<li><a href="10-august-2026.html">2026-08-10</a></li>
-<li><a href="09-september-2026.html">2026-09-09</a></li>
-<li><a href="09-october-2026.html">2026-10-09</a></li>
-<li><a href="09-july-2026.html">2026-07-09</a></li>
-<li><a href="09-august-2026.html">2026-08-09</a></li>
-<li><a href="08-september-2026.html">2026-09-08</a></li>
-<li><a href="08-october-2026.html">2026-10-08</a></li>
-<li><a href="08-august-2026.html">2026-08-08</a></li>
-<li><a href="07-september-2026.html">2026-09-07</a></li>
-<li><a href="07-october-2026.html">2026-10-07</a></li>
-<li><a href="07-august-2026.html">2026-08-07</a></li>
-<li><a href="06-september-2026.html">2026-09-06</a></li>
-<li><a href="06-october-2026.html">2026-10-06</a></li>
-<li><a href="06-august-2026.html">2026-08-06</a></li>
-<li><a href="05-september-2026.html">2026-09-05</a></li>
-<li><a href="05-october-2026.html">2026-10-05</a></li>
-<li><a href="05-august-2026.html">2026-08-05</a></li>
-<li><a href="04-september-2026.html">2026-09-04</a></li>
-<li><a href="04-october-2026.html">2026-10-04</a></li>
-<li><a href="04-august-2026.html">2026-08-04</a></li>
-<li><a href="03-september-2026.html">2026-09-03</a></li>
-<li><a href="03-october-2026.html">2026-10-03</a></li>
-<li><a href="03-august-2026.html">2026-08-03</a></li>
-<li><a href="02-september-2026.html">2026-09-02</a></li>
-<li><a href="02-october-2026.html">2026-10-02</a></li>
-<li><a href="02-august-2026.html">2026-08-02</a></li>
-<li><a href="01-september-2026.html">2026-09-01</a></li>
-<li><a href="01-october-2026.html">2026-10-01</a></li>
-<li><a href="01-august-2026.html">2026-08-01</a></li>
-</ul>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+<a class="brand" href="./" aria-current="page">📰 TLDR Digest</a>
+<nav class="tools" aria-label="Site">
+<a class="tool" href="search.html" title="Search every day" aria-label="Search every day">🔎</a>
+<a class="tool" href="saved.html" title="Saved articles" aria-label="Saved articles">★<span class="count" data-saved-count></span></a>
+
+<button id="theme-toggle" class="tool" type="button" aria-label="Toggle dark mode">🌙</button>
+</nav>
+</header>
+<main id="main">
+<h1 class="sr-only">TLDR Digest</h1>
+<a class="lead" href="20-october-2026.html">
+<div class="lead-image" role="img" aria-label="" style="background-image: url('https://www-cdn.anthropic.com/images/4zrzovbb/website/85648c93880ac27347f8e6a4008650a65c12ede8-1200x630.jpg')"></div>
+<div class="lead-body">
+<span class="eyebrow">Latest digest</span>
+<h2>Tuesday 20 October 2026</h2>
+<ul><li>Anthropic Commits Equity to Public Benefit</li><li>OpenAI testing new &quot;Aurora&quot; GPT-Image model on Arena</li><li>How AI Is Reshaping Anthropic&#39;s Workforce</li></ul>
+<span class="cta">Read all 297 stories →</span>
+</div>
+</a>
+<h2 class="sr-only">Archive</h2>
+<section class="month" aria-labelledby="m-2026-10">
+<h2 id="m-2026-10">October 2026</h2>
+<ol class="days" reversed>
+<li><a class="day-row" href="20-october-2026.html">
+<span class="day-date"><b>20</b><span>Tue</span></span>
+<span class="day-top">Anthropic Commits Equity to Public Benefit · OpenAI testing new &quot;Aurora&quot; GPT-Image model on Arena · How AI Is Reshaping Anthropic&#39;s Workforce</span>
+<span class="day-count">297 stories</span>
+</a></li>
+<li><a class="day-row" href="19-october-2026.html">
+<span class="day-date"><b>19</b><span>Mon</span></span>
+<span class="day-top">Anthropic says it’s committing 5% of its shares to a ‘public benefit fund’ · cursor/plugins · Disney agrees to hire the majority of Character.AI’s workforce</span>
+<span class="day-count">293 stories</span>
+</a></li>
+<li><a class="day-row" href="18-october-2026.html">
+<span class="day-date"><b>18</b><span>Sun</span></span>
+<span class="day-top">Benefit Street Partners answers questions faster with Codex · Meta removes language that raised scraping and AI training concerns · Anthropic says its workforce has become less junior and is spending more time in meetings</span>
+<span class="day-count">341 stories</span>
+</a></li>
+<li><a class="day-row" href="17-october-2026.html">
+<span class="day-date"><b>17</b><span>Sat</span></span>
+<span class="day-top">Inside Microsoft&#39;s Frontier Pre-Training Stack · d1-ultra: Introducing the World&#39;s Best Decision Model · How Itaú is building generative AI for its entire customer base</span>
+<span class="day-count">306 stories</span>
+</a></li>
+<li><a class="day-row" href="16-october-2026.html">
+<span class="day-date"><b>16</b><span>Fri</span></span>
+<span class="day-top">Grok Voice 3.0 · A Hybrid, Multi-Model AI Future · Bringing GPT-Rosalind to academic research labs</span>
+<span class="day-count">300 stories</span>
+</a></li>
+<li><a class="day-row" href="15-october-2026.html">
+<span class="day-date"><b>15</b><span>Thu</span></span>
+<span class="day-top">OpenAI Employee Arrested Over Hidden Recording Device · Gemini 4 Argon Lands on Google Cloud · Arguments About AI Consciousness Remain Highly Motivated and At Best Overconfident</span>
+<span class="day-count">323 stories</span>
+</a></li>
+<li><a class="day-row" href="14-october-2026.html">
+<span class="day-date"><b>14</b><span>Wed</span></span>
+<span class="day-top">Muse Wonder · Microsoft Introduced the Maia 300 AI Chip · Releasing AI-generated software</span>
+<span class="day-count">284 stories</span>
+</a></li>
+<li><a class="day-row" href="13-october-2026.html">
+<span class="day-date"><b>13</b><span>Tue</span></span>
+<span class="day-top">Nvidia Discusses Boosting Reflection Investment, Computing Deal · Gemini 4 Argon hints emerge as Google tests Carbon checkpoint · OpenAI Responds to Departed Safety Researchers</span>
+<span class="day-count">316 stories</span>
+</a></li>
+<li><a class="day-row" href="12-october-2026.html">
+<span class="day-date"><b>12</b><span>Mon</span></span>
+<span class="day-top">Will the HomeView be Apple’s first smart home success? · 48 hours to TechCrunch Disrupt 2026 — hear directly from the people building what’s next · Can the AI industry persuade data center opponents by getting rid of NDAs?</span>
+<span class="day-count">274 stories</span>
+</a></li>
+<li><a class="day-row" href="11-october-2026.html">
+<span class="day-date"><b>11</b><span>Sun</span></span>
+<span class="day-top">Microsoft’s Satya Nadella says AI models need an ‘emergency brake’ · Apple discloses deal to hire team and license tech from personalized podcast startup Huxe · 3 days to TechCrunch Disrupt 2026: Meet the startups before they hit mainstream</span>
+<span class="day-count">282 stories</span>
+</a></li>
+<li><a class="day-row" href="10-october-2026.html">
+<span class="day-date"><b>10</b><span>Sat</span></span>
+<span class="day-top">Ultrafast is rolling out today for GPT-6.1 Sol in the API, Codex, and ChatGPT Work · Gemini Agent · Former Cognition, Ramp Staffers Want AI Agents Running Businesses</span>
+<span class="day-count">302 stories</span>
+</a></li>
+<li><a class="day-row" href="09-october-2026.html">
+<span class="day-date"><b>9</b><span>Fri</span></span>
+<span class="day-top">Grok Bot will use Claude Opus 5.5, Midjourney, and Suno, says Musk · How Oracle turns days of work into minutes with ChatGPT and Codex · Pollo AI turns creative ideas into campaigns with OpenAI</span>
+<span class="day-count">305 stories</span>
+</a></li>
+<li><a class="day-row" href="08-october-2026.html">
+<span class="day-date"><b>8</b><span>Thu</span></span>
+<span class="day-top">Mistral Large 4 · Nano Banana 2.1 · Helping teens learn, plan, and shape the future of AI</span>
+<span class="day-count">295 stories</span>
+</a></li>
+<li><a class="day-row" href="07-october-2026.html">
+<span class="day-date"><b>7</b><span>Wed</span></span>
+<span class="day-top">OpenAI to Add Text Watermarks · Instinct in group chats · OpenAI in $30 Billion Round Talks With UAE Funds, BlackRock</span>
+<span class="day-count">330 stories</span>
+</a></li>
+<li><a class="day-row" href="06-october-2026.html">
+<span class="day-date"><b>6</b><span>Tue</span></span>
+<span class="day-top">Prime Inference: Fast, Reliable Serving for Frontier Open Models · Aleph Alpha releases open-weight Kolibri with 1M context · Anthropic to invest $100 million to train AI engineer talent</span>
+<span class="day-count">292 stories</span>
+</a></li>
+<li><a class="day-row" href="05-october-2026.html">
+<span class="day-date"><b>5</b><span>Mon</span></span>
+<span class="day-top">Google froze its open source bug bounty program due to a ‘significant rise’ in AI submissions · tester-army/e2e · coreyhaines31/marketingskills</span>
+<span class="day-count">284 stories</span>
+</a></li>
+<li><a class="day-row" href="04-october-2026.html">
+<span class="day-date"><b>4</b><span>Sun</span></span>
+<span class="day-top">The Agent Said It Was Done. The Database Disagreed. · Amazon responds to data center backlash, says it no longer uses NDAs · affaan-m/ECC</span>
+<span class="day-count">326 stories</span>
+</a></li>
+<li><a class="day-row" href="03-october-2026.html">
+<span class="day-date"><b>3</b><span>Sat</span></span>
+<span class="day-top">Claude-shaped science · Why Superintelligent Machines May Be Most Valuable Doing Routine Work · A model guide for the GPT-6 family</span>
+<span class="day-count">305 stories</span>
+</a></li>
+<li><a class="day-row" href="02-october-2026.html">
+<span class="day-date"><b>2</b><span>Fri</span></span>
+<span class="day-top">Musk&#39;s SpaceXAI Considers Overhaul of Pricing for Grok, X Users · Claude for Government is now generally available · The eternal complement</span>
+<span class="day-count">317 stories</span>
+</a></li>
+<li><a class="day-row" href="01-october-2026.html">
+<span class="day-date"><b>1</b><span>Thu</span></span>
+<span class="day-top">The Future Is for Everyone: Muse for Small Business · Disrupting a coordinated model-distillation campaign · Helping small businesses put AI to work</span>
+<span class="day-count">282 stories</span>
+</a></li>
+</ol>
+</section>
+<section class="month" aria-labelledby="m-2026-09">
+<h2 id="m-2026-09">September 2026</h2>
+<ol class="days" reversed>
+<li><a class="day-row" href="30-september-2026.html">
+<span class="day-date"><b>30</b><span>Wed</span></span>
+<span class="day-top">NVIDIA Launched Open Agent Safety Platform · Anthropic&#39;s IPO prospectus shows sweeping AI vision, surging costs · AMD to Acquire World Labs for $8.2 Billion</span>
+<span class="day-count">347 stories</span>
+</a></li>
+<li><a class="day-row" href="29-september-2026.html">
+<span class="day-date"><b>29</b><span>Tue</span></span>
+<span class="day-top">OpenAI prepares to expand Ultrafast API to more users · Why I&#39;m Building Muse · OpenAI and Anthropic Probe Tens of Thousands of Incidents as OpenAI Halts Training</span>
+<span class="day-count">282 stories</span>
+</a></li>
+<li><a class="day-row" href="28-september-2026.html">
+<span class="day-date"><b>28</b><span>Mon</span></span>
+<span class="day-top">Anthropic’s CEO is about to have dinner with President Trump · debpalash/VoiceStudio · Can Muse overcome Meta’s trust issues?</span>
+<span class="day-count">307 stories</span>
+</a></li>
+<li><a class="day-row" href="27-september-2026.html">
+<span class="day-date"><b>27</b><span>Sun</span></span>
+<span class="day-top">Google tests buying from Walmart-owned Flipkart through Gemini and AI Mode in India · NVIDIA/Model-Optimizer · Insurers claim AI is already increasing healthcare costs</span>
+<span class="day-count">312 stories</span>
+</a></li>
+<li><a class="day-row" href="26-september-2026.html">
+<span class="day-date"><b>26</b><span>Sat</span></span>
+<span class="day-top">Bringing Your Muse to Life · Gemini 3.8 Live with Live Avatar · OpenAI prepares new $500/month Pro Max plan for ChatGPT</span>
+<span class="day-count">277 stories</span>
+</a></li>
+<li><a class="day-row" href="25-september-2026.html">
+<span class="day-date"><b>25</b><span>Fri</span></span>
+<span class="day-top">Qwen Intelligence Launches Three Mobile AI Agents · Google&#39;s new speech models can design and direct voices · Introducing Gemini 3.8 Live with Live Avatar</span>
+<span class="day-count">306 stories</span>
+</a></li>
+<li><a class="day-row" href="24-september-2026.html">
+<span class="day-date"><b>24</b><span>Thu</span></span>
+<span class="day-top">SWE-Bench Pro V2 · Two years of OpenAI Academy · OpenAI extends cyber access to Ukraine for civilian defense</span>
+<span class="day-count">342 stories</span>
+</a></li>
+<li><a class="day-row" href="23-september-2026.html">
+<span class="day-date"><b>23</b><span>Wed</span></span>
+<span class="day-top">Xiaomi open-sources MiMo-V2.6 Pro and Flash models · Introducing Grok 4.7 · Anthropic tests Fable 5.2 and Opus 5.5 ahead of the release</span>
+<span class="day-count">313 stories</span>
+</a></li>
+<li><a class="day-row" href="22-september-2026.html">
+<span class="day-date"><b>22</b><span>Tue</span></span>
+<span class="day-top">OpenAI&#39;s projected compute bill climbed to $856B · Opening access for developers to build Muse connectors · Segment Anything Model (SAM) 3.1</span>
+<span class="day-count">348 stories</span>
+</a></li>
+<li><a class="day-row" href="21-september-2026.html">
+<span class="day-date"><b>21</b><span>Mon</span></span>
+<span class="day-top">6 days left to save up to $200 to TechCrunch Disrupt 2026 · affaan-m/ECC · BuilderIO/agent-native</span>
+<span class="day-count">304 stories</span>
+</a></li>
+<li><a class="day-row" href="20-september-2026.html">
+<span class="day-date"><b>20</b><span>Sun</span></span>
+<span class="day-top">Introducing the Australian Youth Safety Blueprint · Flock reportedly tries to shrink workforce with employee buyouts · trycua/cua</span>
+<span class="day-count">321 stories</span>
+</a></li>
+<li><a class="day-row" href="19-september-2026.html">
+<span class="day-date"><b>19</b><span>Sat</span></span>
+<span class="day-top">How Claude is uplifting biomolecular modeling · Google wants to give your family its own cloud computer · Projects redesigned: from folder to conversation</span>
+<span class="day-count">318 stories</span>
+</a></li>
+<li><a class="day-row" href="18-september-2026.html">
+<span class="day-date"><b>18</b><span>Fri</span></span>
+<span class="day-top">Claude Cowork and chat are now one Claude · OpenAI Expanded ChatGPT Ads with AI Agents · How Cooley is accelerating IPO work with ChatGPT</span>
+<span class="day-count">277 stories</span>
+</a></li>
+<li><a class="day-row" href="17-september-2026.html">
+<span class="day-date"><b>17</b><span>Thu</span></span>
+<span class="day-top">Nature Is Our Learning Environment · Gemini 3.8 Live and 3.5 Transcribe · Helping older adults use AI in everyday life</span>
+<span class="day-count">325 stories</span>
+</a></li>
+<li><a class="day-row" href="16-september-2026.html">
+<span class="day-date"><b>16</b><span>Wed</span></span>
+<span class="day-top">Anthropic prepares Claude Money for personal finance · OpenAI Buys Startup Developing Smartphone Camera · Apple&#39;s Siri AI Can Be Swapped Out for Claude, ChatGPT, Code Shows</span>
+<span class="day-count">299 stories</span>
+</a></li>
+<li><a class="day-row" href="15-september-2026.html">
+<span class="day-date"><b>15</b><span>Tue</span></span>
+<span class="day-top">Introducing Projects · SoftBank Gets Upsized $11.9 Billion Loan in OpenAI Funding Push · How Fyxer built an AI executive assistant people trust</span>
+<span class="day-count">295 stories</span>
+</a></li>
+<li><a class="day-row" href="14-september-2026.html">
+<span class="day-date"><b>14</b><span>Mon</span></span>
+<span class="day-top">What’s behind the AI industry’s latest warnings of doom? · JustVugg/colibri · ever-co/ever-gauzy</span>
+<span class="day-count">291 stories</span>
+</a></li>
+<li><a class="day-row" href="13-september-2026.html">
+<span class="day-date"><b>13</b><span>Sun</span></span>
+<span class="day-top">OpenAI’s Sam Altman says it would be ‘ill-advised’ to go public in 2026 · asgeirtj/system_prompts_leaks · Anthropic CEO outlines plan to slow AI development</span>
+<span class="day-count">296 stories</span>
+</a></li>
+<li><a class="day-row" href="12-september-2026.html">
+<span class="day-date"><b>12</b><span>Sat</span></span>
+<span class="day-top">OpenAI Launches the Agents API · Meta to announce Shared Agents for Muse at Meta Connect · OpenAI Is Open to Slowing Cutting-Edge AI, CEO Sam Altman Tells Staff</span>
+<span class="day-count">317 stories</span>
+</a></li>
+<li><a class="day-row" href="11-september-2026.html">
+<span class="day-date"><b>11</b><span>Fri</span></span>
+<span class="day-top">Anthropic Models AI&#39;s Potential Impact on the US Economy · Siri AI will launch in beta, complicated by daily usage caps &amp; future paid access · How a researcher uses Codex and ChatGPT to search for new antimicrobial molecules</span>
+<span class="day-count">315 stories</span>
+</a></li>
+<li><a class="day-row" href="10-september-2026.html">
+<span class="day-date"><b>10</b><span>Thu</span></span>
+<span class="day-top">Introducing Muse: The World&#39;s First Personal AI Agent Built for Everyone · ChatGPT Images 2.5 · The AI policy window is open. We need to act.</span>
+<span class="day-count">320 stories</span>
+</a></li>
+<li><a class="day-row" href="09-september-2026.html">
+<span class="day-date"><b>9</b><span>Wed</span></span>
+<span class="day-top">Anthropic signed $517bn in compute agreements in past 11 months · OpenAI prepares managed agents for DevDay 2026 · The Two MMLU Scores: What a Benchmark Name Does Not Fix</span>
+<span class="day-count">296 stories</span>
+</a></li>
+<li><a class="day-row" href="08-september-2026.html">
+<span class="day-date"><b>8</b><span>Tue</span></span>
+<span class="day-top">Formalizing Fermat&#39;s Last Theorem · Grok Imagine Video 1.5 agent · Supporting independent journalism in Ukraine</span>
+<span class="day-count">276 stories</span>
+</a></li>
+<li><a class="day-row" href="07-september-2026.html">
+<span class="day-date"><b>7</b><span>Mon</span></span>
+<span class="day-top">An Alien Mind · Research acceleration: The view inside OpenAI · Authors push back as publishers and agents make claims on Anthropic settlement</span>
+<span class="day-count">288 stories</span>
+</a></li>
+<li><a class="day-row" href="06-september-2026.html">
+<span class="day-date"><b>6</b><span>Sun</span></span>
+<span class="day-top">Seattle Times and Newsday are the latest publications to sue OpenAI and Microsoft · Hikers rescued after using Google Gemini for planning · OpenAI confirms ‘wiki incident,’ says it’s ‘working on a framework’ for more disclosure</span>
+<span class="day-count">292 stories</span>
+</a></li>
+<li><a class="day-row" href="05-september-2026.html">
+<span class="day-date"><b>5</b><span>Sat</span></span>
+<span class="day-top">Microsoft releases MAI-Transcribe-2 · Nvidia confirms Hugging Face acquisition for $12.93 billion · Grok Bot for Enterprise</span>
+<span class="day-count">289 stories</span>
+</a></li>
+<li><a class="day-row" href="04-september-2026.html">
+<span class="day-date"><b>4</b><span>Fri</span></span>
+<span class="day-top">Muse superapp from Meta and Ava model with computer use · Muse Spark 1.3 · LLMs: Intelligence vs. cost</span>
+<span class="day-count">317 stories</span>
+</a></li>
+<li><a class="day-row" href="03-september-2026.html">
+<span class="day-date"><b>3</b><span>Thu</span></span>
+<span class="day-top">Atlas: A World Model for Spatial Intelligence · AI Startup Cognition Set to Raise Around $1 Billion at a $47 Billion Value · ATV Big Air Tour turned 3 days of work into 3 hours with ChatGPT</span>
+<span class="day-count">301 stories</span>
+</a></li>
+<li><a class="day-row" href="02-september-2026.html">
+<span class="day-date"><b>2</b><span>Wed</span></span>
+<span class="day-top">OpenClaw 2.0 · Introducing Solaris · Muse Code (Website)</span>
+<span class="day-count">341 stories</span>
+</a></li>
+<li><a class="day-row" href="01-september-2026.html">
+<span class="day-date"><b>1</b><span>Tue</span></span>
+<span class="day-top">Anthropic&#39;s report on Self-Improving AI · OpenAI Ends Cursor Partnership After SpaceX Acquisition · Polimill builds Japan&#39;s next-generation public AI infrastructure</span>
+<span class="day-count">305 stories</span>
+</a></li>
+</ol>
+</section>
+<section class="month" aria-labelledby="m-2026-08">
+<h2 id="m-2026-08">August 2026</h2>
+<ol class="days" reversed>
+<li><a class="day-row" href="31-august-2026.html">
+<span class="day-date"><b>31</b><span>Mon</span></span>
+<span class="day-top">The U.S. is building barriers around drones and robots, but China has scale to get around them · Lakr233/vphone-cli · Musk’s faster path to more gas turbines comes with pollution problem</span>
+<span class="day-count">287 stories</span>
+</a></li>
+<li><a class="day-row" href="30-august-2026.html">
+<span class="day-date"><b>30</b><span>Sun</span></span>
+<span class="day-top">Sony Music, Warner sue Anthropic, alleging a “brazen campaign” of intellectual property theft · “We’re not doing 30 bets a year”: Vijay Pande on betting small after running $4 billion at a16z · Nvidia’s AI advantage is moving beyond the GPU</span>
+<span class="day-count">283 stories</span>
+</a></li>
+<li><a class="day-row" href="29-august-2026.html">
+<span class="day-date"><b>29</b><span>Sat</span></span>
+<span class="day-top">Anthropic&#39;s Model Hardware Standard · Introducing H3 Max by fal · Introducing Parse: Enterprise document intelligence at scale</span>
+<span class="day-count">365 stories</span>
+</a></li>
+<li><a class="day-row" href="28-august-2026.html">
+<span class="day-date"><b>28</b><span>Fri</span></span>
+<span class="day-top">NVIDIA&#39;s $108b Quarter · Salesforce, Anthropic expand partnership as Benioff responds to ‘SaaSpocalypse&#39; concerns · Supporting Thailand’s next generation of AI startups</span>
+<span class="day-count">288 stories</span>
+</a></li>
+<li><a class="day-row" href="27-august-2026.html">
+<span class="day-date"><b>27</b><span>Thu</span></span>
+<span class="day-top">OpenAI&#39;s Jalapeño inference accelerator moves toward deployment · Perplexity partners with Nvidia to launch Portable Computer, a fully local AI agent with zero token costs · Vocab Break</span>
+<span class="day-count">332 stories</span>
+</a></li>
+<li><a class="day-row" href="26-august-2026.html">
+<span class="day-date"><b>26</b><span>Wed</span></span>
+<span class="day-top">NVIDIA Enters Full Production of Groq 3 LPX AI Inference Accelerator Chips, Supercharging Vera Rubin With The Fastest Token Generation Speeds Ever Recorded · Anonymous Ox Alpha processes 26T tokens on OpenCode, breaks OpenRouter launch record · The Economics of the Intelligence Frontier</span>
+<span class="day-count">309 stories</span>
+</a></li>
+<li><a class="day-row" href="25-august-2026.html">
+<span class="day-date"><b>25</b><span>Tue</span></span>
+<span class="day-top">Hugging Face&#39;s $13B Valuation · Anthropic will give defenders what its strongest model finds, but not the model itself · Grok Bot is now included with more plans</span>
+<span class="day-count">324 stories</span>
+</a></li>
+<li><a class="day-row" href="24-august-2026.html">
+<span class="day-date"><b>24</b><span>Mon</span></span>
+<span class="day-top">Who’s behind the new ‘stealth model’ Ox Alpha? · freestylefly/awesome-gpt-image-2 · basecamp/omarchy</span>
+<span class="day-count">342 stories</span>
+</a></li>
+<li><a class="day-row" href="23-august-2026.html">
+<span class="day-date"><b>23</b><span>Sun</span></span>
+<span class="day-top">Harvard’s $699 startup bootcamp offers AI avatars of its instructors · openai/codex · Inherent, founded by DeepMind alumni, says its AI ‘teammate’ just outperformed Anthropic and OpenAI at replicating research</span>
+<span class="day-count">339 stories</span>
+</a></li>
+<li><a class="day-row" href="22-august-2026.html">
+<span class="day-date"><b>22</b><span>Sat</span></span>
+<span class="day-top">Anthropic&#39;s Project Parka sits through meetings and assigns Claude agents the homework · Slack Code: Where Your Team and Agents Build Together · ChatGPT update adds Apple Messages integration on Mac</span>
+<span class="day-count">301 stories</span>
+</a></li>
+<li><a class="day-row" href="21-august-2026.html">
+<span class="day-date"><b>21</b><span>Fri</span></span>
+<span class="day-top">Early outputs of Muse Video model from Meta · Router (Website) · Replit Introduces Free Mode</span>
+<span class="day-count">301 stories</span>
+</a></li>
+<li><a class="day-row" href="20-august-2026.html">
+<span class="day-date"><b>20</b><span>Thu</span></span>
+<span class="day-top">GLM-5.3 hits the API at 1.4/4.4 per million tokens · OpenAI Slowed Training Over Cyber Risks · Cerebras Says Its New Computer Boosts AI Speed Advantage Over Nvidia</span>
+<span class="day-count">280 stories</span>
+</a></li>
+<li><a class="day-row" href="19-august-2026.html">
+<span class="day-date"><b>19</b><span>Wed</span></span>
+<span class="day-top">Anthropic&#39;s Revenue to Exceed $65 Billion · Groq Raised $350 Million After Nvidia Deal · Cursor launches Origin code hosting platform as GitHub outage exposes opening in AI coding race</span>
+<span class="day-count">297 stories</span>
+</a></li>
+<li><a class="day-row" href="18-august-2026.html">
+<span class="day-date"><b>18</b><span>Tue</span></span>
+<span class="day-top">GLM-5.3: Frontier Coding with Emergent Cyber Capabilities · Cursor is now a part of SpaceX · Dario Amodei logs on to answer the critics</span>
+<span class="day-count">305 stories</span>
+</a></li>
+<li><a class="day-row" href="17-august-2026.html">
+<span class="day-date"><b>17</b><span>Mon</span></span>
+<span class="day-top">Stripe will reportedly acquire AI gateway startup OpenRouter for $7B+ · basecamp/omarchy · OpenCut-app/OpenCut</span>
+<span class="day-count">322 stories</span>
+</a></li>
+<li><a class="day-row" href="16-august-2026.html">
+<span class="day-date"><b>16</b><span>Sun</span></span>
+<span class="day-top">Woman claims her stepfather used Grok to transform childhood photo into explicit imagery · cordiverse/cordis · Anthropic shares more details about how Claude’s new watermarks will work</span>
+<span class="day-count">330 stories</span>
+</a></li>
+<li><a class="day-row" href="15-august-2026.html">
+<span class="day-date"><b>15</b><span>Sat</span></span>
+<span class="day-top">GPT-5.6 Sol Ultrafast · Google&#39;s Gemini 3.7 Flash targets coding and agents with a 50% introductory price cut · Anthropic could be worth $2 trillion when it goes public</span>
+<span class="day-count">307 stories</span>
+</a></li>
+<li><a class="day-row" href="14-august-2026.html">
+<span class="day-date"><b>14</b><span>Fri</span></span>
+<span class="day-top">Claude&#39;s Chrome Side Panel Becomes a Full Cowork Session · Introducing Grok 4.6 · )</span>
+<span class="day-count">341 stories</span>
+</a></li>
+<li><a class="day-row" href="13-august-2026.html">
+<span class="day-date"><b>13</b><span>Thu</span></span>
+<span class="day-top">Gemini Passed 1 Billion Monthly Users · Nvidia&#39;s Switchyard router reshuffles AI models mid-task, cutting task costs to a third in its own tests · Anthropic slips an invisible signature into Claude</span>
+<span class="day-count">311 stories</span>
+</a></li>
+<li><a class="day-row" href="12-august-2026.html">
+<span class="day-date"><b>12</b><span>Wed</span></span>
+<span class="day-top">Learning more about Claude&#39;s mathematical capabilities · GPT-5.6-Cyber · Meta returns to its open-source roots</span>
+<span class="day-count">327 stories</span>
+</a></li>
+<li><a class="day-row" href="11-august-2026.html">
+<span class="day-date"><b>11</b><span>Tue</span></span>
+<span class="day-top">OpenAI Pauses Astra Over Cybersecurity Risks · Claude Code Makes Auto Mode the Default · xAI launches Imagine Image 2.0 in Grok Quality Mode</span>
+<span class="day-count">332 stories</span>
+</a></li>
+<li><a class="day-row" href="10-august-2026.html">
+<span class="day-date"><b>10</b><span>Mon</span></span>
+<span class="day-top">Embattled hedge fund Situational Awareness invests $400M in chip startup Source Foundry · vitali87/code-graph-rag · msitarzewski/agency-agents</span>
+<span class="day-count">347 stories</span>
+</a></li>
+<li><a class="day-row" href="09-august-2026.html">
+<span class="day-date"><b>9</b><span>Sun</span></span>
+<span class="day-top">Planned Amazon data center could become the biggest climate polluter in the U.S. · TapXWorld/ChinaTextbook · google/skills</span>
+<span class="day-count">291 stories</span>
+</a></li>
+<li><a class="day-row" href="08-august-2026.html">
+<span class="day-date"><b>8</b><span>Sat</span></span>
+<span class="day-top">AMD to Acquire AI Chip Startup Taalas · ) · AI designs viruses never seen in nature</span>
+<span class="day-count">292 stories</span>
+</a></li>
+<li><a class="day-row" href="07-august-2026.html">
+<span class="day-date"><b>7</b><span>Fri</span></span>
+<span class="day-top">Google DeepMind Leadership Changes · Google shakes up its AI brain trust · Improving GPT‑5.6 Sol in ChatGPT—and expanding access to GPT-5.6 Luna for free users</span>
+<span class="day-count">305 stories</span>
+</a></li>
+<li><a class="day-row" href="06-august-2026.html">
+<span class="day-date"><b>6</b><span>Thu</span></span>
+<span class="day-top">Cloudflare Introduced Programmable Wallets for AI Agents · A unified API for AI model routing · Anthropic and OpenAI agents went rogue — again</span>
+<span class="day-count">295 stories</span>
+</a></li>
+<li><a class="day-row" href="05-august-2026.html">
+<span class="day-date"><b>5</b><span>Wed</span></span>
+<span class="day-top">Anthropic pays AI&#39;s biggest salaries. Its CEO just discovered people might take them for the money · Mind Lab puts continual learning to the test with Macaron-V1 · Former OpenAI exec Fidji Simo discusses her battle with POTS and her startup&#39;s plans to cure it with AI and 3,500 vials of blood</span>
+<span class="day-count">314 stories</span>
+</a></li>
+<li><a class="day-row" href="04-august-2026.html">
+<span class="day-date"><b>4</b><span>Tue</span></span>
+<span class="day-top">Qwen3.8-Max: A New Bar for Coding and Cowork · Ten advances in mathematics and theoretical computer science · )</span>
+<span class="day-count">338 stories</span>
+</a></li>
+<li><a class="day-row" href="03-august-2026.html">
+<span class="day-date"><b>3</b><span>Mon</span></span>
+<span class="day-top">Sam Altman and AI’s decel debate · lyogavin/airllm · Eval-driven development: Lessons from evaluating GenAI at scale</span>
+<span class="day-count">318 stories</span>
+</a></li>
+<li><a class="day-row" href="02-august-2026.html">
+<span class="day-date"><b>2</b><span>Sun</span></span>
+<span class="day-top">Ten advances in mathematics and theoretical computer science · Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps · YouTuber Hank Green says his AI usage is ‘not healthy’</span>
+<span class="day-count">314 stories</span>
+</a></li>
+<li><a class="day-row" href="01-august-2026.html">
+<span class="day-date"><b>1</b><span>Sat</span></span>
+<span class="day-top">Inkling-Small · OpenAI Cuts GPT-5.6 Prices · Gemini Robotics ER 2</span>
+<span class="day-count">303 stories</span>
+</a></li>
+</ol>
+</section>
+<section class="month" aria-labelledby="m-2026-07">
+<h2 id="m-2026-07">July 2026</h2>
+<ol class="days" reversed>
+<li><a class="day-row" href="31-july-2026.html">
+<span class="day-date"><b>31</b><span>Fri</span></span>
+<span class="day-top">SpaceXAI launches Grok Voice Think Fast 2.0 on Agent Builder · How enabling two settings tripled our scores on the ARC-AGI-3 benchmark · OpenAI&#39;s escaped AI claims another victim</span>
+<span class="day-count">307 stories</span>
+</a></li>
+<li><a class="day-row" href="30-july-2026.html">
+<span class="day-date"><b>30</b><span>Thu</span></span>
+<span class="day-top">Introducing Build Mode · Pacing the Frontier (Website) · OpenAI&#39;s agents hacked second account during model testing</span>
+<span class="day-count">275 stories</span>
+</a></li>
+<li><a class="day-row" href="29-july-2026.html">
+<span class="day-date"><b>29</b><span>Wed</span></span>
+<span class="day-top">Releasing the model weights and technical report of Kimi K3 · Microsoft Introduced a Cybersecurity Model · Moonshot lets history&#39;s largest open model loose</span>
+<span class="day-count">361 stories</span>
+</a></li>
+<li><a class="day-row" href="28-july-2026.html">
+<span class="day-date"><b>28</b><span>Tue</span></span>
+<span class="day-top">Claude Opus 5 · More On An Internal OpenAI Model Hacking Into Hugging Face · Anthropic&#39;s Opus 5 surprise</span>
+<span class="day-count">335 stories</span>
+</a></li>
+<li><a class="day-row" href="27-july-2026.html">
+<span class="day-date"><b>27</b><span>Mon</span></span>
+<span class="day-top">Are brain waves the next unlock for physical AI? · pingdotgg/t3code · Making sense of the panic over Chinese AI</span>
+<span class="day-count">354 stories</span>
+</a></li>
+<li><a class="day-row" href="26-july-2026.html">
+<span class="day-date"><b>26</b><span>Sun</span></span>
+<span class="day-top">Monday.com is the latest tech company to blame AI for layoffs — here are 20 others · alibaba/open-code-review · Librarians are hosting viral ‘Avoiding AI’ workshops for people who are fed up with Big Tech</span>
+<span class="day-count">329 stories</span>
+</a></li>
+<li><a class="day-row" href="25-july-2026.html">
+<span class="day-date"><b>25</b><span>Sat</span></span>
+<span class="day-top">ChatGPT Health · Announcing Fugu-Ultra v1.1 🐡 · Runway Launched an AI Router for Generative Media</span>
+<span class="day-count">331 stories</span>
+</a></li>
+<li><a class="day-row" href="24-july-2026.html">
+<span class="day-date"><b>24</b><span>Fri</span></span>
+<span class="day-top">OpenAI Presence · AMD and Anthropic Sign Major Chips-and-Investment Deal · OpenAI’s cyber test escapes the lab</span>
+<span class="day-count">300 stories</span>
+</a></li>
+<li><a class="day-row" href="23-july-2026.html">
+<span class="day-date"><b>23</b><span>Thu</span></span>
+<span class="day-top">Introducing Devin Outposts · Google’s Gemini lineup has a Pro-sized hole · Building AI infrastructure with the Effingham County community</span>
+<span class="day-count">294 stories</span>
+</a></li>
+<li><a class="day-row" href="22-july-2026.html">
+<span class="day-date"><b>22</b><span>Wed</span></span>
+<span class="day-top">AMD&#39;s Helios · Claude disproves an 87-year-old math problem · Introducing the ChatGPT for small business program</span>
+<span class="day-count">289 stories</span>
+</a></li>
+<li><a class="day-row" href="21-july-2026.html">
+<span class="day-date"><b>21</b><span>Tue</span></span>
+<span class="day-top">Qwen3.8 Is Going Open-Weight · Apple Sends Legal Letters to Dozens of OpenAI Employees · How Netflix Built Its LLM Serving Stack</span>
+<span class="day-count">305 stories</span>
+</a></li>
+<li><a class="day-row" href="20-july-2026.html">
+<span class="day-date"><b>20</b><span>Mon</span></span>
+<span class="day-top">What to watch for after Jensen Huang’s Japan visit · bojieli/ai-agent-book · kvcache-ai/ktransformers</span>
+<span class="day-count">303 stories</span>
+</a></li>
+<li><a class="day-row" href="19-july-2026.html">
+<span class="day-date"><b>19</b><span>Sun</span></span>
+<span class="day-top">Kimi: Threat or menace? · Robbyant/lingbot-map · apache/ossie</span>
+<span class="day-count">300 stories</span>
+</a></li>
+<li><a class="day-row" href="18-july-2026.html">
+<span class="day-date"><b>18</b><span>Sat</span></span>
+<span class="day-top">Kimi K3 · Gemini 3.5 Pro Reportedly Faced Delays · Introducing LM Studio Bionic: the AI agent for open models</span>
+<span class="day-count">289 stories</span>
+</a></li>
+<li><a class="day-row" href="15-july-2026.html">
+<span class="day-date"><b>15</b><span>Wed</span></span>
+<span class="day-top">Today, we are releasing verifiers v1 · Smart Cellular Bricks: Towards Collective Intelligence for the Physical World · What xAI Grok Build CLI actually sends to xAI</span>
+<span class="day-count">422 stories</span>
+</a></li>
+<li><a class="day-row" href="14-july-2026.html">
+<span class="day-date"><b>14</b><span>Tue</span></span>
+<span class="day-top">Bangkok fire investigation finds locked doors and flammable decor as deaths climb to 30 · &#39;If we die, we die together&#39;: Wife of man nearly sucked out of Ryanair plane speaks of ordeal · How new Yemen tensions could complicate the global energy crisis</span>
+<span class="day-count">425 stories</span>
+</a></li>
+<li><a class="day-row" href="13-july-2026.html">
+<span class="day-date"><b>13</b><span>Mon</span></span>
+<span class="day-top">UAE condemns Iran&#39;s &#39;brazen&#39; attack on tankers as US launches fresh strikes · &#39;&#39;There was no way to get out&#39;: Witnesses describe how deadly inferno swept through Bangkok bar · Killings continue on Del Monte farm in Kenya, families say, after G4S hired for security</span>
+<span class="day-count">426 stories</span>
+</a></li>
+<li><a class="day-row" href="10-july-2026.html">
+<span class="day-date"><b>10</b><span>Fri</span></span>
+<span class="day-top">At least 27 killed in Bangkok bar fire · US insists Strait of Hormuz is open as it exchanges strikes with Iran · First patients enrolled in record-breaking Ebola treatment trial in DRC</span>
+<span class="day-count">411 stories</span>
+</a></li>
+<li><a class="day-row" href="09-july-2026.html">
+<span class="day-date"><b>9</b><span>Thu</span></span>
+<span class="day-top">Huge crowds in Mashhad as Iran&#39;s late supreme leader is buried · At least 11 die in Spain wildfire as heatwave continues in Southern Europe · Furore in Nigeria over fake federal agency set up in government HQ</span>
+<span class="day-count">273 stories</span>
+</a></li>
+</ol>
+</section>
+</main>
+<footer class="site-footer">
+<a href="./">All days</a><a href="search.html">Search</a><a href="saved.html">Saved</a><a href="feed.xml">RSS</a>
+<span>Tip: press <kbd>/</kbd> to search</span>
+</footer>
+<script>
+(function () {
+  // Each feature below is independently wrapped: a failure in one (a browser
+  // without matchMedia, localStorage disabled in a privacy mode, days.json
+  // missing) must not take down the others.
+  var root = document.documentElement;
+  var MONTHS = ["january","february","march","april","may","june","july","august","september","october","november","december"];
+  function getItem(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function setItem(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function slugOf(d) { var p = d.split('-'); return p[2] + '-' + MONTHS[+p[1] - 1] + '-' + p[0]; }
+  // "2026-09-24" -> "24 Sep", by hand to match the server-rendered dates
+  // (toLocaleDateString gives "24 Sept" in some browsers).
+  function shortDate(d) {
+    var p = d.split('-');
+    var m = MONTHS[+p[1] - 1] || '';
+    return (+p[2]) + ' ' + m.charAt(0).toUpperCase() + m.slice(1, 3);
+  }
+  function isHttp(u) { return /^https?:\/\//i.test(u || ''); }
+
+  try {
+    var toggle = document.getElementById('theme-toggle');
+    var currentIsDark = function () {
+      var attr = root.getAttribute('data-theme');
+      if (attr) return attr === 'dark';
+      try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; }
+    };
+    var paintTheme = function () {
+      var dark = currentIsDark();
+      toggle.textContent = dark ? '☀️' : '🌙';
+      toggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    };
+    if (toggle) {
+      paintTheme();
+      toggle.addEventListener('click', function () {
+        var next = currentIsDark() ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        setItem('tldr-theme', next);
+        paintTheme();
+      });
+    }
+  } catch (e) {}
+
+  try {
+    var viewBtn = document.getElementById('view-toggle');
+    var paintView = function () {
+      var compact = root.getAttribute('data-view') === 'compact';
+      viewBtn.setAttribute('aria-pressed', compact ? 'true' : 'false');
+      viewBtn.textContent = compact ? '▦' : '☰';
+      viewBtn.title = compact ? 'Switch to card view' : 'Switch to compact list';
+    };
+    if (viewBtn) {
+      paintView();
+      viewBtn.addEventListener('click', function () {
+        if (root.getAttribute('data-view') === 'compact') { root.removeAttribute('data-view'); setItem('tldr-view', null); }
+        else { root.setAttribute('data-view', 'compact'); setItem('tldr-view', 'compact'); }
+        paintView();
+      });
+    }
+  } catch (e) {}
+
+  // Saved articles: kept in this browser only (no accounts, no server), keyed by
+  // article URL, with enough fields for saved.html to render them on its own.
+  var SAVED_KEY = 'tldr-saved';
+  function loadSaved() { try { return JSON.parse(getItem(SAVED_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function persistSaved(s) { setItem(SAVED_KEY, JSON.stringify(s)); }
+  function paintSavedCount() {
+    var n = Object.keys(loadSaved()).length;
+    document.querySelectorAll('[data-saved-count]').forEach(function (el) { el.textContent = n ? String(n) : ''; });
+  }
+  try { paintSavedCount(); } catch (e) {}
+
+  var cards = document.querySelectorAll('.card[data-url]');
+
+  try {
+    // The page's own date and each card's cover image are read from the DOM
+    // rather than repeated as attributes on all ~400 cards.
+    var dayEl = document.querySelector('.daynav[data-date]');
+    var pageDate = dayEl ? dayEl.getAttribute('data-date') : '';
+    var saved = loadSaved();
+    // The ☆ button is added here rather than in the HTML: it only works with JS,
+    // and ~400 copies of its markup were ~30 KB of every page.
+    cards.forEach(function (card) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'save';
+      card.insertBefore(btn, card.firstChild);
+      var url = card.getAttribute('data-url');
+      var paint = function (on) {
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.textContent = on ? '★' : '☆';
+        btn.setAttribute('aria-label', (on ? 'Remove from saved: ' : 'Save for later: ') + card.getAttribute('data-headline'));
+      };
+      paint(!!saved[url]);
+      btn.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var s = loadSaved();
+        if (s[url]) delete s[url];
+        else s[url] = {
+          u: url, h: card.getAttribute('data-headline'), s: card.getAttribute('data-source'),
+          d: pageDate, i: (card.querySelector('img.cover') || {}).src || '', t: Date.now()
+        };
+        persistSaved(s);
+        paint(!!s[url]);
+        paintSavedCount();
+      });
+    });
+  } catch (e) {}
+
+  try {
+    // Read-state: mark a card faded once its details has been opened, persisted
+    // across visits by article URL so re-opening the same day's page still shows
+    // what you've already looked at.
+    var READ_KEY = 'tldr-read-urls';
+    var readUrls = {};
+    try { readUrls = JSON.parse(getItem(READ_KEY) || '{}') || {}; } catch (e) {}
+    cards.forEach(function (card) {
+      if (readUrls[card.getAttribute('data-url')]) card.classList.add('is-read');
+      var details = card.querySelector('details');
+      if (details) {
+        details.addEventListener('toggle', function () {
+          if (details.open) {
+            readUrls[card.getAttribute('data-url')] = 1;
+            setItem(READ_KEY, JSON.stringify(readUrls));
+            card.classList.add('is-read');
+          }
+        });
+      }
+    });
+  } catch (e) {}
+
+  try {
+    // Tab filter: clicking a quicknav pill or a category tile shows only that
+    // topic's section. "All" shows Featured + the category-grid browse view.
+    var navLinks = document.querySelectorAll('.quicknav a[data-target]');
+    var tileLinks = document.querySelectorAll('.category-tile[data-target]');
+    var allSections = document.querySelectorAll('section[id]');
+    var grid = document.getElementById('category-grid');
+
+    var applyFilter = function (target) {
+      navLinks.forEach(function (l) {
+        var on = l.getAttribute('data-target') === target;
+        l.classList.toggle('active', on);
+        if (on) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
+      });
+      var targetSection = null;
+      allSections.forEach(function (section) {
+        var visible = section.id === target || (target === 'all' && section.id === 'featured');
+        section.hidden = !visible;
+        if (target !== 'all' && section.id === target) targetSection = section;
+      });
+      if (grid) grid.hidden = target !== 'all';
+      if (targetSection) {
+        var d = targetSection.querySelector('details.edition-toggle');
+        if (d) d.open = true;
+        try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      }
+    };
+
+    var bind = function (el) {
+      el.addEventListener('click', function (evt) { evt.preventDefault(); applyFilter(el.getAttribute('data-target')); });
+    };
+    navLinks.forEach(bind);
+    tileLinks.forEach(bind);
+
+    // The server-rendered page has every section visible (works with JS off).
+    // Once JS runs, switch to the browse view: Featured + topic tiles.
+    if (navLinks.length) applyFilter('all');
+  } catch (e) {}
+
+  try {
+    // Live search over everything on the card (headline, source, summary). The
+    // summary is read from the card's own text rather than a duplicate data-blurb
+    // attribute, which used to roughly double the page's text payload.
+    var search = document.getElementById('search-input');
+    var countEl = document.getElementById('search-count');
+    if (search && cards.length) {
+      var haystacks = [];
+      cards.forEach(function (card) { haystacks.push(card.textContent.toLowerCase()); });
+      search.addEventListener('input', function () {
+        var q = search.value.trim().toLowerCase();
+        var sections = document.querySelectorAll('section[id]');
+        var browseGrid = document.getElementById('category-grid');
+        if (q !== '') {
+          sections.forEach(function (section) { section.hidden = false; });
+          if (browseGrid) browseGrid.hidden = true;
+        }
+        var shown = 0;
+        var withMatch = [];
+        cards.forEach(function (card, i) {
+          var match = q === '' || haystacks[i].indexOf(q) !== -1;
+          card.hidden = !match;
+          if (match) {
+            shown++;
+            var section = card.closest('section[id]');
+            if (section && withMatch.indexOf(section) === -1) withMatch.push(section);
+          }
+        });
+        countEl.textContent = '';
+        if (q !== '') {
+          withMatch.forEach(function (section) {
+            var d = section.querySelector('details.edition-toggle');
+            if (d) d.open = true;
+          });
+          countEl.appendChild(document.createTextNode(shown + ' matching article' + (shown === 1 ? '' : 's') + ' today · '));
+          var all = document.createElement('a');
+          all.href = 'search.html?q=' + encodeURIComponent(search.value.trim());
+          all.textContent = 'search every day →';
+          countEl.appendChild(all);
+        } else {
+          var allPill = document.querySelector('.quicknav a[data-target="all"]');
+          if (allPill) allPill.dispatchEvent(new Event('click'));
+          else if (browseGrid) browseGrid.hidden = false;
+        }
+      });
+      // Arriving from "search every day" (?q=…): show this day's matches straight away.
+      var incoming = '';
+      try { incoming = new URLSearchParams(location.search).get('q') || ''; } catch (e) {}
+      if (incoming) { search.value = incoming; search.dispatchEvent(new Event('input')); }
+    }
+  } catch (e) {}
+
+  try {
+    // "/" jumps to the search box from anywhere; Escape clears it.
+    document.addEventListener('keydown', function (evt) {
+      var box = document.querySelector('[data-search]');
+      if (!box) return;
+      var tag = (evt.target && evt.target.tagName) || '';
+      if (evt.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tag) && !evt.metaKey && !evt.ctrlKey) {
+        evt.preventDefault();
+        box.focus();
+      } else if (evt.key === 'Escape' && evt.target === box && box.value) {
+        box.value = '';
+        box.dispatchEvent(new Event('input'));
+      }
+    });
+  } catch (e) {}
+
+  try {
+    // Previous / next day. Rendered server-side as an "All days" link only, so an
+    // old page never points at a stale neighbour; the real neighbours come from
+    // days.json, which is rewritten on every publish.
+    var dayNav = document.querySelector('.daynav[data-date]');
+    if (dayNav && window.fetch) {
+      var me = dayNav.getAttribute('data-date');
+      fetch('days.json').then(function (r) { return r.json(); }).then(function (days) {
+        var idx = -1;
+        for (var i = 0; i < days.length; i++) if (days[i].date === me) { idx = i; break; }
+        if (idx === -1) return;
+        var link = function (sel, day, label) {
+          var a = dayNav.querySelector(sel);
+          if (!a || !day) return;
+          a.href = day.slug + '.html';
+          a.textContent = label.replace('%', shortDate(day.date));
+          a.hidden = false;
+        };
+        link('.older', days[idx + 1], '← %');
+        link('.newer', days[idx - 1], '% →');
+      }).catch(function () {});
+    }
+  } catch (e) {}
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function resultRow(item, extra) {
+    var li = el('li', 'result');
+    if (isHttp(item.i)) { var img = el('img'); img.src = item.i; img.alt = ''; img.loading = 'lazy'; li.appendChild(img); }
+    var body = el('div', 'body');
+    var a = el('a', 'title', item.h);
+    a.href = isHttp(item.u) ? item.u : '#';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    body.appendChild(a);
+    var meta = el('div', 'meta', item.s || '');
+    if (item.d) {
+      meta.appendChild(document.createTextNode(item.s ? ' · ' : ''));
+      var day = el('a', null, shortDate(item.d) + ' digest');
+      day.href = slugOf(item.d) + '.html' + (item.q ? '?q=' + encodeURIComponent(item.q) : '');
+      meta.appendChild(day);
+    }
+    body.appendChild(meta);
+    li.appendChild(body);
+    if (extra) li.appendChild(extra);
+    return li;
+  }
+
+  try {
+    // saved.html
+    var savedList = document.getElementById('saved-list');
+    if (savedList) {
+      var renderSaved = function () {
+        var s = loadSaved();
+        var items = Object.keys(s).map(function (k) { return s[k]; }).sort(function (a, b) { return (b.t || 0) - (a.t || 0); });
+        savedList.textContent = '';
+        document.getElementById('saved-empty').hidden = items.length > 0;
+        items.forEach(function (item) {
+          var rm = el('button', 'tool remove', '✕');
+          rm.setAttribute('aria-label', 'Remove from saved: ' + item.h);
+          rm.addEventListener('click', function () {
+            var cur = loadSaved();
+            delete cur[item.u];
+            persistSaved(cur);
+            renderSaved();
+            paintSavedCount();
+          });
+          savedList.appendChild(resultRow(item, rm));
+        });
+      };
+      renderSaved();
+    }
+  } catch (e) {}
+
+  try {
+    // search.html: month-split index, newest month first, fetched once and cached.
+    var allInput = document.getElementById('all-search');
+    if (allInput && window.fetch) {
+      var status = document.getElementById('all-status');
+      var list = document.getElementById('all-results');
+      var cache = {};
+      var monthsP = fetch('search/months.json').then(function (r) { return r.json(); });
+      var loadMonth = function (m) {
+        if (!cache[m]) cache[m] = fetch('search/' + m + '.json').then(function (r) { return r.json(); });
+        return cache[m];
+      };
+      var LIMIT = 200;
+      var run = 0;
+      var doSearch = function () {
+        var q = allInput.value.trim().toLowerCase();
+        var mine = ++run;
+        try { history.replaceState(null, '', q ? '?q=' + encodeURIComponent(allInput.value.trim()) : location.pathname); } catch (e) {}
+        list.textContent = '';
+        if (q.length < 2) { status.textContent = 'Type at least 2 characters.'; return; }
+        var terms = q.split(/\s+/);
+        var found = 0;
+        var seen = {};
+        monthsP.then(function (months) {
+          var step = function (i) {
+            if (mine !== run) return;
+            if (i >= months.length || found >= LIMIT) {
+              status.textContent = found ? (found >= LIMIT ? 'Showing the newest ' + LIMIT + ' matches' : found + ' match' + (found === 1 ? '' : 'es')) : 'No matches in any digest.';
+              return;
+            }
+            status.textContent = 'Searching ' + months[i] + '…';
+            loadMonth(months[i]).then(function (rows) {
+              if (mine !== run) return;
+              for (var r = 0; r < rows.length && found < LIMIT; r++) {
+                var row = rows[r];
+                if (seen[row[2]]) continue;
+                var hay = (row[1] + ' ' + row[3] + ' ' + row[4]).toLowerCase();
+                var ok = true;
+                for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
+                if (!ok) continue;
+                seen[row[2]] = 1;
+                found++;
+                list.appendChild(resultRow({ d: row[0], h: row[1], u: row[2], s: row[3], q: allInput.value.trim() }));
+              }
+              step(i + 1);
+            }).catch(function () { step(i + 1); });
+          };
+          step(0);
+        }).catch(function () { status.textContent = 'Search index unavailable.'; });
+      };
+      var timer = null;
+      allInput.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(doSearch, 150); });
+      var initial = '';
+      try { initial = new URLSearchParams(location.search).get('q') || ''; } catch (e) {}
+      if (initial) { allInput.value = initial; doSearch(); }
+    }
+  } catch (e) {}
+})();
+</script>
 </body>
 </html>
