@@ -1,0 +1,3 @@
+# Keep LF everywhere: the site is built on Linux (Actions) and locally on Windows;
+# without this every rebuilt page shows up as a line-ending change.
+* text=auto eol=lf
