@@ -327,6 +327,8 @@ const PAGE_STYLES = `
   .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
   mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
 
+  .source-health { margin: 3rem 0 0; font-size: 0.82rem; color: var(--muted); }
+  .source-health + footer.site-footer { margin-top: 0.75rem; }
   footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
 `;
 
@@ -872,8 +874,11 @@ ${viewToggle ? `<button id="view-toggle" class="tool" type="button" aria-label="
 </header>`;
 }
 
-function renderFooter() {
-  return `<footer class="site-footer">
+function renderFooter({ missingSources = [] } = {}) {
+  const missing = missingSources.length
+    ? `<p class="source-health">No stories from ${missingSources.map(escapeHtml).join(", ")} today.</p>\n`
+    : "";
+  return `${missing}<footer class="site-footer">
 <a href="./">All days</a><a href="search.html">Search</a><a href="saved.html">Saved</a><a href="feed.xml">RSS</a>
 <span>Keys: <kbd>/</kbd> search · <kbd>j</kbd> <kbd>k</kbd> next / previous · <kbd>o</kbd> open · <kbd>s</kbd> save</span>
 </footer>`;
@@ -991,7 +996,7 @@ function renderCategoryGrid(editions, ctx = {}) {
 
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image,sourceLabel}] }] }]
 // previousUrls: article URLs from the previous day's digest, if known.
-function buildDailyHtml(isoDate, editions, { siteUrl, previousUrls = null } = {}) {
+function buildDailyHtml(isoDate, editions, { siteUrl, previousUrls = null, missingSources = [] } = {}) {
   const ctx = { previousUrls };
   const nav = renderQuickNav(editions);
   const grid = renderCategoryGrid(editions, ctx);
@@ -1033,7 +1038,7 @@ ${nav}
 ${grid}
 ${body}
 </main>
-${renderFooter()}
+${renderFooter({ missingSources })}
 </body>
 </html>`;
 }

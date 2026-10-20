@@ -30,6 +30,15 @@ test("writeDayData rejects anything that isn't an ISO date (no path tricks)", ()
   assert.throws(() => writeDayData("../evil", [], tmp()));
 });
 
+test("missing sources are stored with the day and listed on its page", () => {
+  const dataDir = tmp();
+  const siteDir = tmp();
+  writeDayData("2026-10-20", day("A"), { missingSources: ["Washington Post World"] }, dataDir);
+  assert.deepEqual(readDayData("2026-10-20", dataDir).missingSources, ["Washington Post World"]);
+  renderDay("2026-10-20", { dataDir, siteDir });
+  assert.match(fs.readFileSync(path.join(siteDir, "20-october-2026.html"), "utf8"), /No stories from Washington Post World today/);
+});
+
 test("day data round-trips", () => {
   const dir = tmp();
   writeDayData("2026-10-20", day("A"), dir);

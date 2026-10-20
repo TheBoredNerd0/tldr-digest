@@ -6,12 +6,12 @@ const { EDITIONS } = require("./editions");
 const { fetchEdition, attachImages } = require("./scrape");
 const { fetchHackerNews } = require("./sources/hackernews");
 const { fetchRundownAI } = require("./sources/rundown");
-const { fetchAllWorldNews } = require("./sources/worldnews");
-const { fetchAllSingaporeNews } = require("./sources/singapore");
+const { fetchAllWorldNews, WORLD_NEWS_FEEDS } = require("./sources/worldnews");
+const { fetchAllSingaporeNews, SINGAPORE_FEEDS } = require("./sources/singapore");
 const { fetchGitHubTrending } = require("./sources/github");
-const { fetchAllCyberNews } = require("./sources/cybersecurity");
-const { fetchAllAiBlogs } = require("./sources/aiblogs");
-const { writeDayData, renderDay, writeSiteFiles, SITE_URL_BASE } = require("./site");
+const { fetchAllCyberNews, CYBERSECURITY_FEEDS } = require("./sources/cybersecurity");
+const { fetchAllAiBlogs, AI_BLOG_FEEDS } = require("./sources/aiblogs");
+const { writeDayData, renderDay, writeSiteFiles, listDays, readDayData, SITE_URL_BASE } = require("./site");
 const { sendTelegramMessage } = require("./send");
 
 // Sorts tiles by topic instead of by publisher — confirmed with the user before
@@ -88,6 +88,15 @@ async function run() {
   // Featured picks are computed against every individual raw source (so e.g. "BBC
   // World" vs "Guardian World" stays distinguishable there), *before* any topic
   // grouping below — grouping is purely a browse-view concern for the main body.
+  const missingSources = findMissingSources(EXPECTED_SOURCES, [
+    ...editions,
+    ...worldNewsEditions,
+    ...singaporeEditions,
+    ...cyberEditions,
+    ...aiBlogEditions,
+  ]);
+  reportMissingSources(missingSources, isoDate);
+
   const featured = buildFeatured([
     ...editions,
     ...worldNewsEditions,
@@ -121,7 +130,7 @@ async function run() {
 
   // Data first, then the page rendered from it, then everything that spans days
   // (home/archive, search index, RSS) — see site.js.
-  writeDayData(isoDate, deduped);
+  writeDayData(isoDate, deduped, { missingSources });
   const slug = renderDay(isoDate);
   writeSiteFiles();
 
@@ -147,6 +156,60 @@ async function run() {
       `${editionCount} editions, ${articleCount} articles`
     )}\n${escapeMdV2(pageUrl)}`
   );
+}
+
+// Every source that should contribute to a normal day. A source that errors is
+// logged, but one that quietly returns zero articles wasn't: that's how The
+// Rundown AI (site moved) and VentureBeat (started blocking) both vanished from
+// the digest for about two months before anyone noticed.
+const EXPECTED_SOURCES = [
+  ...EDITIONS.map((e) => `TLDR ${e.name}`),
+  "Hacker News",
+  "The Rundown AI",
+  "GitHub Trending",
+  ...WORLD_NEWS_FEEDS.map((f) => f.name),
+  ...SINGAPORE_FEEDS.map((f) => f.name),
+  ...CYBERSECURITY_FEEDS.map((f) => f.name),
+  ...AI_BLOG_FEEDS.map((f) => f.name),
+];
+
+function findMissingSources(expected, rawEditions) {
+  const present = new Set(
+    rawEditions
+      .filter((e) => e.sections.some((s) => s.articles.length > 0))
+      .map((e) => e.name)
+  );
+  return expected.filter((name) => !present.has(name));
+}
+
+// Sources missing for `days` consecutive digests, counting today. A one-day gap
+// is usually a flaky feed; several in a row means it needs fixing.
+// previousDays: day data objects, newest first.
+function persistentlyMissing(todayMissing, previousDays, days = 3) {
+  if (previousDays.length < days - 1) return [];
+  return todayMissing.filter((name) =>
+    previousDays.slice(0, days - 1).every((d) => (d.missingSources || []).includes(name))
+  );
+}
+
+function reportMissingSources(missing, isoDate) {
+  if (missing.length === 0) return;
+  console.warn(`Sources with no articles today: ${missing.join(", ")}`);
+  const previous = listDays()
+    .filter((d) => d < isoDate)
+    .slice(0, 2)
+    .map((d) => {
+      try {
+        return readDayData(d);
+      } catch {
+        return {};
+      }
+    });
+  const stuck = persistentlyMissing(missing, previous);
+  if (process.env.GITHUB_ACTIONS) {
+    console.log(`::warning::No articles today from: ${missing.join(", ")}`);
+    if (stuck.length) console.log(`::warning::Missing 3+ days in a row (needs fixing): ${stuck.join(", ")}`);
+  }
 }
 
 // Pulls a curated "front page" from across every source. Re-focused 2026-07-15 on
@@ -229,7 +292,16 @@ function escapeMdV2(text) {
   return String(text).replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, (ch) => `\\${ch}`);
 }
 
-module.exports = { todayInSingapore, buildFeatured, mergeEditions, dedupeAcrossEditions, escapeMdV2 };
+module.exports = {
+  todayInSingapore,
+  buildFeatured,
+  mergeEditions,
+  dedupeAcrossEditions,
+  escapeMdV2,
+  EXPECTED_SOURCES,
+  findMissingSources,
+  persistentlyMissing,
+};
 
 // Only scrape/publish when run directly; tests import the helpers above.
 if (require.main === module) {

@@ -237,4 +237,6 @@
   .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
   mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
 
+  .source-health { margin: 3rem 0 0; font-size: 0.82rem; color: var(--muted); }
+  .source-health + footer.site-footer { margin-top: 0.75rem; }
   footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }

@@ -1,6 +1,9 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { todayInSingapore, buildFeatured, mergeEditions, dedupeAcrossEditions, escapeMdV2 } = require("../publish");
+const {
+  todayInSingapore, buildFeatured, mergeEditions, dedupeAcrossEditions, escapeMdV2,
+  EXPECTED_SOURCES, findMissingSources, persistentlyMissing,
+} = require("../publish");
 const { parseEdition } = require("../scrape");
 const { escapeMarkdownV2, buildEditionDigest, TELEGRAM_MAX_LEN } = require("../format");
 const { fetchRssSource, fetchWithRetry, stripHtml } = require("../sources/rss");
@@ -122,4 +125,18 @@ test("backfill parses the original July 2026 card format", () => {
     ] }] },
   ]);
   assert.equal(stripBadge("🇸🇬 Straits Times"), "Straits Times");
+});
+
+test("findMissingSources flags sources that errored *or* returned nothing", () => {
+  const raw = [ed("TLDR AI", a(1)), ed("The Rundown AI"), ed("BBC World", a(2))];
+  assert.deepEqual(findMissingSources(["TLDR AI", "The Rundown AI", "BBC World", "DW"], raw), ["The Rundown AI", "DW"]);
+  assert.ok(EXPECTED_SOURCES.includes("MIT Technology Review AI"));
+  assert.ok(EXPECTED_SOURCES.includes("TLDR Hardware"));
+  assert.equal(new Set(EXPECTED_SOURCES).size, EXPECTED_SOURCES.length, "no duplicate source names");
+});
+
+test("persistentlyMissing needs the source gone today and on the two days before", () => {
+  const prev = [{ missingSources: ["DW", "SCMP"] }, { missingSources: ["DW"] }];
+  assert.deepEqual(persistentlyMissing(["DW", "SCMP", "NPR World"], prev), ["DW"]);
+  assert.deepEqual(persistentlyMissing(["DW"], [{ missingSources: ["DW"] }]), [], "not enough history yet");
 });

@@ -30,9 +30,11 @@ function dayDataPath(isoDate, dataDir = DATA_DIR) {
   return path.join(dataDir, `${isoDate}.json`);
 }
 
-function writeDayData(isoDate, editions, dataDir = DATA_DIR) {
+// meta: optional extras stored alongside the editions, e.g. { missingSources }.
+function writeDayData(isoDate, editions, meta = {}, dataDir = DATA_DIR) {
+  if (typeof meta === "string") [meta, dataDir] = [{}, meta]; // (date, editions, dataDir)
   fs.mkdirSync(dataDir, { recursive: true });
-  fs.writeFileSync(dayDataPath(isoDate, dataDir), JSON.stringify({ date: isoDate, editions }));
+  fs.writeFileSync(dayDataPath(isoDate, dataDir), JSON.stringify({ date: isoDate, editions, ...meta }));
 }
 
 function readDayData(isoDate, dataDir = DATA_DIR) {
@@ -131,7 +133,7 @@ function writeSiteFiles({ dataDir = DATA_DIR, siteDir = SITE_DIR, siteUrl = SITE
 }
 
 function renderDay(isoDate, { dataDir = DATA_DIR, siteDir = SITE_DIR, siteUrl = SITE_URL_BASE } = {}) {
-  const { editions } = readDayData(isoDate, dataDir);
+  const { editions, missingSources = [] } = readDayData(isoDate, dataDir);
   // The closest earlier day we have, for marking stories it already carried.
   const previous = listDays(dataDir).find((d) => d < isoDate);
   const previousUrls = previous
@@ -139,7 +141,7 @@ function renderDay(isoDate, { dataDir = DATA_DIR, siteDir = SITE_DIR, siteUrl = 
     : null;
   const slug = dateToSlug(isoDate);
   fs.mkdirSync(siteDir, { recursive: true });
-  fs.writeFileSync(path.join(siteDir, `${slug}.html`), buildDailyHtml(isoDate, editions, { siteUrl, previousUrls }));
+  fs.writeFileSync(path.join(siteDir, `${slug}.html`), buildDailyHtml(isoDate, editions, { siteUrl, previousUrls, missingSources }));
   return slug;
 }
 
