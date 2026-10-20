@@ -1,5 +1,3 @@
-const fs = require("fs");
-const path = require("path");
 const { execFile } = require("child_process");
 const { promisify } = require("util");
 const execFileP = promisify(execFile);
@@ -13,7 +11,7 @@ const { fetchAllSingaporeNews } = require("./sources/singapore");
 const { fetchGitHubTrending } = require("./sources/github");
 const { fetchAllCyberNews } = require("./sources/cybersecurity");
 const { fetchAllAiBlogs } = require("./sources/aiblogs");
-const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
+const { writeDayData, renderDay, writeSiteFiles, SITE_URL_BASE } = require("./site");
 const { sendTelegramMessage } = require("./send");
 
 // Sorts tiles by topic instead of by publisher — confirmed with the user before
@@ -29,9 +27,6 @@ const TOPIC_GROUPS = [
 ];
 
 const CHAT_ID = process.env.TLDR_DIGEST_CHAT_ID || "370423423";
-const SITE_DIR = path.join(__dirname, "docs");
-const SITE_URL_BASE =
-  process.env.TLDR_DIGEST_SITE_URL || "https://theborednerd0.github.io/tldr-digest";
 
 // The digest's date is *today, in Singapore*, not whatever date TLDR's own feed
 // happens to self-report. TLDR was previously the sole source of `isoDate`, so
@@ -124,22 +119,13 @@ async function run() {
   console.log(`Fetching cover images for ${deduped.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
   await attachImages(deduped);
 
-  const slug = dateToSlug(isoDate);
-  const html = buildDailyHtml(isoDate, deduped);
-  fs.mkdirSync(SITE_DIR, { recursive: true });
-  fs.writeFileSync(path.join(SITE_DIR, `${slug}.html`), html);
+  // Data first, then the page rendered from it, then everything that spans days
+  // (home/archive, search index, RSS) — see site.js.
+  writeDayData(isoDate, deduped);
+  const slug = renderDay(isoDate);
+  writeSiteFiles();
 
-  const existing = fs
-    .readdirSync(SITE_DIR)
-    .filter((f) => /^\d{2}-[a-z]+-\d{4}\.html$/.test(f))
-    .map((f) => f.replace(/\.html$/, ""));
-  const days = [...new Set([slug, ...existing])]
-    .sort()
-    .reverse()
-    .map((s) => ({ slug: s, isoDate: slugToIso(s) }));
-  fs.writeFileSync(path.join(SITE_DIR, "index.html"), buildIndexHtml(days));
-
-  await execFileP("git", ["add", "docs/"], { cwd: __dirname });
+  await execFileP("git", ["add", "docs/", "data/"], { cwd: __dirname });
   const commitResult = await execFileP(
     "git",
     ["commit", "-m", `Publish digest for ${isoDate}`],
@@ -238,24 +224,20 @@ function dedupeAcrossEditions(editions) {
     .filter((edition) => edition.sections.length > 0);
 }
 
-function slugToIso(slug) {
-  const months = [
-    "january", "february", "march", "april", "may", "june",
-    "july", "august", "september", "october", "november", "december",
-  ];
-  const [d, mName, y] = slug.split("-");
-  const m = String(months.indexOf(mName) + 1).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
 
 function escapeMdV2(text) {
   return String(text).replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, (ch) => `\\${ch}`);
 }
 
-run().catch((err) => {
-  console.error("Fatal error:", err);
-  // Surface the reason as a run annotation: Actions logs need a signed-in viewer,
-  // but annotations are public, so a broken run can be diagnosed from its summary.
-  if (process.env.GITHUB_ACTIONS) console.log(`::error::${String(err.message).replace(/\n/g, " ")}`);
-  process.exit(1);
-});
+module.exports = { todayInSingapore, buildFeatured, mergeEditions, dedupeAcrossEditions, escapeMdV2 };
+
+// Only scrape/publish when run directly; tests import the helpers above.
+if (require.main === module) {
+  run().catch((err) => {
+    console.error("Fatal error:", err);
+    // Surface the reason as a run annotation: Actions logs need a signed-in viewer,
+    // but annotations are public, so a broken run can be diagnosed from its summary.
+    if (process.env.GITHUB_ACTIONS) console.log(`::error::${String(err.message).replace(/\n/g, " ")}`);
+    process.exit(1);
+  });
+}
