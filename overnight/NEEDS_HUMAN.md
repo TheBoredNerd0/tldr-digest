@@ -37,7 +37,7 @@ Most important first.
   `backfill` turns any days published on main in the meantime (e.g. 21 Oct) into
   data, and `rebuild` re-renders everything with the new template.
   **Rehearsed tonight** in a scratch clone, both with that conflict and with
-  a merge that went through cleanly: 101 days, 34/34 tests pass.
+  a merge that went through cleanly. Re-run at the final branch tip: 101 days, 54/54 tests pass.
 - Options: A) merge as above (recommended). B) Open a PR from the branch first to
   review the diff on GitHub. C) Don't merge; cherry-pick only the
   `fix:` commits.
@@ -64,7 +64,7 @@ Most important first.
 - Why a branch: you cut the message down to just a link once before, to stop it
   flooding the chat.
 
-All three optional branches merge cleanly on top of #2 (checked together: 57/57 tests).
+All three optional branches merge cleanly on top of #2 (checked together; 58 tests pass with all three).
 Pick any of them:
 `git merge overnight/feature-story-clusters overnight/feature-more-ai-sources overnight/feature-telegram-headlines`,
 then `npm run rebuild`.

@@ -2,7 +2,7 @@
 
 | Metric | Before (main @ 5dfd975) | After | Change |
 |---|---|---|---|
-| Automated tests | 0 (`npm test` exited 1) | **53 passing** (node:test + jsdom), CI on push | new |
+| Automated tests | 0 (`npm test` exited 1) | **54 passing** (node:test + jsdom), CI on push | new |
 | npm audit | 1 high (undici) | 0 | fixed |
 | Day page 20 Oct (raw) | 462,386 B | 391,595 B | **−15%** |
 | Day page 20 Oct (gzip) | 77,961 B | 72,428 B | −7% |
