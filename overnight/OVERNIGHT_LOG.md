@@ -26,3 +26,13 @@ Ground rules for this run: work only on `overnight/*` branches. GitHub Pages ser
   prev/next links, ?q= hand-off. Contrast: all text ≥ 4.63:1.
 - E2E publish against a fake remote: commit touches 6 files; Telegram 401 as
   expected with a dummy token.
+
+## 01:12–01:32 More features, hardening, verification
+- Unread/visited marks on the archive; shared versioned CSS/JS assets (−15% page).
+- Repeat detection: 37.5% of stories repeat day-over-day (60% weekends) →
+  "also the day before" tags, "N new", "Show new only", tile new-counts.
+- j/k/o/s reader keys. Source-health tracking (missingSources + Actions warnings).
+- Atom feed support. Six extra AI sources on branch overnight/feature-more-ai-sources.
+- Rehearsed the main-merge procedure in a scratch clone (conflict + clean cases).
+- jsdom client tests (45 total). Daily workflow installs prod deps only.
+- Washington Post feeds host returns 502 for every feed (outage on their side).
