@@ -211,3 +211,15 @@ test("day page: muted words hide matching stories and are remembered", () => {
   assert.equal(w.document.querySelectorAll(".card.is-muted").length, 0);
   assert.equal(w.localStorage.getItem("tldr-muted"), null);
 });
+
+test("day page: a #topic link opens that topic, and picking a topic updates the URL", () => {
+  const w = load(buildDailyHtml("2026-10-20", EDITIONS), { url: "https://site.test/tldr-digest/20-october-2026.html#world-news" });
+  const shown = () => [...w.document.querySelectorAll("section[id]")].filter((s) => !s.hidden).map((s) => s.id);
+  assert.deepEqual(shown(), ["world-news"]);
+  w.document.querySelector('.quicknav a[data-target="ai"]').click();
+  assert.equal(w.location.hash, "#ai");
+  w.document.querySelector('.quicknav a[data-target="all"]').click();
+  assert.equal(w.location.hash, "");
+  const bogus = load(buildDailyHtml("2026-10-20", EDITIONS), { url: "https://site.test/x.html#nope" });
+  assert.equal(bogus.document.getElementById("category-grid").hidden, false, "unknown hash falls back to browse view");
+});

@@ -613,14 +613,23 @@ const PAGE_SCRIPT = `
     };
 
     var bind = function (el) {
-      el.addEventListener('click', function (evt) { evt.preventDefault(); applyFilter(el.getAttribute('data-target')); });
+      el.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        var target = el.getAttribute('data-target');
+        applyFilter(target);
+        // Keep the topic in the URL so it can be bookmarked / shared.
+        try { history.replaceState(null, '', target === 'all' ? location.pathname + location.search : '#' + target); } catch (e) {}
+      });
     };
     navLinks.forEach(bind);
     tileLinks.forEach(bind);
 
     // The server-rendered page has every section visible (works with JS off).
     // Once JS runs, switch to the browse view: Featured + topic tiles.
-    if (navLinks.length) applyFilter('all');
+    // A #topic in the URL (shared link, bookmark) opens straight to that topic.
+    var fromHash = (location.hash || '').slice(1);
+    var hashOk = fromHash && fromHash !== 'featured' && document.querySelector('.quicknav a[data-target="' + fromHash.replace(/[^a-z0-9-]/g, '') + '"]');
+    if (navLinks.length) applyFilter(hashOk ? fromHash : 'all');
   } catch (e) {}
 
   try {
