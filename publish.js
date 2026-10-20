@@ -190,7 +190,7 @@ function buildFeatured(editions) {
     ...firstArticles(byName("Google Research"), 1),
     ...firstArticles(byName("Hugging Face"), 1),
     ...firstArticles(byName("TechCrunch AI"), 1),
-    ...firstArticles(byName("VentureBeat AI"), 1),
+    ...firstArticles(byName("MIT Technology Review AI"), 1),
     ...firstArticles(byName("GitHub Trending"), 4),
   ];
 
@@ -254,5 +254,8 @@ function escapeMdV2(text) {
 
 run().catch((err) => {
   console.error("Fatal error:", err);
+  // Surface the reason as a run annotation: Actions logs need a signed-in viewer,
+  // but annotations are public, so a broken run can be diagnosed from its summary.
+  if (process.env.GITHUB_ACTIONS) console.log(`::error::${String(err.message).replace(/\n/g, " ")}`);
   process.exit(1);
 });

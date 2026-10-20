@@ -14,11 +14,33 @@ function stripHtml(html) {
   return (blocks.length > 0 ? blocks.join(" ") : $("body").text().trim()).replace(/\s+/g, " ");
 }
 
+// Feeds like Washington Post (502) and VentureBeat (429) fail intermittently, which
+// dropped them from that day's digest. One delayed retry on 429/5xx or a network
+// error recovers most of those; the timeout keeps a hung feed from stalling the run.
+async function fetchWithRetry(url, attempts = 2) {
+  for (let i = 1; ; i++) {
+    try {
+      const res = await fetch(url, {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (i < attempts && (res.status === 429 || res.status >= 500)) {
+        await new Promise((r) => setTimeout(r, 5000));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      if (i >= attempts) throw err;
+      await new Promise((r) => setTimeout(r, 5000));
+    }
+  }
+}
+
 // Generic official-RSS-feed source: works for any standard RSS 2.0 feed, with
 // media:content / media:thumbnail as a best-effort image (falls back to the
 // generic og:image scrape in attachImages() if the feed doesn't carry one).
 async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit = 15 }) {
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
+  const res = await fetchWithRetry(url);
   if (!res.ok) throw new Error(`${name}: HTTP ${res.status}`);
   const xml = await res.text();
   const $ = cheerio.load(xml, { xmlMode: true });

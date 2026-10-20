@@ -1,5 +1,16 @@
 # tldr-digest
 
+## Health check 2026-10-21: Telegram silent since 2026-07-19, two sources dead
+- Every scheduled Actions run since 2026-07-19 failed at the Telegram step (site
+  still published daily). Most likely cause: the `TELEGRAM_BOT_TOKEN` repo secret
+  was never added after the move to GitHub Actions. Failures now also print a
+  `::error::` annotation, readable on the run summary without signing in.
+- The Rundown AI left beehiiv (~Sept): `/archive` 308-redirects, so the scraper
+  returned 0 articles. Switched `sources/rundown.js` to its new `/feed` RSS.
+- VentureBeat AI now 429s every request; replaced with MIT Technology Review AI.
+- `fetchRssSource` now retries once on 429/5xx/network error, with a 15s timeout.
+- Actions bumped to checkout@v5 / setup-node@v5, Node 22 (Node 20 deprecated).
+
 ## Featured refocused on AI models + GitHub repos (2026-07-15)
 User: "the news that matters more to me are the news about the ai, so basically
 the featured should be like which new ai model that is news, and also the github

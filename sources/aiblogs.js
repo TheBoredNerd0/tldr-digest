@@ -12,7 +12,7 @@ const AI_BLOG_FEEDS = [
   { name: "Google Research", url: "https://research.google/blog/rss/" },
   { name: "Hugging Face", url: "https://huggingface.co/blog/feed.xml" },
   { name: "TechCrunch AI", url: "https://techcrunch.com/category/artificial-intelligence/feed/" },
-  { name: "VentureBeat AI", url: "https://venturebeat.com/category/ai/feed/" },
+  { name: "MIT Technology Review AI", url: "https://www.technologyreview.com/topic/artificial-intelligence/feed" },
 ];
 
 async function fetchAllAiBlogs(limitPerFeed = 10) {

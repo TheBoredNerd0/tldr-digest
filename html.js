@@ -13,7 +13,7 @@ const EDITION_EMOJI = {
   "Singapore News": "🇸🇬", "Straits Times": "🇸🇬", Mothership: "🚢",
   "Krebs on Security": "🕵️", "The Hacker News": "🔓", "Dark Reading": "📕",
   OpenAI: "🟢", "Google DeepMind": "🔷", "Google Research": "🔬", "Hugging Face": "🤗",
-  "TechCrunch AI": "📰", "VentureBeat AI": "📰",
+  "TechCrunch AI": "📰", "VentureBeat AI": "📰", "MIT Technology Review AI": "📰",
   // Topic groups (spanning multiple underlying sources)
   AI: "🤖", "Tech & Startups": "💻", "Programming & Data": "👨‍💻",
   "Business & Finance": "💰", "Security & IT": "🔐", "Developer Community": "👥",
