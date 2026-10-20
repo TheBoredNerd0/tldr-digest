@@ -193,3 +193,21 @@ test("day page: expanding a card adds a Copy link button that copies the article
   assert.equal(copied, "https://x.test/c");
   assert.equal(buttons[0].textContent, "Copied ✓");
 });
+
+test("day page: muted words hide matching stories and are remembered", () => {
+  const html = buildDailyHtml("2026-10-20", EDITIONS);
+  const w = load(html);
+  const input = w.document.getElementById("mute-input");
+  input.value = "gamma, BBC";
+  input.dispatchEvent(new w.Event("input"));
+  const muted = [...w.document.querySelectorAll(".card.is-muted")].map((c) => c.dataset.headline);
+  assert.deepEqual(muted, ["Gamma chips", "Delta summit"], "matches headline or source, case-insensitive");
+  assert.equal(w.document.getElementById("mute-status").textContent, "(2 hidden today)");
+  const again = load(html, { storage: { "tldr-muted": w.localStorage.getItem("tldr-muted") } });
+  assert.equal(again.document.querySelectorAll(".card.is-muted").length, 2);
+  assert.equal(again.document.getElementById("mute-input").value, "gamma, BBC");
+  input.value = "";
+  input.dispatchEvent(new w.Event("input"));
+  assert.equal(w.document.querySelectorAll(".card.is-muted").length, 0);
+  assert.equal(w.localStorage.getItem("tldr-muted"), null);
+});

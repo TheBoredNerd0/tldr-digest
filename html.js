@@ -329,6 +329,15 @@ const PAGE_STYLES = `
   .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
   mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
 
+  .card.is-muted { display: none; }
+  .mute-panel { margin: 2.5rem 0 0; font-size: 0.9rem; }
+  .mute-panel summary { cursor: pointer; color: var(--muted); }
+  .mute-panel label { display: block; margin: 0.6rem 0 0.4rem; color: var(--muted); }
+  .mute-panel input {
+    width: 100%; max-width: 32rem; font: inherit; padding: 0.5rem 0.7rem; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface); color: inherit;
+  }
+  .muted-count { font-size: 0.8rem; }
   .source-health { margin: 3rem 0 0; font-size: 0.82rem; color: var(--muted); }
   .source-health + footer.site-footer { margin-top: 0.75rem; }
   footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
@@ -545,6 +554,37 @@ const PAGE_SCRIPT = `
   } catch (e) {}
 
   try {
+    // Muted words (idea from Kagi News' content filters): hide any story whose
+    // headline or source contains one of the user's words, on every day page.
+    var muteInput = document.getElementById('mute-input');
+    var muteStatus = document.getElementById('mute-status');
+    var MUTE_KEY = 'tldr-muted';
+    var parseMuted = function (text) {
+      return String(text || '').split(',').map(function (w) { return w.trim().toLowerCase(); }).filter(Boolean);
+    };
+    var applyMuted = function (words) {
+      var hidden = 0;
+      cards.forEach(function (card) {
+        var hay = ((card.getAttribute('data-headline') || '') + ' ' + (card.getAttribute('data-source') || '')).toLowerCase();
+        var muted = false;
+        for (var i = 0; i < words.length; i++) if (hay.indexOf(words[i]) !== -1) { muted = true; break; }
+        card.classList.toggle('is-muted', muted);
+        if (muted) hidden++;
+      });
+      if (muteStatus) muteStatus.textContent = words.length ? '(' + hidden + ' hidden today)' : '';
+    };
+    var savedMuted = getItem(MUTE_KEY) || '';
+    if (muteInput) muteInput.value = savedMuted;
+    if (cards.length) applyMuted(parseMuted(savedMuted));
+    if (muteInput) {
+      muteInput.addEventListener('input', function () {
+        setItem(MUTE_KEY, muteInput.value.trim() ? muteInput.value : null);
+        applyMuted(parseMuted(muteInput.value));
+      });
+    }
+  } catch (e) {}
+
+  try {
     // Tab filter: clicking a quicknav pill or a category tile shows only that
     // topic's section. "All" shows Featured + the category-grid browse view.
     var navLinks = document.querySelectorAll('.quicknav a[data-target]');
@@ -605,6 +645,7 @@ const PAGE_SCRIPT = `
         cards.forEach(function (card, i) {
           var match = q === '' || haystacks[i].indexOf(q) !== -1;
           if (match && q !== '' && root.hasAttribute('data-newonly') && card.classList.contains('repeat')) match = false;
+          if (match && card.classList.contains('is-muted')) match = false;
           card.hidden = !match;
           if (match) {
             shown++;
@@ -1071,6 +1112,11 @@ ${renderTopbar("day", { viewToggle: true })}
 ${nav}
 ${grid}
 ${body}
+<details class="mute-panel">
+<summary>Muted words <span id="mute-status" class="muted-count"></span></summary>
+<label for="mute-input">Hide stories whose headline or source mentions any of these (comma-separated). Saved in this browser.</label>
+<input id="mute-input" type="text" placeholder="e.g. crypto, celebrity, NFL" autocomplete="off">
+</details>
 </main>
 ${renderFooter({ missingSources })}
 </body>

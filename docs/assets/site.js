@@ -205,6 +205,37 @@
   } catch (e) {}
 
   try {
+    // Muted words (idea from Kagi News' content filters): hide any story whose
+    // headline or source contains one of the user's words, on every day page.
+    var muteInput = document.getElementById('mute-input');
+    var muteStatus = document.getElementById('mute-status');
+    var MUTE_KEY = 'tldr-muted';
+    var parseMuted = function (text) {
+      return String(text || '').split(',').map(function (w) { return w.trim().toLowerCase(); }).filter(Boolean);
+    };
+    var applyMuted = function (words) {
+      var hidden = 0;
+      cards.forEach(function (card) {
+        var hay = ((card.getAttribute('data-headline') || '') + ' ' + (card.getAttribute('data-source') || '')).toLowerCase();
+        var muted = false;
+        for (var i = 0; i < words.length; i++) if (hay.indexOf(words[i]) !== -1) { muted = true; break; }
+        card.classList.toggle('is-muted', muted);
+        if (muted) hidden++;
+      });
+      if (muteStatus) muteStatus.textContent = words.length ? '(' + hidden + ' hidden today)' : '';
+    };
+    var savedMuted = getItem(MUTE_KEY) || '';
+    if (muteInput) muteInput.value = savedMuted;
+    if (cards.length) applyMuted(parseMuted(savedMuted));
+    if (muteInput) {
+      muteInput.addEventListener('input', function () {
+        setItem(MUTE_KEY, muteInput.value.trim() ? muteInput.value : null);
+        applyMuted(parseMuted(muteInput.value));
+      });
+    }
+  } catch (e) {}
+
+  try {
     // Tab filter: clicking a quicknav pill or a category tile shows only that
     // topic's section. "All" shows Featured + the category-grid browse view.
     var navLinks = document.querySelectorAll('.quicknav a[data-target]');
@@ -265,6 +296,7 @@
         cards.forEach(function (card, i) {
           var match = q === '' || haystacks[i].indexOf(q) !== -1;
           if (match && q !== '' && root.hasAttribute('data-newonly') && card.classList.contains('repeat')) match = false;
+          if (match && card.classList.contains('is-muted')) match = false;
           card.hidden = !match;
           if (match) {
             shown++;

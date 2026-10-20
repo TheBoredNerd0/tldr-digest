@@ -239,6 +239,15 @@
   .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
   mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
 
+  .card.is-muted { display: none; }
+  .mute-panel { margin: 2.5rem 0 0; font-size: 0.9rem; }
+  .mute-panel summary { cursor: pointer; color: var(--muted); }
+  .mute-panel label { display: block; margin: 0.6rem 0 0.4rem; color: var(--muted); }
+  .mute-panel input {
+    width: 100%; max-width: 32rem; font: inherit; padding: 0.5rem 0.7rem; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface); color: inherit;
+  }
+  .muted-count { font-size: 0.8rem; }
   .source-health { margin: 3rem 0 0; font-size: 0.82rem; color: var(--muted); }
   .source-health + footer.site-footer { margin-top: 0.75rem; }
   footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
