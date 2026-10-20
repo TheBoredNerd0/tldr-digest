@@ -73,7 +73,7 @@ test("writeSiteFiles + renderDay produce a coherent site", () => {
   const manifest = writeSiteFiles({ dataDir, siteDir, siteUrl: "https://x.test" });
 
   assert.deepEqual(manifest.map((d) => d.date), ["2026-10-20", "2026-07-31"]);
-  for (const f of ["index.html", "days.json", "search.html", "saved.html", "feed.xml", "search/months.json", "search/2026-10.json", "20-october-2026.html"]) {
+  for (const f of ["index.html", "days.json", "search.html", "saved.html", "feed.xml", "search/months.json", "search/2026-10.json", "20-october-2026.html", "assets/site.css", "assets/site.js"]) {
     assert.ok(fs.existsSync(path.join(siteDir, f)), `${f} should exist`);
   }
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(siteDir, "search/months.json"))), ["2026-10", "2026-07"]);

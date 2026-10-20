@@ -9,6 +9,7 @@ const {
   buildSearchHtml,
   buildSavedHtml,
   buildFeedXml,
+  ASSETS,
 } = require("./html");
 
 // Each day's deduped editions are kept as JSON, not just as rendered HTML. Before
@@ -124,6 +125,8 @@ function writeSiteFiles({ dataDir = DATA_DIR, siteDir = SITE_DIR, siteUrl = SITE
   fs.writeFileSync(path.join(siteDir, "search.html"), buildSearchHtml({ siteUrl }));
   fs.writeFileSync(path.join(siteDir, "saved.html"), buildSavedHtml({ siteUrl }));
   fs.writeFileSync(path.join(siteDir, "feed.xml"), buildFeedXml(manifest.slice(0, 30), { siteUrl }));
+  fs.mkdirSync(path.join(siteDir, "assets"), { recursive: true });
+  for (const [file, body] of Object.entries(ASSETS)) fs.writeFileSync(path.join(siteDir, file), body);
   return manifest;
 }
 

@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   MONTHS,
+  ASSETS,
   dateToSlug,
   slugToIso,
   formatLongDate,
@@ -77,11 +78,13 @@ test("buildDailyHtml: no duplicate data-blurb payload, labelled search, day nav"
   assert.ok(!html.includes("<button class=\"save\""), "save buttons are injected by JS, not repeated per card");
 });
 
-test("buildDailyHtml: inline script has no syntax errors", () => {
+test("page scripts parse, and pages reference the shared versioned assets", () => {
   const html = buildDailyHtml("2026-10-20", [{ name: "AI", sections: [{ title: "x", articles: [article()] }] }]);
-  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-  assert.equal(scripts.length, 2);
-  for (const src of scripts) assert.doesNotThrow(() => new Function(src));
+  const inline = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  assert.equal(inline.length, 1, "only the theme bootstrap stays inline");
+  for (const src of [...inline, ASSETS["assets/site.js"]]) assert.doesNotThrow(() => new Function(src));
+  assert.match(html, /<link rel="stylesheet" href="assets\/site.css\?v=[0-9a-f]{10}">/);
+  assert.match(html, /<script src="assets\/site.js\?v=[0-9a-f]{10}" defer><\/script>/);
 });
 
 test("buildIndexHtml lists days in the order given and groups by month", () => {

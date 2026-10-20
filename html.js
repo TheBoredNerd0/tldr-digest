@@ -751,6 +751,18 @@ const PAGE_SCRIPT = `
 })();
 `;
 
+// Styles and the page script are shared files rather than inlined into every
+// page: identical on all 100+ days, so the browser fetches them once and caches
+// them. The ?v= hash changes whenever either changes, so a rebuild can't be
+// served a stale copy. Only the tiny theme/view bootstrap stays inline (it must
+// run before first paint).
+const ASSETS = { "assets/site.css": PAGE_STYLES, "assets/site.js": PAGE_SCRIPT };
+const ASSET_VERSION = require("crypto")
+  .createHash("sha1")
+  .update(PAGE_STYLES + PAGE_SCRIPT)
+  .digest("hex")
+  .slice(0, 10);
+
 const FAVICON =
   "data:image/svg+xml," +
   encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📰</text></svg>');
@@ -773,7 +785,8 @@ ${img ? `<meta property="og:image" content="${escapeHtml(img)}">` : ""}
 <link rel="icon" href="${FAVICON}">
 <link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="feed.xml">
 <script>${HEAD_SCRIPT}</script>
-<style>${PAGE_STYLES}</style>`;
+<link rel="stylesheet" href="assets/site.css?v=${ASSET_VERSION}">
+<script src="assets/site.js?v=${ASSET_VERSION}" defer></script>`;
 }
 
 function renderTopbar(active, { viewToggle = false } = {}) {
@@ -941,7 +954,6 @@ ${grid}
 ${body}
 </main>
 ${renderFooter()}
-<script>${PAGE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -1004,7 +1016,6 @@ ${lead}
 ${months}
 </main>
 ${renderFooter()}
-<script>${PAGE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -1028,7 +1039,6 @@ ${renderTopbar("search")}
 <ol id="all-results" class="results"></ol>
 </main>
 ${renderFooter()}
-<script>${PAGE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -1048,7 +1058,6 @@ ${renderTopbar("saved")}
 <p id="saved-empty" class="empty">Nothing saved yet. Tap ☆ on any story to keep it here.</p>
 </main>
 ${renderFooter()}
-<script>${PAGE_SCRIPT}</script>
 </body>
 </html>`;
 }
@@ -1089,6 +1098,7 @@ ${items}
 
 module.exports = {
   MONTHS,
+  ASSETS,
   dateToSlug,
   slugToIso,
   formatLongDate,
