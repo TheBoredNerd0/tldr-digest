@@ -617,6 +617,48 @@ const PAGE_SCRIPT = `
   } catch (e) {}
 
   try {
+    // Reader keys on day pages: j / k = next / previous story, o or Enter =
+    // expand it (native <summary>), s = save it. Only stories currently shown
+    // count, so this follows the topic filter, search and "new only".
+    if (cards.length) {
+      var visibleSummaries = function () {
+        var out = [];
+        cards.forEach(function (card) {
+          if (card.offsetParent === null) return; // hidden by filter/search/new-only
+          var sum = card.querySelector('summary');
+          if (sum) out.push(sum);
+        });
+        return out;
+      };
+      document.addEventListener('keydown', function (evt) {
+        var tag = (evt.target && evt.target.tagName) || '';
+        if (/INPUT|TEXTAREA|SELECT/.test(tag) || evt.metaKey || evt.ctrlKey || evt.altKey) return;
+        var k = evt.key;
+        if (k !== 'j' && k !== 'k' && k !== 'o' && k !== 's') return;
+        var list = visibleSummaries();
+        if (!list.length) return;
+        var current = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.card') : null;
+        var idx = -1;
+        for (var i = 0; i < list.length; i++) if (current && list[i].closest('.card') === current) { idx = i; break; }
+        if (k === 'j' || k === 'k') {
+          var next = k === 'j' ? Math.min(idx + 1, list.length - 1) : Math.max(idx - 1, 0);
+          if (idx === -1) next = 0;
+          list[next].focus();
+          try { list[next].scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+        } else if (k === 'o' && idx !== -1) {
+          list[idx].click();
+        } else if (k === 's' && idx !== -1) {
+          var btn = current.querySelector('.save');
+          if (btn) btn.click();
+        } else {
+          return;
+        }
+        evt.preventDefault();
+      });
+    }
+  } catch (e) {}
+
+  try {
     // Previous / next day. Rendered server-side as an "All days" link only, so an
     // old page never points at a stale neighbour; the real neighbours come from
     // days.json, which is rewritten on every publish.
@@ -833,7 +875,7 @@ ${viewToggle ? `<button id="view-toggle" class="tool" type="button" aria-label="
 function renderFooter() {
   return `<footer class="site-footer">
 <a href="./">All days</a><a href="search.html">Search</a><a href="saved.html">Saved</a><a href="feed.xml">RSS</a>
-<span>Tip: press <kbd>/</kbd> to search</span>
+<span>Keys: <kbd>/</kbd> search · <kbd>j</kbd> <kbd>k</kbd> next / previous · <kbd>o</kbd> open · <kbd>s</kbd> save</span>
 </footer>`;
 }
 
