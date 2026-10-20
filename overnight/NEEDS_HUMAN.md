@@ -50,6 +50,17 @@ Most important first.
 - Why I didn't just do it: what goes in the digest is your editorial call.
 - Merge after #2 with `git merge overnight/feature-more-ai-sources` if you want it.
 
+## 3b. Fold the same story from several outlets? (branch `overnight/feature-story-clusters`)
+- Techmeme-style: when BBC, NYT and DW all run the same story, keep one card with
+  "Also covered by NYT World, DW" links. About 7.5 duplicates are folded per day.
+  A hand check of 25 groups found no unrelated stories merged (1 was the same
+  event from a different angle).
+- Why a branch: it hides cards, so it's a taste call. It only changes rendering,
+  and the data is untouched, so removing it later is just a rebuild.
+- Both optional branches merge cleanly on top of #2, and together all 56 tests pass:
+  `git merge overnight/feature-story-clusters overnight/feature-more-ai-sources`,
+  then `npm run rebuild`.
+
 ## 4. Washington Post World feed is down
 - `feeds.washingtonpost.com` returns 502 for every feed tonight (world, national).
   It worked until 20 Oct. It's probably temporary, and the run now retries once and

@@ -24,6 +24,7 @@
 |---|---|
 | `overnight/2026-10-21` | Everything below. Based on `main` @ 5dfd975. |
 | `overnight/feature-more-ai-sources` | On top of the above: six more AI sources. Your call. |
+| `overnight/feature-story-clusters` | On top of the above: one card per story across outlets, with "Also covered by…". Your call. |
 
 Nothing was pushed to `main`, and nothing was deployed.
 
@@ -69,13 +70,15 @@ AIBriefs, Techmeme, TLDR archives, Kagi Kite, KBlip, Chinese design writing (人
    and criticised "generic AI-made UI". I added all three and kept the existing look.
 3. Every strong competitor has saved items and archive navigation.
 4. Kagi's open-source Kite is a static site over daily JSON. That confirmed the data-layer design.
-5. Techmeme-style story clustering is the biggest remaining gap (ROADMAP #3).
+5. Techmeme-style story clustering was the biggest gap, so I built it on a branch: ~7.5
+   duplicate stories a day folded, with no unrelated merges in a 25-group hand check.
 
 ## Needs your decision (details in `NEEDS_HUMAN.md`)
 1. Add the `TELEGRAM_BOT_TOKEN` secret.
 2. Merge `overnight/2026-10-21` → `main`. The exact, rehearsed commands are there.
    Expect one harmless conflict in `docs/index.html`.
-3. Six extra AI sources: merge `overnight/feature-more-ai-sources` or not.
+3. Six extra AI sources (`overnight/feature-more-ai-sources`) and cross-outlet story
+   folding (`overnight/feature-story-clusters`): merge either, both or neither. They merge cleanly together.
 4. The Washington Post feed host has been down (502) since 21 Oct. Watch the new warnings.
 5. Keep or delete the legacy per-edition Telegram flow.
 6. Optional paid AI daily summary.

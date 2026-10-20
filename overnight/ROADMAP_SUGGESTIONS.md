@@ -7,10 +7,9 @@ Each item says why, and what it would take.
 2. **More AI sources** (`overnight/feature-more-ai-sources`, ready to merge). You said
    AI model news and GitHub repos matter most. This adds 6 tested AI feeds and gives
    Verge AI and Simon Willison a Featured slot each.
-3. **Story clustering across outlets.** Techmeme's best feature is grouping one story's
-   coverage ("More: Reuters, Verge, …"). Today identical *URLs* are deduped, but the same
-   story from BBC, Guardian and Al Jazeera shows three times. A cheap first version
-   groups headlines with high word overlap, without an LLM. Medium effort.
+3. **Story clustering across outlets.** Done on branch `overnight/feature-story-clusters`
+   (word-overlap, no LLM). Next step if you like it: an embeddings model would catch
+   differently-worded duplicates it currently misses, at a small API cost.
 4. **Telegram message with the top 3 headlines**, not just the link (TLDR archives title
    each issue by its top stories, and so does our new archive). One line in `publish.js`,
    using `summarizeDay().top`.
