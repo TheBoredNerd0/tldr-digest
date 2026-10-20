@@ -231,6 +231,7 @@ const PAGE_STYLES = `
     color: var(--text); background: var(--surface); border: 1px solid var(--border);
   }
   .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .blurb-wrap .share { margin: 0.6rem 0 0; }
   .card[hidden] { display: none; }
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
@@ -508,6 +509,38 @@ const PAGE_SCRIPT = `
           }
         });
       }
+    });
+  } catch (e) {}
+
+  try {
+    // Share / copy link, added the first time a card is expanded (so ~400
+    // buttons aren't built up front). Uses the native share sheet on phones,
+    // otherwise copies the article link.
+    var canShare = typeof navigator.share === 'function';
+    cards.forEach(function (card) {
+      var details = card.querySelector('details');
+      if (!details) return;
+      details.addEventListener('toggle', function () {
+        if (!details.open || details.querySelector('.share')) return;
+        var label = canShare ? 'Share' : 'Copy link';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip share';
+        btn.textContent = label;
+        btn.addEventListener('click', function () {
+          var url = card.getAttribute('data-url');
+          if (canShare) {
+            navigator.share({ title: card.getAttribute('data-headline'), url: url }).catch(function () {});
+          } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () {
+              btn.textContent = 'Copied ✓';
+              setTimeout(function () { btn.textContent = label; }, 1500);
+            }).catch(function () {});
+          }
+        });
+        var wrap = details.querySelector('.blurb-wrap');
+        if (wrap) wrap.appendChild(btn);
+      });
     });
   } catch (e) {}
 

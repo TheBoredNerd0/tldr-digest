@@ -141,6 +141,7 @@
     color: var(--text); background: var(--surface); border: 1px solid var(--border);
   }
   .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .blurb-wrap .share { margin: 0.6rem 0 0; }
   .card[hidden] { display: none; }
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }

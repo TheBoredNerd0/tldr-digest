@@ -176,3 +176,20 @@ test("search page: searches every month newest first, dedupes repeats, all terms
   ]);
   assert.equal(w.document.getElementById("all-status").textContent, "2 matches");
 });
+
+test("day page: expanding a card adds a Copy link button that copies the article URL", async () => {
+  const w = load(buildDailyHtml("2026-10-20", EDITIONS));
+  let copied = null;
+  Object.defineProperty(w.navigator, "clipboard", { value: { writeText: (t) => { copied = t; return Promise.resolve(); } } });
+  const details = w.document.querySelector('.card[data-url="https://x.test/c"] details');
+  details.open = true;
+  details.dispatchEvent(new w.Event("toggle"));
+  details.dispatchEvent(new w.Event("toggle"));
+  const buttons = details.querySelectorAll(".share");
+  assert.equal(buttons.length, 1, "added once");
+  assert.equal(buttons[0].textContent, "Copy link");
+  buttons[0].click();
+  await flush();
+  assert.equal(copied, "https://x.test/c");
+  assert.equal(buttons[0].textContent, "Copied ✓");
+});
