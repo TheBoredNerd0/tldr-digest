@@ -18,7 +18,18 @@
 - **Legacy Telegram fix**: per-edition messages are split per article; one long
   section used to exceed Telegram's 4096-char limit and fail the send.
 - **Tests**: `npm test` (node:test, offline); CI in `.github/workflows/test.yml`.
-- Research notes behind these choices are in `overnight/research/`.
+- **Later the same night**: repeat detection (37.5% of stories were already in
+  the previous digest; tagged + "Show new only"), unread marks on the archive,
+  `j/k/o/s` keys, Share/Copy link, muted words, `#topic` deep links, source-health
+  tracking (`missingSources` + Actions warnings), Atom feed support, shared
+  versioned CSS/JS (`docs/assets/`), search index stores each story once (−37%),
+  `npm run preview`, jsdom client tests (53 tests total).
+- **Optional branches** (owner's call, all merge cleanly together):
+  `overnight/feature-more-ai-sources` (6 more AI feeds),
+  `overnight/feature-story-clusters` (one card per story across outlets),
+  `overnight/feature-telegram-headlines` (top 3 headlines in the Telegram message).
+- Research notes behind these choices are in `overnight/research/`; decisions that
+  need the owner are in `overnight/NEEDS_HUMAN.md`.
 
 ## Health check 2026-10-21: Telegram silent since 2026-07-19, two sources dead
 - Every scheduled Actions run since 2026-07-19 failed at the Telegram step (site

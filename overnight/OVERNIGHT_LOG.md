@@ -36,3 +36,17 @@ Ground rules for this run: work only on `overnight/*` branches. GitHub Pages ser
 - Rehearsed the main-merge procedure in a scratch clone (conflict + clean cases).
 - jsdom client tests (45 total). Daily workflow installs prod deps only.
 - Washington Post feeds host returns 502 for every feed (outage on their side).
+
+## 01:32–01:55 Pass 2, optional branches, wrap-up
+- Network helper tests (og:image, Telegram sender). Share/Copy link. Muted words.
+  Topic deep links. npm run preview (path-traversal + malformed-URL safe).
+- Story clustering on overnight/feature-story-clusters: 7.5 folds/day across 100
+  days; hand-checked 25 groups, none unrelated. A negative test caught a false-match
+  risk ("OpenAI launches … model") before it shipped; fixed with boilerplate stopwords.
+- Telegram message builder extracted + tested (main branch); headline version on
+  overnight/feature-telegram-headlines. One commit there briefly had a failing test
+  (patch script aborted mid-way); fixed in the next commit (80bd62e).
+- All three optional branches merged together in a scratch clone: 57/57 tests.
+- Search index: each story once → 1.93 MB → 1.22 MB gzipped.
+- Clean-clone verification: npm ci, 53/53 tests, E2E publish (6 files touched),
+  rebuild after publish changes 0 files (deterministic).
