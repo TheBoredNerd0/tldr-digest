@@ -79,6 +79,20 @@ test("writeSiteFiles + renderDay produce a coherent site", () => {
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(siteDir, "search/months.json"))), ["2026-10", "2026-07"]);
 });
 
+test("renderDay marks stories that were in the previous day's digest", () => {
+  const dataDir = tmp();
+  const siteDir = tmp();
+  writeDayData("2026-10-19", day("Old"), dataDir);
+  writeDayData("2026-10-20", [...day("Old"), ...day("New").slice(1)], dataDir);
+  renderDay("2026-10-20", { dataDir, siteDir });
+  const html = fs.readFileSync(path.join(siteDir, "20-october-2026.html"), "utf8");
+  assert.equal((html.match(/class="card repeat"/g) || []).length, 2);
+  assert.equal((html.match(/class="card"/g) || []).length, 1);
+  assert.match(html, /<strong>1 new<\/strong> since the day before/);
+  renderDay("2026-10-19", { dataDir, siteDir });
+  assert.ok(!fs.readFileSync(path.join(siteDir, "19-october-2026.html"), "utf8").includes("repeat"), "first day has nothing to compare");
+});
+
 test("a rendered day parses back to the same data (backfill round-trip)", () => {
   const dataDir = tmp();
   const siteDir = tmp();

@@ -221,6 +221,15 @@ const PAGE_STYLES = `
   :root[data-theme="dark"] .card { border-color: var(--border); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card { border-color: var(--border); } }
   .card.is-read { opacity: 0.55; }
+  .card.repeat .overlay .source::after { content: " · also the day before"; text-transform: none; font-weight: 400; letter-spacing: 0; }
+  :root[data-newonly] .card.repeat { display: none; }
+  :root[data-newonly] .grid:not(:has(.card:not(.repeat))),
+  :root[data-newonly] h3.section:has(+ .grid:not(:has(.card:not(.repeat)))) { display: none; }
+  .chip {
+    font: inherit; font-size: 0.8rem; margin-left: 0.35rem; padding: 0.15rem 0.6rem; border-radius: 999px; cursor: pointer;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  }
+  .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .card[hidden] { display: none; }
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
@@ -323,7 +332,7 @@ const PAGE_STYLES = `
 
 // Runs before first paint so a saved theme/view applies without a flash of the
 // default (the old toggle only ran at the end of <body>).
-const HEAD_SCRIPT = `try{var r=document.documentElement,t=localStorage.getItem('tldr-theme'),v=localStorage.getItem('tldr-view');if(t)r.setAttribute('data-theme',t);if(v==='compact')r.setAttribute('data-view','compact');}catch(e){}`;
+const HEAD_SCRIPT = `try{var r=document.documentElement,t=localStorage.getItem('tldr-theme'),v=localStorage.getItem('tldr-view');if(t)r.setAttribute('data-theme',t);if(v==='compact')r.setAttribute('data-view','compact');if(localStorage.getItem('tldr-new-only'))r.setAttribute('data-newonly','');}catch(e){}`;
 
 const PAGE_SCRIPT = `
 (function () {
@@ -381,6 +390,23 @@ const PAGE_SCRIPT = `
         if (root.getAttribute('data-view') === 'compact') { root.removeAttribute('data-view'); setItem('tldr-view', null); }
         else { root.setAttribute('data-view', 'compact'); setItem('tldr-view', 'compact'); }
         paintView();
+      });
+    }
+  } catch (e) {}
+
+  try {
+    var newBtn = document.getElementById('new-only');
+    var paintNew = function () {
+      var on = root.hasAttribute('data-newonly');
+      newBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      newBtn.textContent = on ? 'Showing new only' : 'Show new only';
+    };
+    if (newBtn) {
+      paintNew();
+      newBtn.addEventListener('click', function () {
+        if (root.hasAttribute('data-newonly')) { root.removeAttribute('data-newonly'); setItem('tldr-new-only', null); }
+        else { root.setAttribute('data-newonly', ''); setItem('tldr-new-only', '1'); }
+        paintNew();
       });
     }
   } catch (e) {}
@@ -542,6 +568,7 @@ const PAGE_SCRIPT = `
         var withMatch = [];
         cards.forEach(function (card, i) {
           var match = q === '' || haystacks[i].indexOf(q) !== -1;
+          if (match && q !== '' && root.hasAttribute('data-newonly') && card.classList.contains('repeat')) match = false;
           card.hidden = !match;
           if (match) {
             shown++;
@@ -818,7 +845,7 @@ function renderCover(a, hue) {
   return `<div class="cover placeholder" aria-hidden="true" style="background: linear-gradient(135deg, hsl(${hue},55%,45%), hsl(${(hue + 40) % 360},55%,30%));">📰</div>`;
 }
 
-function renderArticle(a, edition) {
+function renderArticle(a, edition, ctx = {}) {
   const sourceName = a.sourceLabel || edition.name;
   const hue = hashHue(sourceName + a.headline);
   const emoji = EDITION_EMOJI[sourceName] || "📰";
@@ -831,7 +858,10 @@ function renderArticle(a, edition) {
     `data-headline="${escapeHtml(a.headline)}"`,
     `data-source="${escapeHtml(sourceName)}"`,
   ].join(" ");
-  return `<div class="card" ${attrs}>
+  // Also in the previous day's digest (TLDR re-serves editions over weekends):
+  // marked so it can be dimmed or hidden with "New only".
+  const repeat = ctx.previousUrls && ctx.previousUrls.has(a.url);
+  return `<div class="card${repeat ? " repeat" : ""}" ${attrs}>
     <details>
       <summary>
         <div class="cover-wrap">
@@ -849,7 +879,7 @@ function renderArticle(a, edition) {
   </div>`;
 }
 
-function renderEdition(edition) {
+function renderEdition(edition, ctx = {}) {
   const isFeatured = edition.name === "Featured";
   const gridClass = isFeatured ? "grid featured" : "grid";
   const count = edition.sections.reduce((n, s) => n + s.articles.length, 0);
@@ -857,7 +887,7 @@ function renderEdition(edition) {
     .map(
       (s) =>
         `${isFeatured ? "" : `<h3 class="section">${escapeHtml(s.title)}</h3>\n`}<div class="${gridClass}">\n${s.articles
-          .map((a) => renderArticle(a, edition))
+          .map((a) => renderArticle(a, edition, ctx))
           .join("\n")}\n</div>`
     )
     .join("\n");
@@ -890,12 +920,13 @@ function renderQuickNav(editions) {
 
 // The "All" default view: a tile per topic, using that topic's own top article
 // image as the tile background when one's available.
-function renderCategoryTile(edition) {
+function renderCategoryTile(edition, ctx = {}) {
   const emoji = EDITION_EMOJI[edition.name] || "📰";
   const articles = edition.sections.flatMap((s) => s.articles);
   const count = articles.length;
   const withImage = articles.find((a) => safeUrl(a.image));
   const hue = hashHue(edition.name);
+  const fresh = ctx.previousUrls ? ` · ${articles.filter((a) => !ctx.previousUrls.has(a.url)).length} new` : "";
   const bg = withImage
     ? `background-image: url('${escapeHtml(safeUrl(withImage.image))}');`
     : `background: linear-gradient(135deg, hsl(${hue},55%,40%), hsl(${(hue + 40) % 360},55%,25%));`;
@@ -903,25 +934,32 @@ function renderCategoryTile(edition) {
     <span class="tile-emoji" aria-hidden="true">${emoji}</span>
     <div class="tile-overlay">
       <span class="tile-name">${escapeHtml(edition.name)}</span>
-      <span class="tile-count">${count} article${count === 1 ? "" : "s"}</span>
+      <span class="tile-count">${count} article${count === 1 ? "" : "s"}${fresh}</span>
     </div>
   </a>`;
 }
 
-function renderCategoryGrid(editions) {
+function renderCategoryGrid(editions, ctx = {}) {
   const tiles = editions
     .filter((e) => e.name !== "Featured")
-    .map(renderCategoryTile)
+    .map((e) => renderCategoryTile(e, ctx))
     .join("\n");
   return `<div id="category-grid">\n${tiles}\n</div>`;
 }
 
 // editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image,sourceLabel}] }] }]
-function buildDailyHtml(isoDate, editions, { siteUrl } = {}) {
+// previousUrls: article URLs from the previous day's digest, if known.
+function buildDailyHtml(isoDate, editions, { siteUrl, previousUrls = null } = {}) {
+  const ctx = { previousUrls };
   const nav = renderQuickNav(editions);
-  const grid = renderCategoryGrid(editions);
-  const body = editions.map(renderEdition).join("\n");
-  const total = editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0);
+  const grid = renderCategoryGrid(editions, ctx);
+  const body = editions.map((e) => renderEdition(e, ctx)).join("\n");
+  const all = editions.flatMap((e) => e.sections.flatMap((s) => s.articles));
+  const total = all.length;
+  const repeats = previousUrls ? all.filter((a) => previousUrls.has(a.url)).length : 0;
+  const newOnly = repeats
+    ? ` · <strong>${total - repeats} new</strong> since the day before <button id="new-only" class="chip" type="button" aria-pressed="false">Show new only</button>`
+    : "";
   const featured = editions.find((e) => e.name === "Featured");
   const lead = (featured || editions[0] || { sections: [] }).sections.flatMap((s) => s.articles);
   const image = (lead.find((a) => safeUrl(a.image)) || {}).image;
@@ -938,7 +976,7 @@ ${renderHead({ title: `${SITE_NAME} — ${longDate}`, description, path: `${date
 ${renderTopbar("day", { viewToggle: true })}
 <main id="main">
 <h1 class="page-title">${escapeHtml(longDate)}</h1>
-<p class="subtle">${total} stories across ${editions.filter((e) => e.name !== "Featured").length} topics</p>
+<p class="subtle">${total} stories across ${editions.filter((e) => e.name !== "Featured").length} topics${newOnly}</p>
 <nav class="daynav" data-date="${escapeHtml(isoDate)}" aria-label="Other days">
 <a class="older" href="#" hidden>← Older</a>
 <a href="./">All days</a>

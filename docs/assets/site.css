@@ -131,6 +131,15 @@
   :root[data-theme="dark"] .card { border-color: var(--border); }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card { border-color: var(--border); } }
   .card.is-read { opacity: 0.55; }
+  .card.repeat .overlay .source::after { content: " · also the day before"; text-transform: none; font-weight: 400; letter-spacing: 0; }
+  :root[data-newonly] .card.repeat { display: none; }
+  :root[data-newonly] .grid:not(:has(.card:not(.repeat))),
+  :root[data-newonly] h3.section:has(+ .grid:not(:has(.card:not(.repeat)))) { display: none; }
+  .chip {
+    font: inherit; font-size: 0.8rem; margin-left: 0.35rem; padding: 0.15rem 0.6rem; border-radius: 999px; cursor: pointer;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  }
+  .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
   .card[hidden] { display: none; }
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }

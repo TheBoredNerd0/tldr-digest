@@ -58,6 +58,23 @@
     }
   } catch (e) {}
 
+  try {
+    var newBtn = document.getElementById('new-only');
+    var paintNew = function () {
+      var on = root.hasAttribute('data-newonly');
+      newBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      newBtn.textContent = on ? 'Showing new only' : 'Show new only';
+    };
+    if (newBtn) {
+      paintNew();
+      newBtn.addEventListener('click', function () {
+        if (root.hasAttribute('data-newonly')) { root.removeAttribute('data-newonly'); setItem('tldr-new-only', null); }
+        else { root.setAttribute('data-newonly', ''); setItem('tldr-new-only', '1'); }
+        paintNew();
+      });
+    }
+  } catch (e) {}
+
   // Saved articles: kept in this browser only (no accounts, no server), keyed by
   // article URL, with enough fields for saved.html to render them on its own.
   var SAVED_KEY = 'tldr-saved';
@@ -215,6 +232,7 @@
         var withMatch = [];
         cards.forEach(function (card, i) {
           var match = q === '' || haystacks[i].indexOf(q) !== -1;
+          if (match && q !== '' && root.hasAttribute('data-newonly') && card.classList.contains('repeat')) match = false;
           card.hidden = !match;
           if (match) {
             shown++;
