@@ -73,6 +73,17 @@ test("buildSearchIndex splits rows by month", () => {
   assert.equal(idx["2026-10"][1][3], "BBC World");
 });
 
+test("buildSearchIndex lists each story once, at its newest date", () => {
+  const idx = buildSearchIndex([
+    { date: "2026-10-20", editions: day("A") },
+    { date: "2026-10-19", editions: day("A") },
+    { date: "2026-09-30", editions: day("A") },
+  ]);
+  assert.equal(idx["2026-10"].length, 2);
+  assert.deepEqual(idx["2026-10"].map((r) => r[0]), ["2026-10-20", "2026-10-20"]);
+  assert.deepEqual(idx["2026-09"], []);
+});
+
 test("writeSiteFiles + renderDay produce a coherent site", () => {
   const dataDir = tmp();
   const siteDir = tmp();

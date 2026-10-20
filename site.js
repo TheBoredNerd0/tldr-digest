@@ -87,12 +87,18 @@ function summarizeDay(isoDate, editions, seenBefore = new Set()) {
 // Compact cross-day search index, split by month so the search page can load the
 // newest month first and the rest on demand. Rows are arrays rather than objects
 // (about 40% smaller): [date, headline, url, source, topic].
+// days must be newest first. Each URL is indexed once, at its newest appearance:
+// the search page only ever shows a story once anyway, and ~1/3 of rows were the
+// same story carried over from the day before.
 function buildSearchIndex(days) {
   const months = {};
+  const seen = new Set();
   for (const { date, editions } of days) {
     const key = date.slice(0, 7);
     months[key] = months[key] || [];
     for (const a of allArticles(editions)) {
+      if (seen.has(a.url)) continue;
+      seen.add(a.url);
       months[key].push([date, a.headline, a.url, a.sourceLabel || a.topic, a.topic]);
     }
   }
