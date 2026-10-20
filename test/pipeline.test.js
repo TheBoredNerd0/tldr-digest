@@ -2,7 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   todayInSingapore, buildFeatured, mergeEditions, dedupeAcrossEditions, escapeMdV2,
-  EXPECTED_SOURCES, findMissingSources, persistentlyMissing,
+  EXPECTED_SOURCES, findMissingSources, persistentlyMissing, buildTelegramMessage,
 } = require("../publish");
 const { parseEdition } = require("../scrape");
 const { escapeMarkdownV2, buildEditionDigest, TELEGRAM_MAX_LEN } = require("../format");
@@ -153,4 +153,15 @@ test("fetchRssSource also reads Atom feeds", async () => {
     assert.equal(two.url, "https://a.x/2");
     assert.ok(two.blurb.length <= 401 && two.blurb.endsWith("…"));
   });
+});
+
+test("daily Telegram message: counts, link, and MarkdownV2-safe", () => {
+  const msg = buildTelegramMessage("2026-10-21", [ed("AI", a(1), a(2)), ed("World News", a(3))], "https://x.github.io/tldr-digest/21-october-2026.html");
+  assert.equal(
+    msg,
+    "📰 *TLDR Digest — 2026\\-10\\-21*\n2 editions, 3 articles\nhttps://x\\.github\\.io/tldr\\-digest/21\\-october\\-2026\\.html"
+  );
+  // Every MarkdownV2 reserved character outside the bold title is escaped.
+  const body = msg.split("\n").slice(1).join("\n");
+  assert.ok(!/(^|[^\\])[_*[\]()~`>#+\-=|{}.!]/.test(body));
 });

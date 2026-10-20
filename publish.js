@@ -145,17 +145,16 @@ async function run() {
   const pageUrl = `${SITE_URL_BASE}/${slug}.html`;
   console.log(`Published ${pageUrl}`);
 
-  const editionCount = deduped.length;
-  const articleCount = deduped.reduce(
-    (n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0),
-    0
-  );
-  await sendTelegramMessage(
-    CHAT_ID,
-    `📰 *TLDR Digest — ${escapeMdV2(isoDate)}*\n${escapeMdV2(
-      `${editionCount} editions, ${articleCount} articles`
-    )}\n${escapeMdV2(pageUrl)}`
-  );
+  await sendTelegramMessage(CHAT_ID, buildTelegramMessage(isoDate, deduped, pageUrl));
+}
+
+// The one short daily Telegram message. Everything interpolated is escaped for
+// MarkdownV2: a single unescaped "." or "-" makes Telegram reject the send.
+function buildTelegramMessage(isoDate, editions, pageUrl) {
+  const articleCount = editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0);
+  return `📰 *TLDR Digest — ${escapeMdV2(isoDate)}*\n${escapeMdV2(
+    `${editions.length} editions, ${articleCount} articles`
+  )}\n${escapeMdV2(pageUrl)}`;
 }
 
 // Every source that should contribute to a normal day. A source that errors is
@@ -298,6 +297,7 @@ module.exports = {
   mergeEditions,
   dedupeAcrossEditions,
   escapeMdV2,
+  buildTelegramMessage,
   EXPECTED_SOURCES,
   findMissingSources,
   persistentlyMissing,
