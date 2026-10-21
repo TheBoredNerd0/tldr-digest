@@ -17,7 +17,7 @@ function stripHtml(html) {
 // Feeds like Washington Post (502) and VentureBeat (429) fail intermittently, which
 // dropped them from that day's digest. One delayed retry on 429/5xx or a network
 // error recovers most of those; the timeout keeps a hung feed from stalling the run.
-async function fetchWithRetry(url, attempts = 2) {
+async function fetchWithRetry(url, { attempts = 2, delayMs = 5000 } = {}) {
   for (let i = 1; ; i++) {
     try {
       const res = await fetch(url, {
@@ -25,13 +25,13 @@ async function fetchWithRetry(url, attempts = 2) {
         signal: AbortSignal.timeout(15000),
       });
       if (i < attempts && (res.status === 429 || res.status >= 500)) {
-        await new Promise((r) => setTimeout(r, 5000));
+        await new Promise((r) => setTimeout(r, delayMs));
         continue;
       }
       return res;
     } catch (err) {
       if (i >= attempts) throw err;
-      await new Promise((r) => setTimeout(r, 5000));
+      await new Promise((r) => setTimeout(r, delayMs));
     }
   }
 }
@@ -39,8 +39,8 @@ async function fetchWithRetry(url, attempts = 2) {
 // Generic official-RSS-feed source: works for any standard RSS 2.0 feed, with
 // media:content / media:thumbnail as a best-effort image (falls back to the
 // generic og:image scrape in attachImages() if the feed doesn't carry one).
-async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit = 15 }) {
-  const res = await fetchWithRetry(url);
+async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit = 15, retryDelayMs }) {
+  const res = await fetchWithRetry(url, { delayMs: retryDelayMs });
   if (!res.ok) throw new Error(`${name}: HTTP ${res.status}`);
   const xml = await res.text();
   const $ = cheerio.load(xml, { xmlMode: true });
@@ -66,7 +66,32 @@ async function fetchRssSource({ name, url, sectionTitle = "Top Stories", limit =
       articles.push({ headline, url: link, readTime: null, blurb, image });
     });
 
+  // Atom feeds (<entry> instead of <item>, link in an href attribute) — e.g.
+  // The Verge's and Simon Willison's feeds are Atom-only.
+  if (articles.length === 0) {
+    $("entry")
+      .slice(0, limit)
+      .each((_, el) => {
+        const entry = $(el);
+        const headline = entry.find("title").first().text().trim();
+        const linkEl = entry.find('link[rel="alternate"]').first();
+        const href = (linkEl.length ? linkEl : entry.find("link").first()).attr("href") || "";
+        const link = href.trim().split("?")[0];
+        const blurb = truncateText(stripHtml(entry.find("summary").first().text() || entry.find("content").first().text()), 400);
+        const image = entry.find("media\\:thumbnail").attr("url") || entry.find("media\\:content").attr("url") || null;
+        if (!headline || !link) return;
+        articles.push({ headline, url: link, readTime: null, blurb, image });
+      });
+  }
+
   return { name, sections: [{ title: sectionTitle, articles }] };
 }
 
-module.exports = { fetchRssSource };
+// Atom <content> is often the full post; keep card blurbs to a summary.
+function truncateText(text, max) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  return `${cut.slice(0, cut.lastIndexOf(" ") > 0 ? cut.lastIndexOf(" ") : max).trim()}…`;
+}
+
+module.exports = { fetchRssSource, fetchWithRetry, stripHtml };

@@ -1,5 +1,3 @@
-const fs = require("fs");
-const path = require("path");
 const { execFile } = require("child_process");
 const { promisify } = require("util");
 const execFileP = promisify(execFile);
@@ -8,12 +6,12 @@ const { EDITIONS } = require("./editions");
 const { fetchEdition, attachImages } = require("./scrape");
 const { fetchHackerNews } = require("./sources/hackernews");
 const { fetchRundownAI } = require("./sources/rundown");
-const { fetchAllWorldNews } = require("./sources/worldnews");
-const { fetchAllSingaporeNews } = require("./sources/singapore");
+const { fetchAllWorldNews, WORLD_NEWS_FEEDS } = require("./sources/worldnews");
+const { fetchAllSingaporeNews, SINGAPORE_FEEDS } = require("./sources/singapore");
 const { fetchGitHubTrending } = require("./sources/github");
-const { fetchAllCyberNews } = require("./sources/cybersecurity");
-const { fetchAllAiBlogs } = require("./sources/aiblogs");
-const { dateToSlug, buildDailyHtml, buildIndexHtml } = require("./html");
+const { fetchAllCyberNews, CYBERSECURITY_FEEDS } = require("./sources/cybersecurity");
+const { fetchAllAiBlogs, AI_BLOG_FEEDS } = require("./sources/aiblogs");
+const { writeDayData, renderDay, writeSiteFiles, listDays, readDayData, SITE_URL_BASE } = require("./site");
 const { sendTelegramMessage } = require("./send");
 
 // Sorts tiles by topic instead of by publisher — confirmed with the user before
@@ -29,9 +27,6 @@ const TOPIC_GROUPS = [
 ];
 
 const CHAT_ID = process.env.TLDR_DIGEST_CHAT_ID || "370423423";
-const SITE_DIR = path.join(__dirname, "docs");
-const SITE_URL_BASE =
-  process.env.TLDR_DIGEST_SITE_URL || "https://theborednerd0.github.io/tldr-digest";
 
 // The digest's date is *today, in Singapore*, not whatever date TLDR's own feed
 // happens to self-report. TLDR was previously the sole source of `isoDate`, so
@@ -90,6 +85,15 @@ async function run() {
   const cyberEditions = await fetchAllCyberNews(12);
   const aiBlogEditions = await fetchAllAiBlogs(10);
 
+  const missingSources = findMissingSources(EXPECTED_SOURCES, [
+    ...editions,
+    ...worldNewsEditions,
+    ...singaporeEditions,
+    ...cyberEditions,
+    ...aiBlogEditions,
+  ]);
+  reportMissingSources(missingSources, isoDate);
+
   // Featured picks are computed against every individual raw source (so e.g. "BBC
   // World" vs "Guardian World" stays distinguishable there), *before* any topic
   // grouping below — grouping is purely a browse-view concern for the main body.
@@ -124,22 +128,13 @@ async function run() {
   console.log(`Fetching cover images for ${deduped.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0)} articles...`);
   await attachImages(deduped);
 
-  const slug = dateToSlug(isoDate);
-  const html = buildDailyHtml(isoDate, deduped);
-  fs.mkdirSync(SITE_DIR, { recursive: true });
-  fs.writeFileSync(path.join(SITE_DIR, `${slug}.html`), html);
+  // Data first, then the page rendered from it, then everything that spans days
+  // (home/archive, search index, RSS) — see site.js.
+  writeDayData(isoDate, deduped, { missingSources });
+  const slug = renderDay(isoDate);
+  writeSiteFiles();
 
-  const existing = fs
-    .readdirSync(SITE_DIR)
-    .filter((f) => /^\d{2}-[a-z]+-\d{4}\.html$/.test(f))
-    .map((f) => f.replace(/\.html$/, ""));
-  const days = [...new Set([slug, ...existing])]
-    .sort()
-    .reverse()
-    .map((s) => ({ slug: s, isoDate: slugToIso(s) }));
-  fs.writeFileSync(path.join(SITE_DIR, "index.html"), buildIndexHtml(days));
-
-  await execFileP("git", ["add", "docs/"], { cwd: __dirname });
+  await execFileP("git", ["add", "docs/", "data/"], { cwd: __dirname });
   const commitResult = await execFileP(
     "git",
     ["commit", "-m", `Publish digest for ${isoDate}`],
@@ -150,17 +145,70 @@ async function run() {
   const pageUrl = `${SITE_URL_BASE}/${slug}.html`;
   console.log(`Published ${pageUrl}`);
 
-  const editionCount = deduped.length;
-  const articleCount = deduped.reduce(
-    (n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0),
-    0
+  await sendTelegramMessage(CHAT_ID, buildTelegramMessage(isoDate, deduped, pageUrl));
+}
+
+// The one short daily Telegram message. Everything interpolated is escaped for
+// MarkdownV2: a single unescaped "." or "-" makes Telegram reject the send.
+function buildTelegramMessage(isoDate, editions, pageUrl) {
+  const articleCount = editions.reduce((n, e) => n + e.sections.reduce((m, s) => m + s.articles.length, 0), 0);
+  return `📰 *TLDR Digest — ${escapeMdV2(isoDate)}*\n${escapeMdV2(
+    `${editions.length} editions, ${articleCount} articles`
+  )}\n${escapeMdV2(pageUrl)}`;
+}
+
+// Every source that should contribute to a normal day. A source that errors is
+// logged, but one that quietly returns zero articles wasn't: that's how The
+// Rundown AI (site moved) and VentureBeat (started blocking) both vanished from
+// the digest for about two months before anyone noticed.
+const EXPECTED_SOURCES = [
+  ...EDITIONS.map((e) => `TLDR ${e.name}`),
+  "Hacker News",
+  "The Rundown AI",
+  "GitHub Trending",
+  ...WORLD_NEWS_FEEDS.map((f) => f.name),
+  ...SINGAPORE_FEEDS.map((f) => f.name),
+  ...CYBERSECURITY_FEEDS.map((f) => f.name),
+  ...AI_BLOG_FEEDS.map((f) => f.name),
+];
+
+function findMissingSources(expected, rawEditions) {
+  const present = new Set(
+    rawEditions
+      .filter((e) => e.sections.some((s) => s.articles.length > 0))
+      .map((e) => e.name)
   );
-  await sendTelegramMessage(
-    CHAT_ID,
-    `📰 *TLDR Digest — ${escapeMdV2(isoDate)}*\n${escapeMdV2(
-      `${editionCount} editions, ${articleCount} articles`
-    )}\n${escapeMdV2(pageUrl)}`
+  return expected.filter((name) => !present.has(name));
+}
+
+// Sources missing for `days` consecutive digests, counting today. A one-day gap
+// is usually a flaky feed; several in a row means it needs fixing.
+// previousDays: day data objects, newest first.
+function persistentlyMissing(todayMissing, previousDays, days = 3) {
+  if (previousDays.length < days - 1) return [];
+  return todayMissing.filter((name) =>
+    previousDays.slice(0, days - 1).every((d) => (d.missingSources || []).includes(name))
   );
+}
+
+function reportMissingSources(missing, isoDate) {
+  if (missing.length === 0) return;
+  console.warn(`Sources with no articles today: ${missing.join(", ")}`);
+  const previous = listDays()
+    .filter((d) => d < isoDate)
+    .slice(0, 2)
+    .map((d) => {
+      try {
+        return readDayData(d);
+      } catch {
+        return {};
+      }
+    });
+  const stuck = persistentlyMissing(missing, previous);
+  if (process.env.GITHUB_ACTIONS) {
+    console.log(`::warning::No articles today from: ${missing.join(", ")}`);
+    if (stuck.length) console.log(`::warning::Missing 3+ days in a row (needs fixing): ${stuck.join(", ")}`);
+  }
 }
 
 // Pulls a curated "front page" from across every source. Re-focused 2026-07-15 on
@@ -238,24 +286,30 @@ function dedupeAcrossEditions(editions) {
     .filter((edition) => edition.sections.length > 0);
 }
 
-function slugToIso(slug) {
-  const months = [
-    "january", "february", "march", "april", "may", "june",
-    "july", "august", "september", "october", "november", "december",
-  ];
-  const [d, mName, y] = slug.split("-");
-  const m = String(months.indexOf(mName) + 1).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
 
 function escapeMdV2(text) {
   return String(text).replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, (ch) => `\\${ch}`);
 }
 
-run().catch((err) => {
-  console.error("Fatal error:", err);
-  // Surface the reason as a run annotation: Actions logs need a signed-in viewer,
-  // but annotations are public, so a broken run can be diagnosed from its summary.
-  if (process.env.GITHUB_ACTIONS) console.log(`::error::${String(err.message).replace(/\n/g, " ")}`);
-  process.exit(1);
-});
+module.exports = {
+  todayInSingapore,
+  buildFeatured,
+  mergeEditions,
+  dedupeAcrossEditions,
+  escapeMdV2,
+  buildTelegramMessage,
+  EXPECTED_SOURCES,
+  findMissingSources,
+  persistentlyMissing,
+};
+
+// Only scrape/publish when run directly; tests import the helpers above.
+if (require.main === module) {
+  run().catch((err) => {
+    console.error("Fatal error:", err);
+    // Surface the reason as a run annotation: Actions logs need a signed-in viewer,
+    // but annotations are public, so a broken run can be diagnosed from its summary.
+    if (process.env.GITHUB_ACTIONS) console.log(`::error::${String(err.message).replace(/\n/g, " ")}`);
+    process.exit(1);
+  });
+}

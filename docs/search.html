@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search every day — TLDR Digest</title>
+<meta name="description" content="A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.">
+<meta name="theme-color" content="#f2f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0e12" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="TLDR Digest">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Search every day — TLDR Digest">
+<meta property="og:description" content="A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.">
+<meta property="og:url" content="https://theborednerd0.github.io/tldr-digest/search.html">
+<link rel="canonical" href="https://theborednerd0.github.io/tldr-digest/search.html">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Ctext%20y%3D%22.9em%22%20font-size%3D%2290%22%3E%F0%9F%93%B0%3C%2Ftext%3E%3C%2Fsvg%3E">
+<link rel="alternate" type="application/rss+xml" title="TLDR Digest" href="feed.xml">
+<script>try{var r=document.documentElement,t=localStorage.getItem('tldr-theme'),v=localStorage.getItem('tldr-view');if(t)r.setAttribute('data-theme',t);if(v==='compact')r.setAttribute('data-view','compact');if(localStorage.getItem('tldr-new-only'))r.setAttribute('data-newonly','');}catch(e){}</script>
+<link rel="stylesheet" href="assets/site.css?v=f6a325684e">
+<script src="assets/site.js?v=f6a325684e" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+<a class="brand" href="./">📰 TLDR Digest</a>
+<nav class="tools" aria-label="Site">
+<a class="tool" href="search.html" title="Search every day" aria-label="Search every day" aria-current="page">🔎</a>
+<a class="tool" href="saved.html" title="Saved articles" aria-label="Saved articles">★<span class="count" data-saved-count></span></a>
+
+<button id="theme-toggle" class="tool" type="button" aria-label="Toggle dark mode">🌙</button>
+</nav>
+</header>
+<main id="main">
+<h1 class="page-title">Search every day</h1>
+<p class="subtle">Headlines and sources from every digest so far, newest first.</p>
+<div class="searchbar" role="search">
+<label class="sr-only" for="all-search">Search all digests</label>
+<input id="all-search" data-search type="search" placeholder="e.g. GPT, Singapore, ransomware…" autocomplete="off" autofocus>
+<p id="all-status" class="search-count" aria-live="polite">Type at least 2 characters.</p>
+</div>
+<ol id="all-results" class="results"></ol>
+</main>
+<footer class="site-footer">
+<a href="./">All days</a><a href="search.html">Search</a><a href="saved.html">Saved</a><a href="feed.xml">RSS</a>
+<span>Keys: <kbd>/</kbd> search · <kbd>j</kbd> <kbd>k</kbd> next / previous · <kbd>o</kbd> open · <kbd>s</kbd> save</span>
+</footer>
+</body>
+</html>

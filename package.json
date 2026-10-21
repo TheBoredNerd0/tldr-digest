@@ -3,13 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test",
+    "rebuild": "node scripts/rebuild.js",
+    "backfill": "node scripts/backfill.js",
+    "publish": "node publish.js",
+    "preview": "node scripts/preview.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Daily one-page news digest (TLDR + 30 sources) published to GitHub Pages",
   "dependencies": {
     "cheerio": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.3"
   }
 }

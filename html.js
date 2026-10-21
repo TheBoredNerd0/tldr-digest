@@ -19,10 +19,42 @@ const EDITION_EMOJI = {
   "Business & Finance": "💰", "Security & IT": "🔐", "Developer Community": "👥",
 };
 
+const SITE_NAME = "TLDR Digest";
+const SITE_DESCRIPTION =
+  "A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.";
+
 // "2026-07-09" -> "09-july-2026" (matches the requested filename convention)
 function dateToSlug(isoDate) {
   const [y, m, d] = isoDate.split("-");
   return `${d}-${MONTHS[parseInt(m, 10) - 1]}-${y}`;
+}
+
+// "09-july-2026" -> "2026-07-09"
+function slugToIso(slug) {
+  const [d, mName, y] = slug.split("-");
+  const m = String(MONTHS.indexOf(mName) + 1).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const cap = (w) => w[0].toUpperCase() + w.slice(1);
+
+// "2026-10-20" -> "Tuesday 20 October 2026". Formatted by hand rather than with
+// Intl: ICU builds disagree on details (some insert a comma after the weekday),
+// and a title that changes between the Actions runner and a local rebuild would
+// churn every page. Computed in UTC so the weekday can't drift with the host TZ.
+// opts picks the parts, Intl-style: { weekday: "long"|"short", day, month: "long"|"short", year }.
+function formatLongDate(isoDate, opts = { weekday: "long", day: "numeric", month: "long", year: "numeric" }) {
+  const d = new Date(`${isoDate}T00:00:00Z`);
+  const parts = [];
+  if (opts.weekday) parts.push(opts.weekday === "short" ? WEEKDAYS[d.getUTCDay()].slice(0, 3) : WEEKDAYS[d.getUTCDay()]);
+  if (opts.day) parts.push(String(d.getUTCDate()));
+  if (opts.month) {
+    const m = cap(MONTHS[d.getUTCMonth()]);
+    parts.push(opts.month === "short" ? m.slice(0, 3) : m);
+  }
+  if (opts.year) parts.push(String(d.getUTCFullYear()));
+  return parts.join(" ");
 }
 
 function slugify(text) {
@@ -34,7 +66,14 @@ function escapeHtml(text) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// Scraped URLs go straight into href/src/CSS url(). Only allow http(s) so a feed
+// item carrying a javascript: or data: URL can't turn into script on the page.
+function safeUrl(url) {
+  return typeof url === "string" && /^https?:\/\//i.test(url.trim()) ? url.trim() : null;
 }
 
 // Deterministic accent color per edition (for the placeholder cover when an
@@ -45,58 +84,97 @@ function hashHue(seed) {
   return h;
 }
 
+// Colours live in custom properties, set once per theme. The page previously
+// repeated every themed rule three times (OS dark preference, forced dark, forced
+// light), which is how individual components drifted out of sync. Muted text is
+// #5c5c66 / #a0a0ab: >= 4.5:1 on both backgrounds (the old #767680 was ~4:1).
 const PAGE_STYLES = `
-  :root { color-scheme: light dark; }
+  :root {
+    color-scheme: light;
+    --bg: #f2f2f5; --surface: #ffffff; --surface-2: #e7e7ec; --border: #d5d5da;
+    --text: #1a1a1a; --muted: #5c5c66; --blurb: #3a3a3f; --accent: #2563eb;
+    --shadow: 0 1px 3px rgba(0,0,0,0.12); --shadow-lg: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0d0e12; --surface: #1b1c22; --surface-2: #24252d; --border: #2f3039;
+      --text: #e8e8ea; --muted: #a0a0ab; --blurb: #b9b9c2; --accent: #7aa7ff;
+      --shadow: none; --shadow-lg: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d0e12; --surface: #1b1c22; --surface-2: #24252d; --border: #2f3039;
+    --text: #e8e8ea; --muted: #a0a0ab; --blurb: #b9b9c2; --accent: #7aa7ff;
+    --shadow: none; --shadow-lg: none;
+  }
+
   * { box-sizing: border-box; }
   body {
-    margin: 0; padding: 2rem 1rem 4rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    max-width: 1100px; margin-inline: auto; line-height: 1.5;
-    background: #f2f2f5; color: #1a1a1a;
+    margin: 0 auto; padding: 1.25rem 1rem 4rem; max-width: 1100px; line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
   }
-  @media (prefers-color-scheme: dark) { body { background: #0d0e12; color: #e8e8ea; } }
-  :root[data-theme="dark"] body { background: #0d0e12; color: #e8e8ea; }
-  :root[data-theme="light"] body { background: #f2f2f5; color: #1a1a1a; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip-link { position: absolute; left: -999px; top: 0.5rem; background: var(--surface); padding: 0.5rem 0.75rem; z-index: 50; }
+  .skip-link:focus { left: 0.5rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 
-  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.25rem; }
-  h1 { font-size: 1.6rem; margin: 0; }
-  .date { color: #767680; margin-bottom: 1rem; font-size: 0.95rem; }
-
-  .theme-toggle {
-    flex: none; border: none; cursor: pointer; font-size: 1.1rem; background: #fff;
-    border-radius: 999px; width: 2.25rem; height: 2.25rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  /* ---- header ---- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .brand { font-size: 1.35rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
+  .tools { display: flex; gap: 0.4rem; }
+  .tool {
+    flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.2rem;
+    min-width: 2.4rem; height: 2.4rem; padding: 0 0.6rem; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: 1rem; color: var(--text); text-decoration: none;
+    background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
   }
-  @media (prefers-color-scheme: dark) { .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .theme-toggle { background: #1b1c22; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .theme-toggle { background: #fff; border: none; }
+  .tool[aria-current="page"] { border-color: var(--accent); }
+  .tool .count { font-size: 0.75rem; font-weight: 700; }
+  .tool .count:empty { display: none; }
+  @media (max-width: 420px) {
+    .brand { font-size: 1.1rem; }
+    .tools { gap: 0.25rem; }
+    .tool { min-width: 2.2rem; height: 2.2rem; padding: 0 0.45rem; font-size: 0.9rem; }
+  }
 
-  .searchbar { margin-bottom: 1rem; }
+  h1.page-title { font-size: 1.6rem; margin: 0.25rem 0 0.1rem; line-height: 1.2; }
+  .subtle { color: var(--muted); font-size: 0.95rem; margin: 0 0 1rem; }
+
+  /* ---- day navigation ---- */
+  .daynav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; margin: 0 0 1rem; font-size: 0.9rem; }
+  .daynav a { text-decoration: none; padding: 0.35rem 0.1rem; }
+  .daynav .older { justify-self: start; }
+  .daynav .newer { justify-self: end; }
+  .daynav a[hidden] { display: inline-block; visibility: hidden; }
+
+  /* ---- search ---- */
+  .searchbar { margin-bottom: 0.25rem; }
   .searchbar input {
-    width: 100%; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px; border: 1px solid #d5d5da;
-    background: #fff; color: inherit;
+    width: 100%; font: inherit; font-size: 1rem; padding: 0.65rem 0.9rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); color: inherit;
   }
-  @media (prefers-color-scheme: dark) { .searchbar input { background: #1b1c22; border-color: #2a2b33; } }
-  :root[data-theme="dark"] .searchbar input { background: #1b1c22; border-color: #2a2b33; }
-  :root[data-theme="light"] .searchbar input { background: #fff; border-color: #d5d5da; }
-  .search-count { font-size: 0.8rem; color: #767680; margin: 0.4rem 0 0; }
+  .search-count { font-size: 0.85rem; color: var(--muted); margin: 0.4rem 0 0; min-height: 1.2em; }
+  kbd { font: 0.75rem/1 ui-monospace, monospace; padding: 0.1rem 0.35rem; border: 1px solid var(--border); border-radius: 4px; }
 
+  /* ---- topic pills ---- */
   .quicknav {
     position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: nowrap; gap: 0.4rem;
-    padding: 0.75rem 0; margin-bottom: 1.5rem; background: #f2f2f5;
+    padding: 0.75rem 0; margin-bottom: 1.5rem; background: var(--bg);
     overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
-  @media (prefers-color-scheme: dark) { .quicknav { background: #0d0e12; } }
-  :root[data-theme="dark"] .quicknav { background: #0d0e12; }
-  :root[data-theme="light"] .quicknav { background: #f2f2f5; }
   .quicknav a {
-    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: #fff;
-    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); white-space: nowrap;
-    border: 2px solid transparent;
+    flex: none; font-size: 0.8rem; text-decoration: none; color: inherit; background: var(--surface);
+    border-radius: 999px; padding: 0.3rem 0.7rem; box-shadow: var(--shadow); white-space: nowrap;
+    border: 2px solid var(--border);
   }
-  @media (prefers-color-scheme: dark) { .quicknav a { background: #1b1c22; border-color: #2a2b33; } }
-  :root[data-theme="dark"] .quicknav a { background: #1b1c22; border-color: #2a2b33; }
-  :root[data-theme="light"] .quicknav a { background: #fff; }
-  .quicknav a.active { border-color: #3b82f6; font-weight: 600; }
+  .quicknav a.active { border-color: var(--accent); font-weight: 600; }
 
+  /* ---- topic tiles ---- */
   #category-grid {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 0.75rem; margin: 0.5rem 0 2.5rem;
@@ -104,65 +182,73 @@ const PAGE_STYLES = `
   .category-tile {
     position: relative; aspect-ratio: 4/3; border-radius: 14px; overflow: hidden;
     text-decoration: none; color: #fff; background-size: cover; background-position: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    background-color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.15);
   }
   .tile-overlay {
     position: absolute; inset: 0; padding: 0.6rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
+    background: linear-gradient(to top, rgba(0,0,0,0.78) 20%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0.35));
     display: flex; flex-direction: column; justify-content: flex-end;
   }
   .tile-emoji { position: absolute; top: 0.5rem; left: 0.6rem; font-size: 1.3rem; }
   .tile-name { font-weight: 700; font-size: 0.95rem; line-height: 1.25; }
-  .tile-count { font-size: 0.75rem; opacity: 0.85; margin-top: 0.15rem; }
+  .tile-count { font-size: 0.75rem; opacity: 0.9; margin-top: 0.15rem; }
 
+  /* ---- sections ---- */
   section[id] { scroll-margin-top: 3.5rem; }
   details.edition-toggle summary.edition {
-    list-style: none; cursor: pointer; font-size: 1.3rem; margin: 2rem 0 1rem;
+    list-style: none; cursor: pointer; font-size: 1.3rem; font-weight: 700; margin: 2rem 0 1rem;
     display: flex; align-items: center; gap: 0.5rem;
   }
   details.edition-toggle summary.edition::-webkit-details-marker { display: none; }
   details.edition-toggle summary.edition::after {
-    content: "▾"; margin-left: auto; color: #767680; font-size: 1rem; transition: transform 0.15s;
+    content: "▾"; margin-left: auto; color: var(--muted); font-size: 1rem; transition: transform 0.15s;
   }
   details.edition-toggle[open] summary.edition::after { transform: rotate(180deg); }
-  details.edition-toggle summary.edition .count { color: #767680; font-weight: 400; font-size: 0.85rem; }
-
-  h3.section { font-size: 0.85rem; color: #767680; margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
-
+  details.edition-toggle summary.edition .count { color: var(--muted); font-weight: 400; font-size: 0.85rem; }
+  h3.section { font-size: 0.85rem; color: var(--muted); margin: 1.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
   h2.edition.featured { font-size: 1.6rem; margin: 0 0 1rem; }
+
+  /* ---- cards ---- */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
   .grid.featured { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1rem; }
-  .grid.featured .card { box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-  @media (prefers-color-scheme: dark) { .grid.featured .card { border-color: #3a3b45; } }
+  .grid.featured .card { box-shadow: var(--shadow-lg); }
   .grid.featured .card .headline { font-size: 1.1rem; }
 
   .card {
-    background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    transition: opacity 0.15s;
+    position: relative; background: var(--surface); border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow); border: 1px solid transparent; transition: opacity 0.15s;
   }
-  @media (prefers-color-scheme: dark) { .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; } }
-  :root[data-theme="dark"] .card { background: #1b1c22; box-shadow: none; border: 1px solid #2a2b33; }
-  :root[data-theme="light"] .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.12); border: none; }
+  :root[data-theme="dark"] .card { border-color: var(--border); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card { border-color: var(--border); } }
   .card.is-read { opacity: 0.55; }
+  .card.repeat .overlay .source::after { content: " · also the day before"; text-transform: none; font-weight: 400; letter-spacing: 0; }
+  :root[data-newonly] .card.repeat { display: none; }
+  :root[data-newonly] section[id]:not(:has(.card:not(.repeat))) { display: none; }
+  :root[data-newonly] .grid:not(:has(.card:not(.repeat))),
+  :root[data-newonly] h3.section:has(+ .grid:not(:has(.card:not(.repeat)))) { display: none; }
+  .chip {
+    font: inherit; font-size: 0.8rem; margin-left: 0.35rem; padding: 0.15rem 0.6rem; border-radius: 999px; cursor: pointer;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  }
+  .chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .blurb-wrap .share { margin: 0.6rem 0 0; }
   .card[hidden] { display: none; }
-
   .card summary { list-style: none; cursor: pointer; display: block; }
   .card summary::-webkit-details-marker { display: none; }
 
   .cover-wrap { position: relative; }
-  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: #ddd; }
+  .card .cover { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; background: var(--surface-2); }
   .card .cover.placeholder { display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
   .overlay {
     position: absolute; left: 0; right: 0; bottom: 0; padding: 1.5rem 0.9rem 0.6rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.82), rgba(0,0,0,0));
-    color: #fff;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0)); color: #fff;
   }
   .overlay .source {
     display: block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em; color: rgba(255,255,255,0.9);
   }
   .overlay .headline { display: block; font-weight: 700; font-size: 1rem; margin-top: 0.2rem; line-height: 1.3; }
-  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.75); font-size: 0.78rem; margin-top: 0.2rem; }
+  .overlay .readtime { display: block; font-weight: 400; color: rgba(255,255,255,0.8); font-size: 0.78rem; margin-top: 0.2rem; }
   .expand-indicator {
     position: absolute; top: 0.6rem; right: 0.6rem; width: 1.6rem; height: 1.6rem; border-radius: 50%;
     background: rgba(0,0,0,0.55); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
@@ -171,47 +257,247 @@ const PAGE_STYLES = `
   details[open] .expand-indicator { background: rgba(0,0,0,0.75); }
   details[open] .expand-indicator::before { content: "－"; }
 
+  .save {
+    position: absolute; top: 0.55rem; left: 0.55rem; z-index: 2; width: 1.9rem; height: 1.9rem;
+    border-radius: 50%; border: none; cursor: pointer; font-size: 1rem; line-height: 1;
+    background: rgba(0,0,0,0.55); color: #fff;
+  }
+  .save[aria-pressed="true"] { color: #ffcc33; background: rgba(0,0,0,0.75); }
+
   .blurb-wrap { padding: 0.85rem 0.9rem; }
-  .card .blurb { margin: 0; color: #3a3a3f; font-size: 1rem; }
-  @media (prefers-color-scheme: dark) { .card .blurb { color: #b9b9c2; } }
-  :root[data-theme="dark"] .card .blurb { color: #b9b9c2; }
-  :root[data-theme="light"] .card .blurb { color: #3a3a3f; }
+  .card .blurb { margin: 0; color: var(--blurb); font-size: 1rem; }
   .card .blurb a { color: inherit; }
 
-  nav.days { margin-bottom: 2rem; }
-  nav.days a { margin-right: 0.75rem; }
+  /* ---- compact list view (toggle in the header) ----
+     Lists scan faster than cards when you're skimming for something specific
+     (NN/g cards research); the same markup reflows into one row per story. */
+  :root[data-view="compact"] .grid,
+  :root[data-view="compact"] .grid.featured { grid-template-columns: 1fr; gap: 0.4rem; }
+  :root[data-view="compact"] .card { border-radius: 10px; box-shadow: none; border-color: var(--border); }
+  :root[data-view="compact"] .cover-wrap { display: flex; align-items: center; gap: 0.75rem; padding: 0.45rem 2.6rem 0.45rem 2.7rem; }
+  :root[data-view="compact"] .card .cover { width: 64px; height: 64px; aspect-ratio: 1; flex: none; border-radius: 8px; }
+  :root[data-view="compact"] .card .cover.placeholder { font-size: 1.4rem; }
+  :root[data-view="compact"] .overlay { position: static; padding: 0; background: none; color: var(--text); }
+  :root[data-view="compact"] .overlay .source,
+  :root[data-view="compact"] .overlay .readtime { color: var(--muted); }
+  :root[data-view="compact"] .grid.featured .card .headline { font-size: 1rem; }
+  :root[data-view="compact"] .expand-indicator { top: 50%; transform: translateY(-50%); background: var(--surface-2); color: var(--text); }
+  :root[data-view="compact"] .save { top: 50%; transform: translateY(-50%); background: var(--surface-2); color: var(--muted); }
+  :root[data-view="compact"] .save[aria-pressed="true"] { color: #d99a00; }
+
+  /* ---- home / archive ---- */
+  .lead {
+    display: grid; grid-template-columns: 1fr; text-decoration: none; color: inherit;
+    background: var(--surface); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border); margin: 0.5rem 0 2rem;
+  }
+  @media (min-width: 720px) { .lead { grid-template-columns: 1.1fr 1fr; } }
+  .lead-image { min-height: 180px; background-size: cover; background-position: center; background-color: var(--surface-2); }
+  .lead-body { padding: 1.25rem 1.25rem 1.4rem; }
+  .eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); }
+  .lead h2 { margin: 0.3rem 0 0.75rem; font-size: 1.5rem; line-height: 1.2; }
+  .lead ul { margin: 0 0 1rem; padding-left: 1.1rem; }
+  .lead li { margin: 0.35rem 0; font-weight: 600; }
+  .cta { display: inline-block; font-weight: 700; color: var(--accent); }
+
+  .month h2 { font-size: 1.05rem; margin: 2rem 0 0.5rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .days { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+  .day-row {
+    display: grid; grid-template-columns: 3.4rem 1fr auto; gap: 0.75rem; align-items: center;
+    padding: 0.7rem 0.25rem; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit;
+  }
+  .day-row:hover .day-top { color: var(--accent); }
+  .day-date { text-align: center; line-height: 1.1; }
+  .day-date b { display: block; font-size: 1.35rem; }
+  .day-date span { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; }
+  .day-top { font-size: 0.95rem; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .day-count { font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  .day-row.unread .day-date b { color: var(--accent); }
+  .day-row.unread .day-top { font-weight: 650; }
+  .day-row.unread .day-count::before { content: "● "; color: var(--accent); }
+  .day-row.visited .day-top { color: var(--muted); }
+
+  /* ---- search-all / saved lists ---- */
+  .results { list-style: none; padding: 0; margin: 0; }
+  .result { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
+  .result img, .result .thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex: none; background: var(--surface-2); }
+  .result .body { flex: 1; min-width: 0; }
+  .result .title { font-weight: 650; color: var(--text); text-decoration: none; }
+  .result .title:hover { color: var(--accent); }
+  .result .meta { font-size: 0.82rem; color: var(--muted); margin-top: 0.15rem; }
+  .result .remove { flex: none; }
+  .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
+  mark { background: rgba(255, 204, 51, 0.45); color: inherit; border-radius: 2px; }
+
+  .card.is-muted { display: none; }
+  .mute-panel { margin: 2.5rem 0 0; font-size: 0.9rem; }
+  .mute-panel summary { cursor: pointer; color: var(--muted); }
+  .mute-panel label { display: block; margin: 0.6rem 0 0.4rem; color: var(--muted); }
+  .mute-panel input {
+    width: 100%; max-width: 32rem; font: inherit; padding: 0.5rem 0.7rem; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface); color: inherit;
+  }
+  .muted-count { font-size: 0.8rem; }
+  .source-health { margin: 3rem 0 0; font-size: 0.82rem; color: var(--muted); }
+  .source-health + footer.site-footer { margin-top: 0.75rem; }
+  footer.site-footer { margin-top: 3rem; font-size: 0.85rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
 `;
+
+// Runs before first paint so a saved theme/view applies without a flash of the
+// default (the old toggle only ran at the end of <body>).
+const HEAD_SCRIPT = `try{var r=document.documentElement,t=localStorage.getItem('tldr-theme'),v=localStorage.getItem('tldr-view');if(t)r.setAttribute('data-theme',t);if(v==='compact')r.setAttribute('data-view','compact');if(localStorage.getItem('tldr-new-only'))r.setAttribute('data-newonly','');}catch(e){}`;
 
 const PAGE_SCRIPT = `
 (function () {
-  // Each feature below is independently wrapped — a failure in one (e.g. a browser
-  // without matchMedia, or localStorage disabled in a privacy mode) must not take
-  // down the other two, since they were originally one shared try-less block and
-  // a single throw silently disabled search and read-tracking along with theme.
+  // Each feature below is independently wrapped: a failure in one (a browser
+  // without matchMedia, localStorage disabled in a privacy mode, days.json
+  // missing) must not take down the others.
+  var root = document.documentElement;
+  var MONTHS = ${JSON.stringify(MONTHS)};
+  function getItem(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function setItem(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+  function slugOf(d) { var p = d.split('-'); return p[2] + '-' + MONTHS[+p[1] - 1] + '-' + p[0]; }
+  // "2026-09-24" -> "24 Sep", by hand to match the server-rendered dates
+  // (toLocaleDateString gives "24 Sept" in some browsers).
+  function shortDate(d) {
+    var p = d.split('-');
+    var m = MONTHS[+p[1] - 1] || '';
+    return (+p[2]) + ' ' + m.charAt(0).toUpperCase() + m.slice(1, 3);
+  }
+  function isHttp(u) { return /^https?:\\/\\//i.test(u || ''); }
 
   try {
-    var root = document.documentElement;
-    var stored = null;
-    try { stored = localStorage.getItem('tldr-theme'); } catch (e) {}
-    if (stored) root.setAttribute('data-theme', stored);
-
     var toggle = document.getElementById('theme-toggle');
-    function currentIsDark() {
+    var currentIsDark = function () {
       var attr = root.getAttribute('data-theme');
       if (attr) return attr === 'dark';
       try { return window.matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; }
+    };
+    var paintTheme = function () {
+      var dark = currentIsDark();
+      toggle.textContent = dark ? '☀️' : '🌙';
+      toggle.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    };
+    if (toggle) {
+      paintTheme();
+      toggle.addEventListener('click', function () {
+        var next = currentIsDark() ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        setItem('tldr-theme', next);
+        paintTheme();
+      });
     }
-    function updateToggleLabel() { toggle.textContent = currentIsDark() ? '☀️' : '🌙'; }
-    updateToggleLabel();
-    toggle.addEventListener('click', function () {
-      var next = currentIsDark() ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('tldr-theme', next); } catch (e) {}
-      updateToggleLabel();
-    });
-  } catch (e) { /* theme toggle unavailable, rest of the page still works */ }
+  } catch (e) {}
+
+  try {
+    var viewBtn = document.getElementById('view-toggle');
+    var paintView = function () {
+      var compact = root.getAttribute('data-view') === 'compact';
+      viewBtn.setAttribute('aria-pressed', compact ? 'true' : 'false');
+      viewBtn.textContent = compact ? '▦' : '☰';
+      viewBtn.title = compact ? 'Switch to card view' : 'Switch to compact list';
+    };
+    if (viewBtn) {
+      paintView();
+      viewBtn.addEventListener('click', function () {
+        if (root.getAttribute('data-view') === 'compact') { root.removeAttribute('data-view'); setItem('tldr-view', null); }
+        else { root.setAttribute('data-view', 'compact'); setItem('tldr-view', 'compact'); }
+        paintView();
+      });
+    }
+  } catch (e) {}
+
+  try {
+    var newBtn = document.getElementById('new-only');
+    var paintNew = function () {
+      var on = root.hasAttribute('data-newonly');
+      newBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      newBtn.textContent = on ? 'Showing new only' : 'Show new only';
+    };
+    if (newBtn) {
+      paintNew();
+      newBtn.addEventListener('click', function () {
+        if (root.hasAttribute('data-newonly')) { root.removeAttribute('data-newonly'); setItem('tldr-new-only', null); }
+        else { root.setAttribute('data-newonly', ''); setItem('tldr-new-only', '1'); }
+        paintNew();
+      });
+    }
+  } catch (e) {}
+
+  // Saved articles: kept in this browser only (no accounts, no server), keyed by
+  // article URL, with enough fields for saved.html to render them on its own.
+  var SAVED_KEY = 'tldr-saved';
+  function loadSaved() { try { return JSON.parse(getItem(SAVED_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function persistSaved(s) { setItem(SAVED_KEY, JSON.stringify(s)); }
+  function paintSavedCount() {
+    var n = Object.keys(loadSaved()).length;
+    document.querySelectorAll('[data-saved-count]').forEach(function (el) { el.textContent = n ? String(n) : ''; });
+  }
+  try { paintSavedCount(); } catch (e) {}
 
   var cards = document.querySelectorAll('.card[data-url]');
+
+  try {
+    // Cover images are hotlinked from the publishers. On older days ~8% have
+    // expired or get rate-limited, which left a blank box; swap those for the
+    // same gradient placeholder used when an article never had an image.
+    var hue = function (s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 360; return h; };
+    var fallback = function (img) {
+      if (!img.parentNode) return;
+      var card = img.closest('.card');
+      var h = hue(card ? (card.getAttribute('data-source') || '') + (card.getAttribute('data-headline') || '') : img.src);
+      var ph = document.createElement('div');
+      ph.className = 'cover placeholder';
+      ph.setAttribute('aria-hidden', 'true');
+      ph.style.background = 'linear-gradient(135deg, hsl(' + h + ',55%,45%), hsl(' + ((h + 40) % 360) + ',55%,30%))';
+      ph.textContent = '📰';
+      img.parentNode.replaceChild(ph, img);
+    };
+    document.addEventListener('error', function (evt) {
+      var t = evt.target;
+      if (t && t.tagName === 'IMG' && /\\bcover\\b/.test(t.className)) fallback(t);
+    }, true);
+    // Images that already failed before this script ran.
+    document.querySelectorAll('img.cover').forEach(function (img) {
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) fallback(img);
+    });
+  } catch (e) {}
+
+  try {
+    // The page's own date and each card's cover image are read from the DOM
+    // rather than repeated as attributes on all ~400 cards.
+    var dayEl = document.querySelector('.daynav[data-date]');
+    var pageDate = dayEl ? dayEl.getAttribute('data-date') : '';
+    var saved = loadSaved();
+    // The ☆ button is added here rather than in the HTML: it only works with JS,
+    // and ~400 copies of its markup were ~30 KB of every page.
+    cards.forEach(function (card) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'save';
+      card.insertBefore(btn, card.firstChild);
+      var url = card.getAttribute('data-url');
+      var paint = function (on) {
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.textContent = on ? '★' : '☆';
+        btn.setAttribute('aria-label', (on ? 'Remove from saved: ' : 'Save for later: ') + card.getAttribute('data-headline'));
+      };
+      paint(!!saved[url]);
+      btn.addEventListener('click', function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        var s = loadSaved();
+        if (s[url]) delete s[url];
+        else s[url] = {
+          u: url, h: card.getAttribute('data-headline'), s: card.getAttribute('data-source'),
+          d: pageDate, i: (card.querySelector('img.cover') || {}).src || '', t: Date.now()
+        };
+        persistSaved(s);
+        paint(!!s[url]);
+        paintSavedCount();
+      });
+    });
+  } catch (e) {}
 
   try {
     // Read-state: mark a card faded once its details has been opened, persisted
@@ -219,37 +505,99 @@ const PAGE_SCRIPT = `
     // what you've already looked at.
     var READ_KEY = 'tldr-read-urls';
     var readUrls = {};
-    try { readUrls = JSON.parse(localStorage.getItem(READ_KEY) || '{}'); } catch (e) {}
+    try { readUrls = JSON.parse(getItem(READ_KEY) || '{}') || {}; } catch (e) {}
     cards.forEach(function (card) {
-      if (readUrls[card.dataset.url]) card.classList.add('is-read');
+      if (readUrls[card.getAttribute('data-url')]) card.classList.add('is-read');
       var details = card.querySelector('details');
       if (details) {
         details.addEventListener('toggle', function () {
           if (details.open) {
-            readUrls[card.dataset.url] = 1;
-            try { localStorage.setItem(READ_KEY, JSON.stringify(readUrls)); } catch (e) {}
+            readUrls[card.getAttribute('data-url')] = 1;
+            setItem(READ_KEY, JSON.stringify(readUrls));
             card.classList.add('is-read');
           }
         });
       }
     });
-  } catch (e) { /* read-tracking unavailable, rest of the page still works */ }
+  } catch (e) {}
 
   try {
-    // Tab filter: clicking a quicknav pill or a category tile shows *only* that
-    // source's section (instead of just scrolling to it while everything else
-    // still sits there collapsed) — the point is fewer sections to scroll past as
-    // more sources get added over time, not just faster navigation to one of many.
-    // "All" is special: it shows Featured + the category-grid browse view, not a
-    // flat stack of every collapsed section (that flat list was the actual
-    // complaint — filtering already worked, the *default* view just looked boring).
+    // Share / copy link, added the first time a card is expanded (so ~400
+    // buttons aren't built up front). Uses the native share sheet on phones,
+    // otherwise copies the article link.
+    var canShare = typeof navigator.share === 'function';
+    cards.forEach(function (card) {
+      var details = card.querySelector('details');
+      if (!details) return;
+      details.addEventListener('toggle', function () {
+        if (!details.open || details.querySelector('.share')) return;
+        var label = canShare ? 'Share' : 'Copy link';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip share';
+        btn.textContent = label;
+        btn.addEventListener('click', function () {
+          var url = card.getAttribute('data-url');
+          if (canShare) {
+            navigator.share({ title: card.getAttribute('data-headline'), url: url }).catch(function () {});
+          } else if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () {
+              btn.textContent = 'Copied ✓';
+              setTimeout(function () { btn.textContent = label; }, 1500);
+            }).catch(function () {});
+          }
+        });
+        var wrap = details.querySelector('.blurb-wrap');
+        if (wrap) wrap.appendChild(btn);
+      });
+    });
+  } catch (e) {}
+
+  try {
+    // Muted words (idea from Kagi News' content filters): hide any story whose
+    // headline or source contains one of the user's words, on every day page.
+    var muteInput = document.getElementById('mute-input');
+    var muteStatus = document.getElementById('mute-status');
+    var MUTE_KEY = 'tldr-muted';
+    var parseMuted = function (text) {
+      return String(text || '').split(',').map(function (w) { return w.trim().toLowerCase(); }).filter(Boolean);
+    };
+    var applyMuted = function (words) {
+      var hidden = 0;
+      cards.forEach(function (card) {
+        var hay = ((card.getAttribute('data-headline') || '') + ' ' + (card.getAttribute('data-source') || '')).toLowerCase();
+        var muted = false;
+        for (var i = 0; i < words.length; i++) if (hay.indexOf(words[i]) !== -1) { muted = true; break; }
+        card.classList.toggle('is-muted', muted);
+        if (muted) hidden++;
+      });
+      if (muteStatus) muteStatus.textContent = words.length ? '(' + hidden + ' hidden today)' : '';
+    };
+    var savedMuted = getItem(MUTE_KEY) || '';
+    if (muteInput) muteInput.value = savedMuted;
+    if (cards.length) applyMuted(parseMuted(savedMuted));
+    if (muteInput) {
+      muteInput.addEventListener('input', function () {
+        setItem(MUTE_KEY, muteInput.value.trim() ? muteInput.value : null);
+        applyMuted(parseMuted(muteInput.value));
+      });
+    }
+  } catch (e) {}
+
+  try {
+    // Tab filter: clicking a quicknav pill or a category tile shows only that
+    // topic's section. "All" shows Featured + the category-grid browse view.
     var navLinks = document.querySelectorAll('.quicknav a[data-target]');
     var tileLinks = document.querySelectorAll('.category-tile[data-target]');
     var allSections = document.querySelectorAll('section[id]');
     var grid = document.getElementById('category-grid');
 
-    function applyFilter(target) {
-      navLinks.forEach(function (l) { l.classList.toggle('active', l.dataset.target === target); });
+    var applyFilter = function (target) {
+      navLinks.forEach(function (l) {
+        var on = l.getAttribute('data-target') === target;
+        l.classList.toggle('active', on);
+        if (on) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
+      });
       var targetSection = null;
       allSections.forEach(function (section) {
         var visible = section.id === target || (target === 'all' && section.id === 'featured');
@@ -262,110 +610,394 @@ const PAGE_SCRIPT = `
         if (d) d.open = true;
         try { targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
       }
-    }
+    };
 
-    navLinks.forEach(function (link) {
-      link.addEventListener('click', function (evt) {
+    var bind = function (el) {
+      el.addEventListener('click', function (evt) {
         evt.preventDefault();
-        applyFilter(link.dataset.target);
+        var target = el.getAttribute('data-target');
+        applyFilter(target);
+        // Keep the topic in the URL so it can be bookmarked / shared.
+        try { history.replaceState(null, '', target === 'all' ? location.pathname + location.search : '#' + target); } catch (e) {}
       });
-    });
-    tileLinks.forEach(function (tile) {
-      tile.addEventListener('click', function (evt) {
-        evt.preventDefault();
-        applyFilter(tile.dataset.target);
-      });
-    });
+    };
+    navLinks.forEach(bind);
+    tileLinks.forEach(bind);
 
-    // Graceful degradation: the server-rendered page has every section visible
-    // (so it works with JS disabled/broken). Once we know JS actually ran, switch
-    // to the nicer default view — Featured + browse grid — immediately on load.
-    applyFilter('all');
-  } catch (e) { /* tab filter unavailable, full page (every section) still visible and readable */ }
+    // The server-rendered page has every section visible (works with JS off).
+    // Once JS runs, switch to the browse view: Featured + topic tiles.
+    // A #topic in the URL (shared link, bookmark) opens straight to that topic.
+    var fromHash = (location.hash || '').slice(1);
+    var hashOk = fromHash && fromHash !== 'featured' && document.querySelector('.quicknav a[data-target="' + fromHash.replace(/[^a-z0-9-]/g, '') + '"]');
+    if (navLinks.length) applyFilter(hashOk ? fromHash : 'all');
+  } catch (e) {}
 
   try {
-    // Live search across headline + blurb + source, expanding collapsed sections
-    // that contain a match so results are visible without manually opening each one.
-    // Deliberately re-queries sections/grid itself rather than reusing the tab
-    // filter's variables, so search still works even if that other feature failed.
+    // Live search over everything on the card (headline, source, summary). The
+    // summary is read from the card's own text rather than a duplicate data-blurb
+    // attribute, which used to roughly double the page's text payload.
     var search = document.getElementById('search-input');
     var countEl = document.getElementById('search-count');
-    if (search) {
+    if (search && cards.length) {
+      var haystacks = [];
+      cards.forEach(function (card) { haystacks.push(card.textContent.toLowerCase()); });
       search.addEventListener('input', function () {
         var q = search.value.trim().toLowerCase();
-        var searchSections = document.querySelectorAll('section[id]');
-        var searchGrid = document.getElementById('category-grid');
-
+        var sections = document.querySelectorAll('section[id]');
+        var browseGrid = document.getElementById('category-grid');
         if (q !== '') {
-          // A search spans every source, so whatever single-tab/all-tiles view is
-          // currently active needs to give way to "everything visible" first.
-          searchSections.forEach(function (section) { section.hidden = false; });
-          if (searchGrid) searchGrid.hidden = true;
+          sections.forEach(function (section) { section.hidden = false; });
+          if (browseGrid) browseGrid.hidden = true;
         }
-
         var shown = 0;
-        var sectionsWithMatch = new Set();
-        cards.forEach(function (card) {
-          var haystack = (card.dataset.headline + ' ' + card.dataset.blurb + ' ' + card.dataset.source).toLowerCase();
-          var match = q === '' || haystack.indexOf(q) !== -1;
+        var withMatch = [];
+        cards.forEach(function (card, i) {
+          var match = q === '' || haystacks[i].indexOf(q) !== -1;
+          if (match && q !== '' && root.hasAttribute('data-newonly') && card.classList.contains('repeat')) match = false;
+          if (match && card.classList.contains('is-muted')) match = false;
           card.hidden = !match;
           if (match) {
             shown++;
             var section = card.closest('section[id]');
-            if (section) sectionsWithMatch.add(section);
+            if (section && withMatch.indexOf(section) === -1) withMatch.push(section);
           }
         });
-
+        countEl.textContent = '';
         if (q !== '') {
-          sectionsWithMatch.forEach(function (section) {
+          withMatch.forEach(function (section) {
             var d = section.querySelector('details.edition-toggle');
             if (d) d.open = true;
           });
-          countEl.textContent = shown + ' matching article' + (shown === 1 ? '' : 's');
+          countEl.appendChild(document.createTextNode(shown + ' matching article' + (shown === 1 ? '' : 's') + ' today · '));
+          var all = document.createElement('a');
+          all.href = 'search.html?q=' + encodeURIComponent(search.value.trim());
+          all.textContent = 'search every day →';
+          countEl.appendChild(all);
         } else {
-          // Query cleared — hand back to the tab filter's default ("All") view
-          // rather than leaving every section stuck open from the search above.
           var allPill = document.querySelector('.quicknav a[data-target="all"]');
-          if (allPill) {
-            allPill.dispatchEvent(new Event('click'));
-          } else if (searchGrid) {
-            searchGrid.hidden = false;
-          }
-          countEl.textContent = '';
+          if (allPill) allPill.dispatchEvent(new Event('click'));
+          else if (browseGrid) browseGrid.hidden = false;
         }
       });
+      // Arriving from "search every day" (?q=…): show this day's matches straight away.
+      var incoming = '';
+      try { incoming = new URLSearchParams(location.search).get('q') || ''; } catch (e) {}
+      if (incoming) { search.value = incoming; search.dispatchEvent(new Event('input')); }
     }
-  } catch (e) { /* search unavailable, rest of the page still works */ }
+  } catch (e) {}
+
+  try {
+    // "/" jumps to the search box from anywhere; Escape clears it.
+    document.addEventListener('keydown', function (evt) {
+      var box = document.querySelector('[data-search]');
+      if (!box) return;
+      var tag = (evt.target && evt.target.tagName) || '';
+      if (evt.key === '/' && !/INPUT|TEXTAREA|SELECT/.test(tag) && !evt.metaKey && !evt.ctrlKey) {
+        evt.preventDefault();
+        box.focus();
+      } else if (evt.key === 'Escape' && evt.target === box && box.value) {
+        box.value = '';
+        box.dispatchEvent(new Event('input'));
+      }
+    });
+  } catch (e) {}
+
+  try {
+    // Reader keys on day pages: j / k = next / previous story, o or Enter =
+    // expand it (native <summary>), s = save it. Only stories currently shown
+    // count, so this follows the topic filter, search and "new only".
+    if (cards.length) {
+      var visibleSummaries = function () {
+        var out = [];
+        cards.forEach(function (card) {
+          if (card.offsetParent === null) return; // hidden by filter/search/new-only
+          var sum = card.querySelector('summary');
+          if (sum) out.push(sum);
+        });
+        return out;
+      };
+      document.addEventListener('keydown', function (evt) {
+        var tag = (evt.target && evt.target.tagName) || '';
+        if (/INPUT|TEXTAREA|SELECT/.test(tag) || evt.metaKey || evt.ctrlKey || evt.altKey) return;
+        var k = evt.key;
+        if (k !== 'j' && k !== 'k' && k !== 'o' && k !== 's') return;
+        var list = visibleSummaries();
+        if (!list.length) return;
+        var current = document.activeElement && document.activeElement.closest ? document.activeElement.closest('.card') : null;
+        var idx = -1;
+        for (var i = 0; i < list.length; i++) if (current && list[i].closest('.card') === current) { idx = i; break; }
+        if (k === 'j' || k === 'k') {
+          var next = k === 'j' ? Math.min(idx + 1, list.length - 1) : Math.max(idx - 1, 0);
+          if (idx === -1) next = 0;
+          list[next].focus();
+          try { list[next].scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+        } else if (k === 'o' && idx !== -1) {
+          list[idx].click();
+        } else if (k === 's' && idx !== -1) {
+          var btn = current.querySelector('.save');
+          if (btn) btn.click();
+        } else {
+          return;
+        }
+        evt.preventDefault();
+      });
+    }
+  } catch (e) {}
+
+  try {
+    // Previous / next day. Rendered server-side as an "All days" link only, so an
+    // old page never points at a stale neighbour; the real neighbours come from
+    // days.json, which is rewritten on every publish.
+    // Remember which days have been opened, so the archive can mark the ones
+    // you haven't read yet (only days newer than your first visit count as
+    // unread; the backlog from before you started isn't nagged about).
+    var VISITED_KEY = 'tldr-visited-days';
+    var visited = {};
+    try { visited = JSON.parse(getItem(VISITED_KEY) || '{}') || {}; } catch (e) {}
+    var thisDay = document.querySelector('.daynav[data-date]');
+    if (thisDay) {
+      visited[thisDay.getAttribute('data-date')] = 1;
+      setItem(VISITED_KEY, JSON.stringify(visited));
+    }
+    var rows = document.querySelectorAll('.day-row[data-date]');
+    var seenDays = Object.keys(visited).sort();
+    if (rows.length && seenDays.length) {
+      var firstSeen = seenDays[0];
+      rows.forEach(function (row) {
+        var d = row.getAttribute('data-date');
+        if (visited[d]) row.classList.add('visited');
+        else if (d > firstSeen) row.classList.add('unread');
+      });
+    }
+  } catch (e) {}
+
+  try {
+    var dayNav = document.querySelector('.daynav[data-date]');
+    if (dayNav && window.fetch) {
+      var me = dayNav.getAttribute('data-date');
+      fetch('days.json').then(function (r) { return r.json(); }).then(function (days) {
+        var idx = -1;
+        for (var i = 0; i < days.length; i++) if (days[i].date === me) { idx = i; break; }
+        if (idx === -1) return;
+        var link = function (sel, day, label) {
+          var a = dayNav.querySelector(sel);
+          if (!a || !day) return;
+          a.href = day.slug + '.html';
+          a.textContent = label.replace('%', shortDate(day.date));
+          a.hidden = false;
+        };
+        link('.older', days[idx + 1], '← %');
+        link('.newer', days[idx - 1], '% →');
+      }).catch(function () {});
+    }
+  } catch (e) {}
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function resultRow(item, extra) {
+    var li = el('li', 'result');
+    if (isHttp(item.i)) { var img = el('img'); img.src = item.i; img.alt = ''; img.loading = 'lazy'; li.appendChild(img); }
+    var body = el('div', 'body');
+    var a = el('a', 'title', item.h);
+    a.href = isHttp(item.u) ? item.u : '#';
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    body.appendChild(a);
+    var meta = el('div', 'meta', item.s || '');
+    if (item.d) {
+      meta.appendChild(document.createTextNode(item.s ? ' · ' : ''));
+      var day = el('a', null, shortDate(item.d) + ' digest');
+      day.href = slugOf(item.d) + '.html' + (item.q ? '?q=' + encodeURIComponent(item.q) : '');
+      meta.appendChild(day);
+    }
+    body.appendChild(meta);
+    li.appendChild(body);
+    if (extra) li.appendChild(extra);
+    return li;
+  }
+
+  try {
+    // saved.html
+    var savedList = document.getElementById('saved-list');
+    if (savedList) {
+      var renderSaved = function () {
+        var s = loadSaved();
+        var items = Object.keys(s).map(function (k) { return s[k]; }).sort(function (a, b) { return (b.t || 0) - (a.t || 0); });
+        savedList.textContent = '';
+        document.getElementById('saved-empty').hidden = items.length > 0;
+        items.forEach(function (item) {
+          var rm = el('button', 'tool remove', '✕');
+          rm.setAttribute('aria-label', 'Remove from saved: ' + item.h);
+          rm.addEventListener('click', function () {
+            var cur = loadSaved();
+            delete cur[item.u];
+            persistSaved(cur);
+            renderSaved();
+            paintSavedCount();
+          });
+          savedList.appendChild(resultRow(item, rm));
+        });
+      };
+      renderSaved();
+    }
+  } catch (e) {}
+
+  try {
+    // search.html: month-split index, newest month first, fetched once and cached.
+    var allInput = document.getElementById('all-search');
+    if (allInput && window.fetch) {
+      var status = document.getElementById('all-status');
+      var list = document.getElementById('all-results');
+      var cache = {};
+      var monthsP = fetch('search/months.json').then(function (r) { return r.json(); });
+      var loadMonth = function (m) {
+        if (!cache[m]) cache[m] = fetch('search/' + m + '.json').then(function (r) { return r.json(); });
+        return cache[m];
+      };
+      var LIMIT = 200;
+      var run = 0;
+      var doSearch = function () {
+        var q = allInput.value.trim().toLowerCase();
+        var mine = ++run;
+        try { history.replaceState(null, '', q ? '?q=' + encodeURIComponent(allInput.value.trim()) : location.pathname); } catch (e) {}
+        list.textContent = '';
+        if (q.length < 2) { status.textContent = 'Type at least 2 characters.'; return; }
+        var terms = q.split(/\\s+/);
+        var found = 0;
+        var seen = {};
+        monthsP.then(function (months) {
+          var step = function (i) {
+            if (mine !== run) return;
+            if (i >= months.length || found >= LIMIT) {
+              status.textContent = found ? (found >= LIMIT ? 'Showing the newest ' + LIMIT + ' matches' : found + ' match' + (found === 1 ? '' : 'es')) : 'No matches in any digest.';
+              return;
+            }
+            status.textContent = 'Searching ' + months[i] + '…';
+            loadMonth(months[i]).then(function (rows) {
+              if (mine !== run) return;
+              for (var r = 0; r < rows.length && found < LIMIT; r++) {
+                var row = rows[r];
+                if (seen[row[2]]) continue;
+                var hay = (row[1] + ' ' + row[3] + ' ' + row[4]).toLowerCase();
+                var ok = true;
+                for (var t = 0; t < terms.length; t++) if (hay.indexOf(terms[t]) === -1) { ok = false; break; }
+                if (!ok) continue;
+                seen[row[2]] = 1;
+                found++;
+                list.appendChild(resultRow({ d: row[0], h: row[1], u: row[2], s: row[3], q: allInput.value.trim() }));
+              }
+              step(i + 1);
+            }).catch(function () { step(i + 1); });
+          };
+          step(0);
+        }).catch(function () { status.textContent = 'Search index unavailable.'; });
+      };
+      var timer = null;
+      allInput.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(doSearch, 150); });
+      var initial = '';
+      try { initial = new URLSearchParams(location.search).get('q') || ''; } catch (e) {}
+      if (initial) { allInput.value = initial; doSearch(); }
+    }
+  } catch (e) {}
 })();
 `;
 
-function renderCover(a, hue) {
-  if (a.image) {
-    return `<img class="cover" src="${escapeHtml(a.image)}" loading="lazy" alt="">`;
-  }
-  return `<div class="cover placeholder" style="background: linear-gradient(135deg, hsl(${hue},55%,45%), hsl(${(hue + 40) % 360},55%,30%));">📰</div>`;
+// Styles and the page script are shared files rather than inlined into every
+// page: identical on all 100+ days, so the browser fetches them once and caches
+// them. The ?v= hash changes whenever either changes, so a rebuild can't be
+// served a stale copy. Only the tiny theme/view bootstrap stays inline (it must
+// run before first paint).
+const ASSETS = { "assets/site.css": PAGE_STYLES, "assets/site.js": PAGE_SCRIPT };
+const ASSET_VERSION = require("crypto")
+  .createHash("sha1")
+  .update(PAGE_STYLES + PAGE_SCRIPT)
+  .digest("hex")
+  .slice(0, 10);
+
+const FAVICON =
+  "data:image/svg+xml," +
+  encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📰</text></svg>');
+
+function renderHead({ title, description = SITE_DESCRIPTION, path = "", image = null, siteUrl }) {
+  const url = siteUrl ? `${siteUrl}/${path}` : null;
+  const img = safeUrl(image);
+  return `<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(description)}">
+<meta name="theme-color" content="#f2f2f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0e12" media="(prefers-color-scheme: dark)">
+<meta property="og:site_name" content="${SITE_NAME}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${escapeHtml(title)}">
+<meta property="og:description" content="${escapeHtml(description)}">
+${url ? `<meta property="og:url" content="${escapeHtml(url)}">\n<link rel="canonical" href="${escapeHtml(url)}">` : ""}
+${img ? `<meta property="og:image" content="${escapeHtml(img)}">` : ""}
+<link rel="icon" href="${FAVICON}">
+<link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="feed.xml">
+<script>${HEAD_SCRIPT}</script>
+<link rel="stylesheet" href="assets/site.css?v=${ASSET_VERSION}">
+<script src="assets/site.js?v=${ASSET_VERSION}" defer></script>`;
 }
 
-function renderArticle(a, edition) {
+function renderTopbar(active, { viewToggle = false } = {}) {
+  const current = (name) => (active === name ? ' aria-current="page"' : "");
+  return `<a class="skip-link" href="#main">Skip to content</a>
+<header class="topbar">
+<a class="brand" href="./"${current("home")}>📰 ${SITE_NAME}</a>
+<nav class="tools" aria-label="Site">
+<a class="tool" href="search.html" title="Search every day" aria-label="Search every day"${current("search")}>🔎</a>
+<a class="tool" href="saved.html" title="Saved articles" aria-label="Saved articles"${current("saved")}>★<span class="count" data-saved-count></span></a>
+${viewToggle ? `<button id="view-toggle" class="tool" type="button" aria-label="Compact list view" aria-pressed="false">☰</button>` : ""}
+<button id="theme-toggle" class="tool" type="button" aria-label="Toggle dark mode">🌙</button>
+</nav>
+</header>`;
+}
+
+function renderFooter({ missingSources = [] } = {}) {
+  const missing = missingSources.length
+    ? `<p class="source-health">No stories from ${missingSources.map(escapeHtml).join(", ")} today.</p>\n`
+    : "";
+  return `${missing}<footer class="site-footer">
+<a href="./">All days</a><a href="search.html">Search</a><a href="saved.html">Saved</a><a href="feed.xml">RSS</a>
+<span>Keys: <kbd>/</kbd> search · <kbd>j</kbd> <kbd>k</kbd> next / previous · <kbd>o</kbd> open · <kbd>s</kbd> save</span>
+</footer>`;
+}
+
+function renderCover(a, hue) {
+  const img = safeUrl(a.image);
+  if (img) {
+    return `<img class="cover" src="${escapeHtml(img)}" loading="lazy" decoding="async" alt="">`;
+  }
+  return `<div class="cover placeholder" aria-hidden="true" style="background: linear-gradient(135deg, hsl(${hue},55%,45%), hsl(${(hue + 40) % 360},55%,30%));">📰</div>`;
+}
+
+function renderArticle(a, edition, ctx = {}) {
   const sourceName = a.sourceLabel || edition.name;
   const hue = hashHue(sourceName + a.headline);
   const emoji = EDITION_EMOJI[sourceName] || "📰";
+  const href = safeUrl(a.url) || "#";
   const readTime = a.readTime ? `<span class="readtime">${escapeHtml(a.readTime)}</span>` : "";
-  const blurb = a.blurb
-    ? `<p class="blurb">${escapeHtml(a.blurb)} <a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`
-    : `<p class="blurb"><a href="${escapeHtml(a.url)}" target="_blank" rel="noopener noreferrer">Read more →</a></p>`;
-  const searchAttrs = [
-    `data-url="${escapeHtml(a.url)}"`,
+  const more = `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">Read more →</a>`;
+  const blurb = `<p class="blurb">${a.blurb ? `${escapeHtml(a.blurb)} ` : ""}${more}</p>`;
+  const attrs = [
+    `data-url="${escapeHtml(href)}"`,
     `data-headline="${escapeHtml(a.headline)}"`,
-    `data-blurb="${escapeHtml(a.blurb || "")}"`,
     `data-source="${escapeHtml(sourceName)}"`,
   ].join(" ");
-  return `<div class="card" ${searchAttrs}>
+  // Also in the previous day's digest (TLDR re-serves editions over weekends):
+  // marked so it can be dimmed or hidden with "New only".
+  const repeat = ctx.previousUrls && ctx.previousUrls.has(a.url);
+  return `<div class="card${repeat ? " repeat" : ""}" ${attrs}>
     <details>
       <summary>
         <div class="cover-wrap">
           ${renderCover(a, hue)}
-          <span class="expand-indicator"></span>
+          <span class="expand-indicator" aria-hidden="true"></span>
           <div class="overlay">
             <span class="source">${emoji} ${escapeHtml(sourceName)}</span>
             <span class="headline">${escapeHtml(a.headline)}</span>
@@ -378,7 +1010,7 @@ function renderArticle(a, edition) {
   </div>`;
 }
 
-function renderEdition(edition) {
+function renderEdition(edition, ctx = {}) {
   const isFeatured = edition.name === "Featured";
   const gridClass = isFeatured ? "grid featured" : "grid";
   const count = edition.sections.reduce((n, s) => n + s.articles.length, 0);
@@ -386,7 +1018,7 @@ function renderEdition(edition) {
     .map(
       (s) =>
         `${isFeatured ? "" : `<h3 class="section">${escapeHtml(s.title)}</h3>\n`}<div class="${gridClass}">\n${s.articles
-          .map((a) => renderArticle(a, edition))
+          .map((a) => renderArticle(a, edition, ctx))
           .join("\n")}\n</div>`
     )
     .join("\n");
@@ -396,8 +1028,8 @@ function renderEdition(edition) {
   if (isFeatured) {
     return `<section id="${id}">\n<h2 class="edition featured">${emoji} ${escapeHtml(edition.name)}</h2>\n${sections}\n</section>`;
   }
-  // Collapsed by default — with 240+ articles across 20 sources, forcing a linear
-  // scroll past everything is the "too much scrolling" problem being fixed here.
+  // Collapsed by default — with 400+ articles, forcing a linear scroll past
+  // everything is the "too much scrolling" problem this layout exists to fix.
   return `<section id="${id}">
 <details class="edition-toggle">
 <summary class="edition">${emoji} ${escapeHtml(edition.name)} <span class="count">${count}</span></summary>
@@ -414,90 +1046,241 @@ function renderQuickNav(editions) {
         `<a href="#${slugify(e.name)}" data-target="${slugify(e.name)}">${EDITION_EMOJI[e.name] || "📰"} ${escapeHtml(e.name)}</a>`
     )
     .join("\n");
-  return `<nav class="quicknav">\n${allPill}\n${pills}\n</nav>`;
+  return `<nav class="quicknav" aria-label="Topics">\n${allPill}\n${pills}\n</nav>`;
 }
 
-// The "All" default view: instead of a flat stack of collapsed section headers
-// (functional but visually inert), a tile per source — using that source's own
-// top article image as the tile's background when one's available — so browsing
-// looks like an actual magazine rack rather than a settings-style list.
-function renderCategoryTile(edition) {
+// The "All" default view: a tile per topic, using that topic's own top article
+// image as the tile background when one's available.
+function renderCategoryTile(edition, ctx = {}) {
   const emoji = EDITION_EMOJI[edition.name] || "📰";
   const articles = edition.sections.flatMap((s) => s.articles);
   const count = articles.length;
-  const withImage = articles.find((a) => a.image);
+  const withImage = articles.find((a) => safeUrl(a.image));
   const hue = hashHue(edition.name);
+  const fresh = ctx.previousUrls ? ` · ${articles.filter((a) => !ctx.previousUrls.has(a.url)).length} new` : "";
   const bg = withImage
-    ? `background-image: url('${escapeHtml(withImage.image)}');`
+    ? `background-image: url('${escapeHtml(safeUrl(withImage.image))}');`
     : `background: linear-gradient(135deg, hsl(${hue},55%,40%), hsl(${(hue + 40) % 360},55%,25%));`;
   return `<a href="#${slugify(edition.name)}" class="category-tile" data-target="${slugify(edition.name)}" style="${bg}">
-    <span class="tile-emoji">${emoji}</span>
+    <span class="tile-emoji" aria-hidden="true">${emoji}</span>
     <div class="tile-overlay">
       <span class="tile-name">${escapeHtml(edition.name)}</span>
-      <span class="tile-count">${count} article${count === 1 ? "" : "s"}</span>
+      <span class="tile-count">${count} article${count === 1 ? "" : "s"}${fresh}</span>
     </div>
   </a>`;
 }
 
-function renderCategoryGrid(editions) {
+function renderCategoryGrid(editions, ctx = {}) {
   const tiles = editions
     .filter((e) => e.name !== "Featured")
-    .map(renderCategoryTile)
+    .map((e) => renderCategoryTile(e, ctx))
     .join("\n");
   return `<div id="category-grid">\n${tiles}\n</div>`;
 }
 
-// editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image}] }] }]
-function buildDailyHtml(isoDate, editions) {
+// editions: [{ name, sections: [{ title, articles: [{headline,url,readTime,blurb,image,sourceLabel}] }] }]
+// previousUrls: article URLs from the previous day's digest, if known.
+function buildDailyHtml(isoDate, editions, { siteUrl, previousUrls = null, missingSources = [] } = {}) {
+  const ctx = { previousUrls };
   const nav = renderQuickNav(editions);
-  const grid = renderCategoryGrid(editions);
-  const body = editions.map(renderEdition).join("\n");
+  const grid = renderCategoryGrid(editions, ctx);
+  const body = editions.map((e) => renderEdition(e, ctx)).join("\n");
+  const all = editions.flatMap((e) => e.sections.flatMap((s) => s.articles));
+  const total = all.length;
+  const repeats = previousUrls ? all.filter((a) => previousUrls.has(a.url)).length : 0;
+  const newOnly = repeats
+    ? ` · <strong>${total - repeats} new</strong> since the day before <button id="new-only" class="chip" type="button" aria-pressed="false">Show new only</button>`
+    : "";
+  const featured = editions.find((e) => e.name === "Featured");
+  const lead = (featured || editions[0] || { sections: [] }).sections.flatMap((s) => s.articles);
+  const image = (lead.find((a) => safeUrl(a.image)) || {}).image;
+  const longDate = formatLongDate(isoDate);
+  const description = lead.length
+    ? `${lead.slice(0, 3).map((a) => a.headline).join(" · ")} — and ${Math.max(total - 3, 0)} more stories.`
+    : SITE_DESCRIPTION;
   return `<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TLDR Digest — ${escapeHtml(isoDate)}</title>
-<style>${PAGE_STYLES}</style>
+${renderHead({ title: `${SITE_NAME} — ${longDate}`, description, path: `${dateToSlug(isoDate)}.html`, image, siteUrl })}
 </head>
 <body>
-<div class="topbar">
-<h1>TLDR Digest</h1>
-<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-</div>
-<div class="date">${escapeHtml(isoDate)}</div>
-<div class="searchbar">
-<input id="search-input" type="text" placeholder="Search today's articles…" autocomplete="off">
-<p id="search-count" class="search-count"></p>
+${renderTopbar("day", { viewToggle: true })}
+<main id="main">
+<h1 class="page-title">${escapeHtml(longDate)}</h1>
+<p class="subtle">${total} stories across ${editions.filter((e) => e.name !== "Featured").length} topics${newOnly}</p>
+<nav class="daynav" data-date="${escapeHtml(isoDate)}" aria-label="Other days">
+<a class="older" href="#" hidden>← Older</a>
+<a href="./">All days</a>
+<a class="newer" href="#" hidden>Newer →</a>
+</nav>
+<div class="searchbar" role="search">
+<label class="sr-only" for="search-input">Search today's articles</label>
+<input id="search-input" data-search type="search" placeholder="Search today's articles…  ( / )" autocomplete="off">
+<p id="search-count" class="search-count" aria-live="polite"></p>
 </div>
 ${nav}
 ${grid}
 ${body}
-<script>${PAGE_SCRIPT}</script>
+<details class="mute-panel">
+<summary>Muted words <span id="mute-status" class="muted-count"></span></summary>
+<label for="mute-input">Hide stories whose headline or source mentions any of these (comma-separated). Saved in this browser.</label>
+<input id="mute-input" type="text" placeholder="e.g. crypto, celebrity, NFL" autocomplete="off">
+</details>
+</main>
+${renderFooter({ missingSources })}
 </body>
 </html>`;
 }
 
-function buildIndexHtml(days) {
-  // days: [{ slug, isoDate }], newest first
-  const links = days
-    .map((d) => `<li><a href="${escapeHtml(d.slug)}.html">${escapeHtml(d.isoDate)}</a></li>`)
+// Home page: today's digest as a lead story, then every day grouped by month,
+// newest first. manifest: [{ date, slug, count, topics, top: [headline], image }], newest first.
+function buildIndexHtml(manifest, { siteUrl } = {}) {
+  const [latest] = manifest;
+  const leadImg = latest && safeUrl(latest.image);
+  const lead = latest
+    ? `<a class="lead" href="${escapeHtml(latest.slug)}.html">
+<div class="lead-image" role="img" aria-label="" ${leadImg ? `style="background-image: url('${escapeHtml(leadImg)}')"` : ""}></div>
+<div class="lead-body">
+<span class="eyebrow">Latest digest</span>
+<h2>${escapeHtml(formatLongDate(latest.date))}</h2>
+<ul>${latest.top.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>
+<span class="cta">Read all ${latest.count} stories →</span>
+</div>
+</a>`
+    : `<p class="empty">No digests yet.</p>`;
+
+  const byMonth = [];
+  for (const day of manifest) {
+    const key = day.date.slice(0, 7);
+    if (!byMonth.length || byMonth[byMonth.length - 1].key !== key) byMonth.push({ key, days: [] });
+    byMonth[byMonth.length - 1].days.push(day);
+  }
+  const months = byMonth
+    .map(({ key, days }) => {
+      const title = formatLongDate(`${key}-01`, { month: "long", year: "numeric" });
+      const rows = days
+        .map(
+          (d) => `<li><a class="day-row" data-date="${d.date}" href="${escapeHtml(d.slug)}.html">
+<span class="day-date"><b>${Number(d.date.slice(8))}</b><span>${formatLongDate(d.date, { weekday: "short" })}</span></span>
+<span class="day-top">${d.top.map(escapeHtml).join(" · ") || "Digest"}</span>
+<span class="day-count">${d.count} stories</span>
+</a></li>`
+        )
+        .join("\n");
+      return `<section class="month" aria-labelledby="m-${key}">
+<h2 id="m-${key}">${escapeHtml(title)}</h2>
+<ol class="days" reversed>
+${rows}
+</ol>
+</section>`;
+    })
     .join("\n");
+
   return `<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TLDR Digest — Archive</title>
-<style>${PAGE_STYLES}\nul { list-style: none; padding: 0; } li { padding: 0.4rem 0; font-size: 1.05rem; }</style>
+${renderHead({ title: `${SITE_NAME} — daily AI, tech & world news`, path: "", image: leadImg, siteUrl })}
 </head>
 <body>
-<h1>TLDR Digest — Archive</h1>
-<ul>
-${links}
-</ul>
+${renderTopbar("home")}
+<main id="main">
+<h1 class="sr-only">${SITE_NAME}</h1>
+${lead}
+<h2 class="sr-only">Archive</h2>
+${months}
+</main>
+${renderFooter()}
 </body>
 </html>`;
 }
 
-module.exports = { dateToSlug, buildDailyHtml, buildIndexHtml };
+function buildSearchHtml({ siteUrl } = {}) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+${renderHead({ title: `Search every day — ${SITE_NAME}`, path: "search.html", siteUrl })}
+</head>
+<body>
+${renderTopbar("search")}
+<main id="main">
+<h1 class="page-title">Search every day</h1>
+<p class="subtle">Headlines and sources from every digest so far, newest first.</p>
+<div class="searchbar" role="search">
+<label class="sr-only" for="all-search">Search all digests</label>
+<input id="all-search" data-search type="search" placeholder="e.g. GPT, Singapore, ransomware…" autocomplete="off" autofocus>
+<p id="all-status" class="search-count" aria-live="polite">Type at least 2 characters.</p>
+</div>
+<ol id="all-results" class="results"></ol>
+</main>
+${renderFooter()}
+</body>
+</html>`;
+}
+
+function buildSavedHtml({ siteUrl } = {}) {
+  return `<!doctype html>
+<html lang="en">
+<head>
+${renderHead({ title: `Saved — ${SITE_NAME}`, path: "saved.html", siteUrl })}
+</head>
+<body>
+${renderTopbar("saved")}
+<main id="main">
+<h1 class="page-title">Saved for later</h1>
+<p class="subtle">Stories you starred with ☆. Kept in this browser only.</p>
+<ol id="saved-list" class="results"></ol>
+<p id="saved-empty" class="empty">Nothing saved yet. Tap ☆ on any story to keep it here.</p>
+</main>
+${renderFooter()}
+</body>
+</html>`;
+}
+
+function escapeXml(text) {
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+// One RSS item per day, so a feed reader gets one notification per digest rather
+// than 400. pubDate is 08:00 Singapore (00:00 UTC), when the digest is scheduled.
+function buildFeedXml(manifest, { siteUrl }) {
+  const items = manifest
+    .map((d) => {
+      const link = `${siteUrl}/${d.slug}.html`;
+      const desc = `<ul>${d.top.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul><p>${d.count} stories.</p>`;
+      return `<item>
+<title>${escapeXml(`${SITE_NAME} — ${formatLongDate(d.date)}`)}</title>
+<link>${escapeXml(link)}</link>
+<guid isPermaLink="true">${escapeXml(link)}</guid>
+<pubDate>${new Date(`${d.date}T00:00:00Z`).toUTCString()}</pubDate>
+<description>${escapeXml(desc)}</description>
+</item>`;
+    })
+    .join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>${SITE_NAME}</title>
+<link>${escapeXml(siteUrl)}/</link>
+<atom:link href="${escapeXml(siteUrl)}/feed.xml" rel="self" type="application/rss+xml"/>
+<description>${escapeXml(SITE_DESCRIPTION)}</description>
+<language>en</language>
+${items}
+</channel>
+</rss>
+`;
+}
+
+module.exports = {
+  MONTHS,
+  ASSETS,
+  dateToSlug,
+  slugToIso,
+  formatLongDate,
+  escapeHtml,
+  safeUrl,
+  buildDailyHtml,
+  buildIndexHtml,
+  buildSearchHtml,
+  buildSavedHtml,
+  buildFeedXml,
+};

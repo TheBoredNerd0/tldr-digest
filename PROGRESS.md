@@ -1,5 +1,36 @@
 # tldr-digest
 
+## Overnight rebuild 2026-10-21 (branch overnight/2026-10-21)
+- **Data layer**: each day is now kept as `data/days/<date>.json` and every page is
+  rendered from it (`site.js`). The 100 existing days were recovered from their HTML
+  with `scripts/backfill.js` (article counts match the originals exactly), then
+  re-rendered with `scripts/rebuild.js`.
+- **Archive fixed**: the old index sorted `DD-month-YYYY` strings, so it read
+  31 Jul, 31 Aug, 30 Sep... The new home page leads with the latest digest, then
+  lists every day by month, newest first. Each row shows that day's *new*
+  headlines (TLDR repeats its latest edition over weekends).
+- **New**: previous/next day links, compact list view, ☆ saved stories + Saved
+  page, search across every day (`search.html`, month-split index), RSS feed,
+  `/` to search, meta/OG tags + favicon.
+- **Hardening**: http(s)-only URLs in href/src/CSS, `'` escaped, AA-contrast muted
+  text, focus rings, labelled search, reduced-motion, deterministic date
+  formatting (ICU-independent), npm audit fix (undici).
+- **Legacy Telegram fix**: per-edition messages are split per article; one long
+  section used to exceed Telegram's 4096-char limit and fail the send.
+- **Tests**: `npm test` (node:test, offline); CI in `.github/workflows/test.yml`.
+- **Later the same night**: repeat detection (37.5% of stories were already in
+  the previous digest; tagged + "Show new only"), unread marks on the archive,
+  `j/k/o/s` keys, Share/Copy link, muted words, `#topic` deep links, source-health
+  tracking (`missingSources` + Actions warnings), Atom feed support, shared
+  versioned CSS/JS (`docs/assets/`), search index stores each story once (−37%),
+  `npm run preview`, jsdom client tests (53 tests total).
+- **Optional branches** (owner's call, all merge cleanly together):
+  `overnight/feature-more-ai-sources` (6 more AI feeds),
+  `overnight/feature-story-clusters` (one card per story across outlets),
+  `overnight/feature-telegram-headlines` (top 3 headlines in the Telegram message).
+- Research notes behind these choices are in `overnight/research/`; decisions that
+  need the owner are in `overnight/NEEDS_HUMAN.md`.
+
 ## Health check 2026-10-21: Telegram silent since 2026-07-19, two sources dead
 - Every scheduled Actions run since 2026-07-19 failed at the Telegram step (site
   still published daily). Most likely cause: the `TELEGRAM_BOT_TOKEN` repo secret
