@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Thursday 22 October 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/22-october-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/22-october-2026.html</guid>
+<pubDate>Thu, 22 Oct 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;Google and Meta Bring Native PyTorch Support to TPUs&lt;/li&gt;&lt;li&gt;llm-d (Website)&lt;/li&gt;&lt;li&gt;Sam Altman’s three endings for the AI safety race&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;316 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Wednesday 21 October 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/21-october-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/21-october-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/23-september-2026.html</guid>
 <pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;Xiaomi open-sources MiMo-V2.6 Pro and Flash models&lt;/li&gt;&lt;li&gt;Introducing Grok 4.7&lt;/li&gt;&lt;li&gt;Anthropic tests Fable 5.2 and Opus 5.5 ahead of the release&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;313 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Tuesday 22 September 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/22-september-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/22-september-2026.html</guid>
-<pubDate>Tue, 22 Sep 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;OpenAI&amp;#39;s projected compute bill climbed to $856B&lt;/li&gt;&lt;li&gt;Opening access for developers to build Muse connectors&lt;/li&gt;&lt;li&gt;Segment Anything Model (SAM) 3.1&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;348 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
