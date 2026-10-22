@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CVE-2026-109618 (CVSS 9.2): PHP uses longjmp() for out-of-memory (OOM) errors to exit the current context and abort handling of the request. Some co · Daybrief</title>
+<meta name="description" content="PHP&#x27;s out-of-memory handling can leave request memory uninitialized, and cleanup may read it, leading to remote code execution (CVE-2026-109618).">
+<meta name="color-scheme" content="light dark">
+<script>try{var m=localStorage.getItem("theme");if(m)document.documentElement.dataset.theme=m}catch(_){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="alternate" type="application/rss+xml" title="Daybrief" href="../feed.xml">
+</head>
+<body>
+<a class="skip" href="#main">Skip to the news</a>
+<div class="wrap">
+<header class="mast">
+<div class="mast-top"><span>AI first. Everything else that matters, twice a day.</span>
+<button class="theme" type="button" aria-label="Switch light or dark theme" onclick="toggleTheme()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
+<a class="brand" href="../index.html">Daybrief</a>
+<nav class="nav" aria-label="Sections"><a href="../index.html#top">Top 5</a><a href="../s/ai.html">AI</a><a href="../s/cyber.html">Cyber</a><a href="../s/markets.html">Markets</a><a href="../s/business.html">Business</a><a href="../s/singapore.html">Singapore</a><a href="../archive.html">Search</a><a href="../about.html">About</a></nav>
+</header>
+<main id="main">
+<article class="story">
+<p class="kicker"><a href="../s/cyber.html"><span class="dot dot-cyber" aria-hidden="true"></span>Cyber</a></p>
+<h1><a class="hl hl-lead" href="https://nvd.nist.gov/vuln/detail/CVE-2026-109618">CVE-2026-109618 (CVSS 9.2): PHP uses longjmp() for out-of-memory (OOM) errors to exit the current context and abort handling of the request. Some co</a></h1>
+<p class="dek">PHP's out-of-memory handling can leave request memory uninitialized, and cleanup may read it, leading to remote code execution (CVE-2026-109618).</p>
+
+<p class="meta"><span>Ars Technica AI, Exploit-DB (recent) +5</span><span class="sep" aria-hidden="true"> · </span><span class="badge" title="Summary written by AI, then checked against the source text">✓ checked</span></p>
+<h2 class="grp">Sources</h2>
+<ul class="links"><li><a href="https://nvd.nist.gov/vuln/detail/CVE-2026-109618">CVE-2026-109618 (CVSS 9.2): PHP uses longjmp() for out-of-memory (OOM) errors to exit the current context and abort handling of the request. Some co</a> <span class="muted">NVD critical CVEs (last 2 days)</span></li><li><a href="https://www.exploit-db.com/exploits/52704">[remote] PHP2Shell (CVE-2026-109618) - PHP core versions after v5.4 - RCE</a> <span class="muted">Exploit-DB (recent)</span></li><li><a href="https://horizon3.ai/attack-research/attack-blogs/php2shell-exposure-exploitability/">PHP2Shell Exposure Depends on More Than Whether You Use PHP</a> <span class="muted">Horizon3.ai attack research</span></li><li><a href="https://www.securityweek.com/tech-and-security-companies-respond-to-php2shell-vulnerabilities/">Tech and Security Companies Respond to PHP2Shell Vulnerabilities</a> <span class="muted">SecurityWeek</span></li><li><a href="https://www.wired.com/story/hackers-exploited-the-php-vulnerabilities-days-before-they-were-patched/">Hackers Exploited the PHP Vulnerabilities Days Before They Were Patched</a> <span class="muted">WIRED AI</span></li><li><a href="https://aws.amazon.com/security/security-bulletins/2026-143-aws/">PHP web runtimes (CVE-2026-109618 and CVE-2026-109619)</a> <span class="muted">Hacker News (security, last 24h)</span></li><li><a href="https://thehackernews.com/2026/10/someone-tried-to-exploit-php2shell-4.html">Someone Tried to Exploit PHP2Shell 4 Days Before the Vulnerabilities Were Publicly Disclosed</a> <span class="muted">The Hacker News</span></li></ul>
+<h2 class="grp">About this summary</h2>
+<p class="muted">Written by AI from the sources below, then checked: every number and name must appear in the source text, and most of its words must come from it. First reported 21 Oct 2026, 22:17 SGT. Shown in the <a href="../e/2026-10-23-am.html">Friday 23 October 2026 · Morning edition</a>.</p>
+</article>
+</main>
+<footer class="foot">
+<p>Every story links to its source. Summaries marked <b>✓ checked</b> are written by AI and checked against the source text before they appear; <b>quoted</b> ones are the source's own words. Twice a day, 06:45 and 18:45 Singapore time.</p>
+<p><a href="../archive.html">Search</a> · <a href="../feed.xml">RSS</a> · <a href="../about.html">About</a></p>
+</footer>
+</div>
+<script>
+function toggleTheme(){var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches,n=dark?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("theme",n)}catch(_){}}
+</script>
+</body>
+</html>
