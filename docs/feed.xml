@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Friday 23 October 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/23-october-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/23-october-2026.html</guid>
+<pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;Claude Duet&lt;/li&gt;&lt;li&gt;Introducing Flint&lt;/li&gt;&lt;li&gt;OpenAI models are coming to Google Cloud&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;335 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Thursday 22 October 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/22-october-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/22-october-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/24-september-2026.html</guid>
 <pubDate>Thu, 24 Sep 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;SWE-Bench Pro V2&lt;/li&gt;&lt;li&gt;Two years of OpenAI Academy&lt;/li&gt;&lt;li&gt;OpenAI extends cyber access to Ukraine for civilian defense&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;342 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Wednesday 23 September 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/23-september-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/23-september-2026.html</guid>
-<pubDate>Wed, 23 Sep 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;Xiaomi open-sources MiMo-V2.6 Pro and Flash models&lt;/li&gt;&lt;li&gt;Introducing Grok 4.7&lt;/li&gt;&lt;li&gt;Anthropic tests Fable 5.2 and Opus 5.5 ahead of the release&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;313 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
