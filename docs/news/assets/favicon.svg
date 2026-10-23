@@ -1,2 +1,2 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><style>.b{fill:#111}@media (prefers-color-scheme:dark){.b{fill:#eef0f3}}</style>
-<circle cx="16" cy="8" r="6.5" fill="#b3122b"/><path class="b" d="M16 16.5 29 31H3z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><style>.p{fill:#faf8f3}.i{fill:#161513}@media (prefers-color-scheme:dark){.p{fill:#151412}.i{fill:#ece8e0}}</style>
+<rect class="p" width="32" height="32" rx="4"/><path class="i" d="M8 7h8.5C22.3 7 26 10.6 26 16s-3.7 9-9.5 9H8zm4.5 4v10h3.6c3.1 0 5.1-2 5.1-5s-2-5-5.1-5z"/><rect x="8" y="27" width="18" height="2" fill="#c2241b"/></svg>
