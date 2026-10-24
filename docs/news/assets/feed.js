@@ -2,9 +2,9 @@
 'use strict';
 var M=Math,AR=Array.isArray,T0=1767225600000,HL=30240,HLX=129600,L2=M.LN2,K='daybrief:v1',KS='daybrief:s1',
 SLOW=/^(analysis|research|papers|techniques|tools|video)$/,
-TL={a:'AI models',g:'AI agents',p:'Pentesting',v:'Vulnerabilities',m:'Markets',s:'Singapore',b:'Startups & business'},
-SN={ai:'AI',cyber:'Cyber',markets:'Markets',business:'Business',singapore:'Singapore'},
-SIG={imp:[0,1,0,0,1],open:[1,0,1,1],mis:[-.8,0,0],unmis:[.8,0,0],read:[.5,0,0],go:[1,0,1,1],like:[2,0,1],unlike:[-2,0,-1],share:[1,0,0]},
+TL={a:'AI models',g:'AI agents',r:'New GitHub projects',p:'Pentesting',v:'Vulnerabilities',m:'Markets',s:'Singapore',b:'Startups & business'},
+SN={ai:'AI',github:'GitHub',cyber:'Cyber',markets:'Markets',business:'Business',singapore:'Singapore'},
+SIG={imp:[0,1,0,0,1],open:[1,0,1,1],mis:[-.8,0,0],unmis:[.8,0,0],read:[.5,0,0],go:[1,0,1,1],like:[2,0,1],unlike:[-2,0,-1],share:[1,0,0],find:[.5,0,0]},
 clip=(v,a,b)=>v<a?a:v>b?b:v,
 fade=(t,n,h)=>M.pow(.5,(n-t)/h),
 r3=v=>M.round(v*1e3)/1e3,
@@ -160,6 +160,15 @@ on(W,'pageshow',e=>{if(e.persisted&&F)P=load(),S1=sload(),back();});
 on(D,'visibilitychange',()=>{if(!D.hidden&&F&&S1.out)back();});
 S1=sload();
 if(F)try{front();}finally{cl(HT,'rk',!1);}else story();
+function find(){var sl=$('.find-slot'),fb,w,inp,cnt,lq='',T2,L=0,txt=e=>e.$t||(e.$t=(e.textContent+' '+(SN[e.dataset.s]||'')).toLowerCase()),
+run=()=>{var q=inp.value.trim(),ws=q.toLowerCase().split(/\s+/).filter(x=>x.length>1),n=0;$$('.card',F).forEach(e=>{var m=!ws.length||ws.every(x=>txt(e).includes(x));cl(e,'card--miss',!m);if(m&&ws.length&&!e.hidden&&!has(e,'card--gone'))n++;});cl(F,'finding',!!ws.length);T(cnt,ws.length?(n?n+(n>1?' stories match':' story matches')+' “'+q+'”':'Nothing this week matches “'+q+'”'+(FIN?'':' yet')):'');return ws.length;},
+week=(i)=>FIN||i>8?run():more().then(()=>week(i+1)),
+learn=()=>{var q=inp.value.trim().toLowerCase();if(!q||q==lq||!run())return;lq=q;$$('.card',F).filter(e=>!has(e,'card--miss')&&!e.hidden&&e.$).slice(0,5).forEach(e=>{sig(e.$,'find');ad(tk(e.$),.15);});flush();},
+close=()=>{learn();inp.value='';run();w.hidden=!0;at(fb,'aria-expanded',!1);fb.focus();want();};
+if(!sl||!F)return;fb=tpl('tpl-findb');w=tpl('tpl-find');inp=$('input',w);cnt=$('.find-n',w);sl.append(fb);F.before(w);
+on(fb,'click',()=>{if(!w.hidden)return close();w.hidden=!1;at(fb,'aria-expanded',!0);inp.focus();if(!L)L=1,week(0);});
+on(inp,'input',()=>{clearTimeout(T2);T2=setTimeout(run,150);});on(inp,'change',learn);on($('.find-x',w),'click',close);
+on(inp,'keydown',e=>{if(e.key=='Escape')e.preventDefault(),close();});}
 function front(){var all=$$('.card',F).map(e=>e.$=mk(e.dataset,e)),ix=id=>S1.order.indexOf(id),hs=location.hash.slice(1),o,ld,nl,a,z,fr=D.createDocumentFragment(),v1;
 all.forEach(s=>{if(removed(s,P))s.el.hidden=!0;});C=ctx(P,S1.a,B,VS);guards(all,C);
 $('.caught-more',CA).hidden=!pickEds(EL,B,FL,[]).length;
@@ -175,6 +184,7 @@ F.addEventListener('auxclick',e=>{var c=e.target.closest('.card'),a=e.target.clo
 F.addEventListener('keydown',e=>{var k=e.key,a=D.activeElement.closest('article'),l,i;if(a&&(k=='PageDown'||k=='PageUp')){l=$$('article',F).filter(x=>!x.hidden);i=l[l.indexOf(a)+(k=='PageDown'?1:-1)];if(i)e.preventDefault(),i.focus();}});
 z=()=>{var x=/^[cv]-/.test(hs)&&D.getElementById('c-'+hs.slice(2)),L=S1.last&&S1.y!=null&&D.getElementById('c-'+S1.last);if(x)x.scrollIntoView();else if(L&&((W.performance&&performance.getEntriesByType&&performance.getEntriesByType('navigation')[0])||{}).type=='back_forward'){try{history.scrollRestoration='manual';}catch(e){}scrollTo(0,L.getBoundingClientRect().top+scrollY-S1.y);}};
 if(S1.order&&S1.er.length)more(S1.er).then(z);else z();if(S1.out)back();else if(S1.last)want();S1.ed=ED;
+find();
 D.addEventListener('DOMContentLoaded',()=>{var sl=$('.manage-slot'),m=h('button','quiet','Manage feed');m.type='button';on(m,'click',manage);if(sl)sl.append(m);v1=/^v-/.test(hs)&&D.getElementById('c-'+hs.slice(2));if(v1&&vok())vopen(v1.$,0);});}
 function story(){var A=$('article.story'),s,sl,lb,sb,st,c;if(!A)return;s=mk(A.dataset,A);if(!$('#status'))st=h('p','sr'),st.id='status',at(st,'role','status'),BD.append(st);
 c=!S1.o[s.id];if(c)S1.o[s.id]=1,sig(s,'open'),ad(tk(s),.25),ad('s:'+s.s,.1),flush();SP={s,t:Date.now(),d:0,m:c?null:0};

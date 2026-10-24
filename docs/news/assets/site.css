@@ -103,6 +103,7 @@ padding:8px;text-align:center;font:600 .6875rem/1.2 var(--sans);letter-spacing:.
 .cover-ai{--cv:linear-gradient(135deg,#5b4bdb,#2f6fe4)}.cover-cyber{--cv:linear-gradient(135deg,#0f766e,#164e63)}
 .cover-markets{--cv:linear-gradient(135deg,#b45309,#9a3412)}.cover-business{--cv:linear-gradient(135deg,#334155,#1e3a8a)}
 .cover-singapore{--cv:linear-gradient(135deg,#c2241b,#7f1d1d)}
+.cover-github{--cv:linear-gradient(135deg,#24292f,#57606a)}
 .cover-mark{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:44%;aspect-ratio:1;max-width:72px;border-radius:50%;background:#fff;color:#161513;font:700 .9375rem/1 var(--sans);letter-spacing:-.01em;box-shadow:0 2px 8px rgb(0 0 0 / .25)}
 .card-hl{grid-area:hl;margin:12px 16px 0;font:500 1.25rem/1.625rem var(--sans);letter-spacing:-.005em;
 display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-wrap:pretty}
@@ -472,3 +473,17 @@ font:500 .875rem/1 var(--sans)}
 .nav,.foot,.skip,.actions,.upnext,.card-act,.card-media{display:none}
 body{background:#fff;color:#000}
 }
+/* ---- search (feed.js find()): a pill under the masthead; non-matching cards drop out ---- */
+.find-slot{display:flex;margin-left:auto}
+.find-b{color:var(--ink)}
+.find-wrap{margin:4px 16px 12px}
+.find{display:flex;align-items:center;gap:10px;height:48px;padding:0 4px 0 16px;border-radius:24px;background:var(--note);color:var(--muted)}
+.find input{flex:1;min-width:0;height:44px;border:0;background:none;color:var(--ink);font:400 1rem/1.5 var(--sans);outline:none;-webkit-appearance:none;appearance:none}
+.find input::-webkit-search-cancel-button{display:none}
+.find:focus-within{box-shadow:0 0 0 2px var(--accent)}
+.find-x{flex:none;height:44px;padding:0 14px;border:0;border-radius:22px;background:none;color:var(--accent);font:500 .9375rem/1 var(--sans);cursor:pointer}
+.find-n{margin:8px 4px 0;font-size:.875rem;line-height:1.25rem;color:var(--muted)}
+.find-n:empty{display:none}
+.card--miss{display:none!important}
+.finding>:is(.caught,.loader,.end-card){display:none}
+@media (min-width:601px){.find-wrap{max-width:640px;margin:0 auto 20px}}
