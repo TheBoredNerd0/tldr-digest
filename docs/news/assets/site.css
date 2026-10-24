@@ -18,6 +18,7 @@ color-scheme:light dark}
 @media (min-width:1200px){:root{--max:1216px;--rg:28px;--cg:24px}}
 @media (min-width:1200px){.cols4{--cols:4;--max:1376px}}
 @media (min-width:1440px){:root{--cols:4;--max:1376px}}
+@media (min-width:1760px){:root{--cols:5;--max:1696px}}
 @media (hover:hover) and (pointer:fine) and (min-width:601px){:root{--ctl:32px}}
 
 /* Fallback faces sized like the web fonts, so text doesn't jump when they arrive (measured per weight). */
@@ -71,11 +72,19 @@ main{padding-top:16px;padding-bottom:64px}
 }
 
 /* ---- Cards: the same markup at every width (FEED_SPEC 3.2); the headline link covers the whole card ---- */
-.card{position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"src" "media" "hl" "hook" "foot"}
-.card-src{grid-area:src;display:flex;align-items:center;gap:8px;min-width:0;padding:12px 16px 8px;font:500 .875rem/1.25rem var(--sans)}
+.card{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"src more" "media media" "hl hl" "hook hook" "foot foot"}
+.card-src{position:relative;z-index:1;color:inherit;text-decoration:none}
+.card-src:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.card-more{grid-area:more;position:relative;z-index:1;display:flex;align-items:center;justify-content:flex-end}
+.card-more:empty{display:none}
+.card-src{grid-area:src;display:flex;align-items:center;gap:9px;min-width:0;min-height:48px;padding:0 16px;font:400 .875rem/1.25rem var(--sans)}
 .mono{flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;padding:0;overflow:hidden;border-radius:50%;background:var(--mono);
 color:var(--ink);font:600 .625rem/1 var(--sans);letter-spacing:.02em}
-.card--many .mono+.mono{margin-left:-8px;box-shadow:0 0 0 2px var(--paper)}
+.logo{flex:none;display:block;width:22px;height:22px;border-radius:50%;object-fit:cover;background:#fff;box-shadow:0 0 0 1px var(--rule)}
+.card--many :is(.mono,.logo)+:is(.mono,.logo){margin-left:-7px;box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--rule)}
+.card--many .card-src{gap:0}.card--many .src-name{margin-left:9px}.src-more{margin-left:6px}
+.cover-mark .logo{width:62%;height:62%;box-shadow:none}
+.reported .logo{display:inline-block;width:16px;height:16px;margin-right:8px;vertical-align:-3px}
 .card-src .mono:last-of-type{margin-right:0}
 .mono--3{font-size:.5rem;letter-spacing:-.02em}
 .src-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -87,6 +96,13 @@ padding:8px;text-align:center;font:600 .6875rem/1.2 var(--sans);letter-spacing:.
 .card-media img::after,.frame img::after{content:attr(data-outlet);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
 padding:8px;text-align:center;font:600 .6875rem/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--note)}
 @supports selector(:-moz-broken){.card-media img:-moz-broken,.frame img:-moz-broken{visibility:hidden}}
+.card-cover{background:var(--cv,#6b7280)}
+.card-cover::before{content:none}
+.card-cover::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 85% 0%,rgb(255 255 255 / .28),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgb(0 0 0 / .28),transparent 60%)}
+.cover-ai{--cv:linear-gradient(135deg,#5b4bdb,#2f6fe4)}.cover-cyber{--cv:linear-gradient(135deg,#0f766e,#164e63)}
+.cover-markets{--cv:linear-gradient(135deg,#b45309,#9a3412)}.cover-business{--cv:linear-gradient(135deg,#334155,#1e3a8a)}
+.cover-singapore{--cv:linear-gradient(135deg,#c2241b,#7f1d1d)}
+.cover-mark{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:44%;aspect-ratio:1;max-width:72px;border-radius:50%;background:#fff;color:#161513;font:700 .9375rem/1 var(--sans);letter-spacing:-.01em;box-shadow:0 2px 8px rgb(0 0 0 / .25)}
 .card-hl{grid-area:hl;margin:12px 16px 0;font:500 1.25rem/1.625rem var(--sans);letter-spacing:-.005em;
 display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-wrap:pretty}
 .card-hl a{text-decoration:none}
@@ -99,6 +115,7 @@ display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hi
 .card-gist,.card-why,.card-idea{display:none}
 .card-hl,.card-gist,.card-hook,.card-why{align-self:start}  /* a clamped block must not stretch: the clipped line would show */
 .card-foot{grid-area:foot;display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 4px 0 16px}
+.card-when{font-size:.875rem;line-height:1.25rem}
 .card-when{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8125rem;line-height:1rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .card-act{flex:none;position:relative;z-index:1;display:flex;justify-content:flex-end;min-width:calc(2 * var(--ctl))}
 .card-act button,.story-act button{display:inline-flex;align-items:center;justify-content:center;width:var(--ctl);height:var(--ctl);padding:0;border:0;
@@ -109,17 +126,20 @@ border-radius:50%;background:none;color:var(--muted);cursor:pointer}
 [aria-pressed=true] svg{fill:currentColor}
 .card-idea{position:relative;z-index:1}
 
-/* ---- Phone (<=600): Discover cards, edge to edge, 16 px apart, nothing between them ---- */
+/* ---- Phone (<=600): Discover's 2026 cards on white, edge to edge, a 1 px hairline between them (r6 CHANGES 1) ---- */
 @media (max-width:600px){
-.feed{display:flex;flex-direction:column;gap:16px}
+body[data-page=feed]{background:var(--card)}
+.feed{display:flex;flex-direction:column;gap:0}
+.feed>.card+.card,.feed>.card+.caught{border-top:1px solid var(--rule)}
+.card-hl{-webkit-line-clamp:3}
 .card--lead .card-media{aspect-ratio:auto;height:clamp(56.25vw,calc(100svh - 500px),75vw)}
-.card--lead .card-hl{font:600 1.5rem/1.875rem var(--sans);letter-spacing:-.01em;-webkit-line-clamp:3}
-.card--lead .card-hl.hl-long{font-size:1.3125rem;line-height:1.6875rem;-webkit-line-clamp:4}
+.card--lead .card-hl{font:500 1.375rem/1.75rem var(--sans);letter-spacing:-.01em;-webkit-line-clamp:3}
+.card--lead .card-hl.hl-long{font-size:1.25rem;line-height:1.625rem;-webkit-line-clamp:4}
 .card--lead .card-hook,.hook-2 .feed .card-hook{display:-webkit-box}
 .hook-2 .feed .card:not(.card--lead) .card-hook{margin-top:4px;font-size:.9375rem;line-height:1.375rem;color:var(--muted);-webkit-line-clamp:2}
-.card--sm,.card--tx{grid-template-columns:16px minmax(0,1fr) 96px 16px;grid-template-areas:"src src src src" ". hl media ." "foot foot foot foot"}
-.card--sm .card-hl,.card--tx .card-hl{margin:0 16px 8px 0;font-size:1.125rem;line-height:1.5rem}
-.card--sm .card-media,.card--tx .card-media{width:96px;height:96px;aspect-ratio:auto;border-radius:12px}
+.card--sm,.card--tx{grid-template-columns:16px minmax(0,1fr) 16px 92px 16px;grid-template-areas:"src src src more more" ". hl . media ." "foot foot foot foot foot"}
+.card--sm .card-hl,.card--tx .card-hl{margin:0;align-self:center;font-size:1.125rem;line-height:1.5rem}
+.card--sm .card-media,.card--tx .card-media{width:92px;height:92px;aspect-ratio:auto;border-radius:14px}
 .card--sm .card-hook,.card--tx .card-hook{display:none!important}
 .card--tx .card-media::before{font-size:.625rem}
 }
@@ -129,28 +149,26 @@ border-radius:50%;background:none;color:var(--muted);cursor:pointer}
 @media (min-width:601px){
 .feed{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--rg) var(--cg);grid-auto-flow:row}
 .feed>.card{background:var(--card);border-radius:16px;overflow:hidden;align-content:start;
-grid-template-columns:minmax(0,1fr) fit-content(45%) auto;grid-template-areas:"media media media" "src when act" "hl hl hl"}
+grid-template-columns:minmax(0,1fr) fit-content(45%) auto auto;grid-template-areas:"media media media media" "src when act more" "hl hl hl hl"}
 .feed>.card .card-foot{display:contents}
 .feed>.card .card-when{grid-area:when;align-self:center;padding:8px 0 0}
 .feed>.card .card-when{padding-left:8px}  /* the name shortens first; the time keeps its room at the right */
-.feed>.card .card-act{grid-area:act;align-self:center;padding:8px 8px 0 0;min-width:calc(2 * var(--ctl))}
-.feed>.card .card-src{padding:8px 8px 0 16px;font-size:.8125rem;line-height:1.125rem;min-height:var(--ctl)}
+.feed>.card .card-act{grid-area:act;align-self:center;padding:8px 0 0;min-width:calc(2 * var(--ctl))}
+.feed>.card .card-more{align-self:center;padding:8px 8px 0 0}
+.feed>.card .card-src{gap:8px;padding:8px 8px 0 16px;font-size:.8125rem;line-height:1.125rem;min-height:var(--ctl)}
 .feed>.card .mono{width:20px;height:20px;font-size:.5625rem}
 .feed>.card .mono--3{font-size:.4375rem}
-.feed>.card.card--many .mono+.mono{display:none}  /* grid cards: one mark, the name and '+ N more' fit beside the time */
+.feed>.card.card--many :is(.mono,.logo)+:is(.mono,.logo){display:none}
+.feed>.card .logo{width:20px;height:20px}
+.feed>.card--lead .logo{width:24px;height:24px}  /* grid cards: one mark, the name and '+ N more' fit beside the time */
 .feed>.card .card-hl{margin:4px 16px 16px;padding:0;font-size:1.0625rem;line-height:1.4375rem}
 .feed>.card .card-hook{display:none!important}
-.feed>.card--sm{grid-template-areas:"src when act" "hl hl media" "gist gist gist"}
-.feed>.card--sm .card-media{width:96px;height:96px;aspect-ratio:auto;border-radius:12px;margin:4px 16px 0 0}
-.feed>.card--tx{background:var(--tx);grid-template-areas:"src when act" "hl hl hl" "gist gist gist"}
-.feed>.card--tx .card-media{display:none}
-.feed>.card--tx .card-hl{font-size:1.25rem;line-height:1.6875rem;-webkit-line-clamp:5}
+.feed>.card--sm,.feed>.card--tx{grid-template-areas:"src when act more" "hl hl hl media" "gist gist gist gist"}
+.feed>.card--sm .card-media,.feed>.card--tx .card-media{display:block;width:96px;height:96px;aspect-ratio:auto;border-radius:12px;margin:4px 16px 0 0}
 .feed>.card--sm .card-gist,.feed>.card--tx .card-gist{grid-area:gist;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;
 margin:-8px 16px 16px;padding:0;font-size:.9375rem;line-height:1.375rem;color:var(--muted);-webkit-line-clamp:3}
-.feed>.card--tx .card-gist{-webkit-line-clamp:4}
-@media (min-width:900px){.feed>.card--tx .card-gist{-webkit-line-clamp:7}}
 /* the lead across the row (tablet-2: both columns, image on top) */
-.feed>.card--lead{grid-column:1/-1;grid-template-areas:"media media media" "src when act" "hl hl hl" "gist gist gist" "why why why"}
+.feed>.card--lead{grid-column:1/-1;grid-template-areas:"media media media media" "src when act more" "hl hl hl hl" "gist gist gist gist" "why why why why"}
 .feed>.card--lead .card-media{display:block;width:auto;height:auto;aspect-ratio:16/9;border-radius:0;margin:0}
 .feed>.card--lead .card-src{font-size:.875rem;line-height:1.25rem;padding-left:20px;min-height:48px}
 .feed>.card--lead .mono{width:24px;height:24px;font-size:.625rem}
@@ -168,7 +186,7 @@ margin:12px 20px 20px;padding-left:12px;border-left:3px solid var(--accent);font
 /* the wide lead: picture over the first two columns, text in the third */
 .feed>.card--lead{grid-column:1/span 3;grid-template-columns:calc((100% - 2 * var(--cg)) * 2 / 3 + var(--cg)) minmax(0,1fr);grid-template-rows:auto auto auto auto 1fr;
 grid-template-areas:"media src" "media hl" "media gist" "media why" "media foot"}
-.feed>.card--lead .card-media{align-self:stretch;aspect-ratio:16/9}
+.feed>.card--lead .card-media{align-self:stretch;aspect-ratio:auto;width:100%;height:100%;min-height:0;contain:size}  /* fills its column; the text sets the height */
 .feed>.card--lead .card-src{padding:20px 20px 0 24px}
 .feed>.card--lead .card-hl{margin:4px 20px 0 24px;font-size:1.5rem;line-height:1.875rem;-webkit-line-clamp:4}
 .feed>.card--lead .card-gist{margin:8px 20px 0 24px;font-size:.9375rem;line-height:1.375rem;-webkit-line-clamp:3}
@@ -176,6 +194,8 @@ grid-template-areas:"media src" "media hl" "media gist" "media why" "media foot"
 .feed>.card--lead .card-foot{grid-area:foot;display:flex;align-self:end;padding:8px 8px 12px 24px}
 .feed>.card--lead .card-when,.feed>.card--lead .card-act{grid-area:auto;padding:0}
 .feed>.card--lead .card-when::before{content:none}
+.feed>.card--lead .card-more{grid-area:src;align-self:start;padding:12px 8px 0 0}
+.feed>.card--lead .card-src{padding-right:56px}
 }
 @media (min-width:1200px){
 .feed>.card .card-hl{font-size:1.125rem;line-height:1.5rem;-webkit-line-clamp:3}
@@ -195,12 +215,21 @@ grid-template-areas:"media src" "media hl" "media gist" "media why" "media foot"
 .cols4 .feed>.card .card-hl{font-size:1rem;line-height:1.375rem;-webkit-line-clamp:4}
 .cols4 .feed>.card--lead .card-hl{font-size:1.625rem;line-height:2rem}
 }
-@media (min-width:900px){.feed>.card.card--tx .card-hl{font-size:1.25rem;line-height:1.6875rem;-webkit-line-clamp:5}}
-@media (min-width:1200px){.feed>.card.card--sm .card-hl{-webkit-line-clamp:4}}
+@media (min-width:1200px){.feed>.card.card--sm .card-hl,.feed>.card.card--tx .card-hl{-webkit-line-clamp:4}}
 /* ♡ ⋮ on a fine pointer: shown on hover and focus (and always when liked); always shown on touch screens */
 @media (hover:hover) and (pointer:fine) and (min-width:601px){
-.feed>.card:not(.card--lead) .card-act button{opacity:0}
-.feed>.card:is(:hover,:focus-within) .card-act button,.feed>.card .card-act [aria-pressed=true]{opacity:1}
+/* desktop: the controls float over the card's top-right corner, so the meta row is only outlet and time */
+.feed>.card:not(.card--lead){grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"media media" "src when" "hl hl"}
+.feed>.card--sm:not(.card--lead),.feed>.card--tx:not(.card--lead){grid-template-areas:"src when" "hl media" "gist gist"}
+.feed>.card:not(.card--lead) .card-when{padding-right:16px}
+.feed>.card--sm .card-when,.feed>.card--tx .card-when{justify-self:end}
+.feed>.card--sm:not(.card--lead) .card-gist,.feed>.card--tx:not(.card--lead) .card-gist{margin-top:12px}
+.feed>.card:not(.card--lead) .card-act{position:absolute;top:8px;right:48px;z-index:2;min-width:0;padding:0}
+.feed>.card:not(.card--lead) .card-more{position:absolute;top:8px;right:8px;z-index:2;padding:0}
+.feed>.card:not(.card--lead) :is(.card-act,.card-more) button{width:36px;height:36px;margin-left:4px;background:var(--card);color:var(--ink);
+box-shadow:0 1px 4px rgb(0 0 0 / .2)}
+.feed>.card:not(.card--lead) :is(.card-act,.card-more) button{opacity:0}
+.feed>.card:is(:hover,:focus-within) :is(.card-act,.card-more) button,.feed>.card .card-act [aria-pressed=true],.feed>.card .card-more [aria-expanded=true]{opacity:1}
 /* the peek: the summary over the lower part of the picture, inside its box; the card never changes size */
 .feed>.card--lg:not(.card--lead) .card-gist{grid-area:media;align-self:end;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;
 position:relative;z-index:1;overflow:hidden;max-height:calc(100% - 40px);margin:0;padding:12px 16px 0;border-bottom:12px solid var(--card);background:var(--card);color:var(--ink);font-size:.875rem;line-height:1.3125rem;
