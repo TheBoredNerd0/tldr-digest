@@ -488,6 +488,10 @@ body{background:#fff;color:#000}
 .finding>:is(.caught,.loader,.end-card){display:none}
 @media (min-width:601px){.find-wrap{max-width:640px;margin:0 auto 20px}}
 /* GitHub's preview card is 2:1 with text to its edges: shown whole, never cropped */
-.card[data-s=github] .card-media{aspect-ratio:2/1;height:auto}
-.card[data-s=github] .card-media img{object-position:50% 50%}
+.card--gh .card-media,.card[data-s=github] .card-media{aspect-ratio:2/1;height:auto}
+.card--gh .card-media img,.card[data-s=github] .card-media img{object-position:50% 50%}
+/* section rows: a wide 2:1 thumbnail instead of the square one */
+.rows .card--gh{grid-template-columns:minmax(0,1fr) 150px}
+.rows .card--gh .card-media{width:150px;height:75px;aspect-ratio:2/1;border-radius:10px}
+@media (min-width:601px){.rows .card--gh{grid-template-columns:minmax(0,1fr) 220px}.rows .card--gh .card-media{width:220px;height:110px}}
 @media (min-width:900px){.feed>.card--lead[data-s=github] .card-media img{object-fit:contain;background:#fff}}
