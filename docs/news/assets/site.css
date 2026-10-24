@@ -103,6 +103,7 @@ padding:8px;text-align:center;font:600 .6875rem/1.2 var(--sans);letter-spacing:.
 .cover-ai{--cv:linear-gradient(135deg,#5b4bdb,#2f6fe4)}.cover-cyber{--cv:linear-gradient(135deg,#0f766e,#164e63)}
 .cover-markets{--cv:linear-gradient(135deg,#b45309,#9a3412)}.cover-business{--cv:linear-gradient(135deg,#334155,#1e3a8a)}
 .cover-singapore{--cv:linear-gradient(135deg,#c2241b,#7f1d1d)}
+.cover-advice{--cv:linear-gradient(135deg,#7c2d12,#b45309)}
 .cover-github{--cv:linear-gradient(135deg,#24292f,#57606a)}
 .cover-mark{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;width:44%;aspect-ratio:1;max-width:72px;border-radius:50%;background:#fff;color:#161513;font:700 .9375rem/1 var(--sans);letter-spacing:-.01em;box-shadow:0 2px 8px rgb(0 0 0 / .25)}
 .card-hl{grid-area:hl;margin:12px 16px 0;font:500 1.25rem/1.625rem var(--sans);letter-spacing:-.005em;
@@ -506,3 +507,13 @@ body{background:#fff;color:#000}
 .m-tnone{font-size:.875rem;color:var(--muted)}
 .m-add{display:flex;gap:8px;margin:4px 0 16px}
 .m-add input{flex:1;min-width:0;min-height:40px;padding:0 14px;border:1px solid var(--rule);border-radius:20px;background:var(--card);color:var(--ink);font:400 .9375rem/1 var(--sans)}
+/* interview advice: the recommendations on the card and the story page */
+.card-adv{grid-area:hook;margin:8px 16px 0;padding:0 0 0 20px;font:400 .9375rem/1.375rem var(--sans);color:var(--ink)}
+.card-adv li{margin:0 0 4px;padding-left:2px}.card-adv li::marker{color:var(--accent);font-weight:600}
+.card-adv li{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media (min-width:601px){.feed>.card .card-adv{grid-area:auto;grid-column:1/-1;margin:0 16px 16px;font-size:.875rem;line-height:1.3125rem}}
+.rows .card-adv{display:none}
+.advice{padding:16px 20px;border-radius:16px;background:var(--note)}.advice ol{margin:8px 0 0;padding-left:22px}
+.advice li{margin:0 0 10px;font-size:1.0625rem;line-height:1.625rem}.advice li::marker{color:var(--accent);font-weight:600}
+/* "New stories": a newer build is out (feed.js newer()); a transient pill like Discover's */
+.toast.new-pill,.new-pill{position:fixed;top:12px;left:50%;z-index:25;transform:translateX(-50%);min-height:40px;padding:0 18px;border:0;border-radius:20px;background:var(--accent);color:#fff;font:600 .9375rem/1 var(--sans);box-shadow:0 4px 14px rgb(0 0 0 / .25);cursor:pointer}
