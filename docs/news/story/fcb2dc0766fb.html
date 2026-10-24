@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src &#x27;self&#x27; https: data:; connect-src &#x27;self&#x27;; form-action &#x27;none&#x27;; base-uri &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Compromised TLS Certificates · Daybrief</title>
@@ -10,21 +11,22 @@
 <meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
+<script src="../assets/feed.js?v=430e66cd" defer></script>
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<link rel="stylesheet" href="../assets/site.css?v=c66210dd">
 <link rel="alternate" type="application/rss+xml" title="Daybrief" href="../feed.xml">
 </head>
-<body>
+<body data-page="story">
 <a class="skip" href="#main">Skip to the news</a>
-<header class="mast"><div class="col col-wide">
-<p class="edition ed-long">Saturday 24 October 2026 · Morning edition · 06:45 SGT</p>
-<div class="mast-row"><p class="brand"><a class="brand-link" href="../index.html">Daybrief</a></p><p class="edition ed-short">Sat 24 Oct · 6:45</p></div>
-<nav class="nav" aria-label="Sections"><a href="../index.html#top">Top 5</a><a href="../s/ai.html">AI</a><a href="../s/cyber.html" aria-current="page">Cyber</a><a href="../s/markets.html">Markets</a><a href="../s/business.html">Business</a><a href="../s/singapore.html">Singapore</a></nav>
+<header class="mast"><div class="wrap mast-in">
+<div class="mast-row"><p class="brand"><a class="brand-link" href="../index.html">Daybrief</a></p><p class="edition ed-short">Sat 24 Oct · 06:45</p></div>
+<nav class="nav" aria-label="Sections"><a class="chip" href="../index.html">For you</a><a class="chip" href="../s/ai.html">AI</a><a class="chip" href="../s/cyber.html" aria-current="page">Cyber</a><a class="chip" href="../s/markets.html">Markets</a><a class="chip" href="../s/business.html">Business</a><a class="chip" href="../s/singapore.html">Singapore</a></nav>
+<p class="edition ed-long">Saturday 24 Oct · Morning · 06:45 SGT</p>
 </div></header>
-<main id="main" class="col col-read">
-<article class="story">
+<main id="main" class="wrap wrap-read">
+<article class="story" data-id="fcb2dc0766fb" data-s="cyber" data-u="analysis" data-g="v:2 m:1" data-w="c3e15 83dd8 79a5f" data-o="schneier" data-n="1" data-q="1.5" data-b="1.65" data-er="46" data-f="tx" data-go="https://www.schneier.com/blog/archives/2026/10/compromised-tls-certificates.html" data-gon="Schneier on Security">
 <nav class="crumbs" aria-label="Breadcrumb"><a class="quiet" href="../index.html">Front page</a><span aria-hidden="true"> / </span><a class="quiet" href="../s/cyber.html">Cyber</a></nav>
 <p class="kicker">Cyber</p>
 <h1 class="page-h story-h">Compromised TLS Certificates</h1>
@@ -34,16 +36,17 @@
 <p class="story-sum">The Indian CA eMudhra has eight TLS certificates with extremely weak private keys, sized from 3 to 8 bits.</p>
 
 
-<p class="actions"><a class="read" href="https://www.schneier.com/blog/archives/2026/10/compromised-tls-certificates.html">Read at Schneier on Security <span aria-hidden="true">↗</span></a></p>
+<p class="actions"><a class="read" href="https://www.schneier.com/blog/archives/2026/10/compromised-tls-certificates.html">Read at Schneier on Security <span aria-hidden="true">↗</span></a><span class="card-act story-act"><button type="button" class="act act-like" aria-label="Like" aria-pressed="false" hidden><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M12 20.5s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.8c0 5.5-7.5 10.1-7.5 10.1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="act act-share" hidden>Share</button></span></p>
 <section class="reported" aria-labelledby="h-rep"><h2 class="small-h" id="h-rep">Reported by</h2><ul><li><a class="quiet" href="https://www.schneier.com/blog/archives/2026/10/compromised-tls-certificates.html">Schneier on Security</a></li></ul></section>
-<section class="more" aria-labelledby="h-more"><h2 class="sec-h" id="h-more">More in Cyber</h2><ul class="rows"><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/88c4d581951b.html">Interim Mitigation Advisory for New PHP Vulnerability (CVE-2026-115560)</a></h3><p class="meta">KISA 보호나라 security notices · Wed 21 Oct · +11 sources</p></div><span class="thumb" data-outlet="KISA 보호나라 security notices" aria-hidden="true"><img src="http://www.boho.or.kr:80/images/common/metaimg_kisa.png" alt="" data-outlet="KISA 보호나라 security notices" width="240" height="160" decoding="async" loading="lazy"></span></li><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/580394e0c04d.html">Arista VeloCloud Orchestrator: Arista VeloCloud Orchestrator SQL Injection…</a></h3><p class="meta">CISA Known Exploited Vulnerabilities · CVE-2026-114625 · Yesterday 08:00</p></div><span class="thumb" data-outlet="CISA Known Exploited Vulnerabilities" aria-hidden="true"></span></li><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/d291c7256a46.html">Cisco Informational for Emergency Distrust of eMudhra Root and Intermediate Certificate Authorities</a></h3><p class="meta">Cisco security advisories · 00:00</p></div><span class="thumb" data-outlet="Cisco security advisories" aria-hidden="true"></span></li></ul></section>
+<section class="upnext" aria-labelledby="h-up"><h2 class="sec-h" id="h-up">Up next</h2><article class="card card--lg" id="c-c7a53f7c2d07" tabindex="-1" aria-labelledby="h-c7a53f7c2d07"><p class="card-src"><span class="mono" aria-hidden="true">ST</span><span class="src-name">The Straits Times Business</span></p><div class="card-media" data-outlet="The Straits Times Business"><img src="https://cassette.sphdigital.com.sg/image/straitstimes/30afc7e3a4daec39771409c1903e359cedd39b89d7387beabbb888fa2c256c98?w=800" srcset="https://cassette.sphdigital.com.sg/image/straitstimes/30afc7e3a4daec39771409c1903e359cedd39b89d7387beabbb888fa2c256c98?w=480 480w, https://cassette.sphdigital.com.sg/image/straitstimes/30afc7e3a4daec39771409c1903e359cedd39b89d7387beabbb888fa2c256c98?w=800 800w, https://cassette.sphdigital.com.sg/image/straitstimes/30afc7e3a4daec39771409c1903e359cedd39b89d7387beabbb888fa2c256c98?w=1200 1200w" sizes="(max-width:600px) 66vw, (max-width:899px) 50vw, (max-width:1199px) 31vw, (max-width:1439px) 390px, 330px" width="1200" height="628" alt="" data-outlet="The Straits Times Business" decoding="async" loading="lazy"></div><h3 class="card-hl" id="h-c7a53f7c2d07"><a href="../story/c7a53f7c2d07.html">Wall Street closes lower to end rocky week</a></h3><p class="card-hook">The Dow Jones Industrial Average fell 652.82 points, or 1.23%, to 52,215.16, as Wall Street closed lower to end a rocky week.</p><div class="card-foot"><span class="card-when"><time datetime="2026-10-23T21:02:36Z">05:02</time></span></div></article></section>
+<p class="links-row"><a class="quiet" href="../index.html#c-fcb2dc0766fb">← Back to the feed</a><span aria-hidden="true"> · </span><a class="quiet" href="../s/cyber.html">All Cyber stories</a></p>
 <p class="note">About this summary: Written by AI from the sources, then checked: every number and name must appear in the source text, and most of its words must come from it. Shown in the Saturday 24 October 2026 · Morning edition.</p>
 </article>
 </main>
-<footer class="foot"><div class="col col-wide">
+<footer class="foot"><div class="wrap wrap-read">
 <p>Daybrief updates itself twice a day, at 06:45 and 18:45 Singapore time. Every story links to the outlets that reported it.
 Summaries are written by AI from the source text and checked against it before they appear.</p>
-<p>Images belong to the publishers named and load from their sites. No cookies, no ads, no tracking.
+<p>Images belong to the publishers named and load from their sites. No cookies, no ads, no tracking. This browser remembers which stories are opened and liked, only to put likely favourites first; nothing leaves the device.
 <a class="quiet" href="../feed.xml">Subscribe (RSS)</a></p>
 </div></footer>
 </body>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27; https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src &#x27;self&#x27; https: data:; connect-src &#x27;self&#x27;; form-action &#x27;none&#x27;; base-uri &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Interim Mitigation Advisory for New PHP Vulnerability (CVE-2026-115560) · Daybrief</title>
@@ -10,40 +11,42 @@
 <meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
 <meta name="color-scheme" content="light dark">
+<script src="../assets/feed.js?v=430e66cd" defer></script>
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Inter:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
+<link rel="stylesheet" href="../assets/site.css?v=c66210dd">
 <link rel="alternate" type="application/rss+xml" title="Daybrief" href="../feed.xml">
 </head>
-<body>
+<body data-page="story">
 <a class="skip" href="#main">Skip to the news</a>
-<header class="mast"><div class="col col-wide">
-<p class="edition ed-long">Saturday 24 October 2026 · Morning edition · 06:45 SGT</p>
-<div class="mast-row"><p class="brand"><a class="brand-link" href="../index.html">Daybrief</a></p><p class="edition ed-short">Sat 24 Oct · 6:45</p></div>
-<nav class="nav" aria-label="Sections"><a href="../index.html#top">Top 5</a><a href="../s/ai.html">AI</a><a href="../s/cyber.html" aria-current="page">Cyber</a><a href="../s/markets.html">Markets</a><a href="../s/business.html">Business</a><a href="../s/singapore.html">Singapore</a></nav>
+<header class="mast"><div class="wrap mast-in">
+<div class="mast-row"><p class="brand"><a class="brand-link" href="../index.html">Daybrief</a></p><p class="edition ed-short">Sat 24 Oct · 06:45</p></div>
+<nav class="nav" aria-label="Sections"><a class="chip" href="../index.html">For you</a><a class="chip" href="../s/ai.html">AI</a><a class="chip" href="../s/cyber.html" aria-current="page">Cyber</a><a class="chip" href="../s/markets.html">Markets</a><a class="chip" href="../s/business.html">Business</a><a class="chip" href="../s/singapore.html">Singapore</a></nav>
+<p class="edition ed-long">Saturday 24 Oct · Morning · 06:45 SGT</p>
 </div></header>
-<main id="main" class="col col-read">
-<article class="story">
+<main id="main" class="wrap wrap-read">
+<article class="story" data-id="88c4d581951b" data-s="cyber" data-u="advisories" data-g="v:4 p:1" data-w="4f772 f5d7d 0d5f1 18261 df96b" data-o="kisa" data-n="14" data-q="1.5" data-b="3.50" data-er="7" data-f="tx" data-go="https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&amp;bbsId=B0000133&amp;searchWrd=&amp;menuNo=205020&amp;pageIndex=1&amp;categoryCode=&amp;nttId=72237" data-gon="KISA 보호나라 security notices">
 <nav class="crumbs" aria-label="Breadcrumb"><a class="quiet" href="../index.html">Front page</a><span aria-hidden="true"> / </span><a class="quiet" href="../s/cyber.html">Cyber</a></nav>
 <p class="kicker">Cyber</p>
 <h1 class="page-h story-h">Interim Mitigation Advisory for New PHP Vulnerability (CVE-2026-115560)</h1>
 <p class="meta">Original headline: <span lang="ko">PHP 신규 취약점(CVE-2026-115560) 임시 조치 권고</span></p>
 <p class="meta">First reported 15:00 SGT, 21 Oct 2026 · 12 sources</p>
-<figure class="lead-img"><span class="frame" data-outlet="KISA 보호나라 security notices" aria-hidden="true"><img src="http://www.boho.or.kr:80/images/common/metaimg_kisa.png" alt="" data-outlet="KISA 보호나라 security notices" width="1280" height="720" decoding="async" fetchpriority="high"></span><figcaption>Image: <a class="quiet" href="https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&amp;bbsId=B0000133&amp;searchWrd=&amp;menuNo=205020&amp;pageIndex=1&amp;categoryCode=&amp;nttId=72237">KISA 보호나라 security notices</a></figcaption></figure>
+
 <p class="story-sum">PHP warned of another way attackers could run code on a web server, tracked as CVE-2026-115560. It affects only web applications configured in an unusual way, and PHP considers the risk unlikely.</p>
 <aside class="why" aria-label="Why it matters"><p class="kicker">Why it matters</p><p>Arrives two days after emergency PHP2Shell patches, amid growing reports of PHP exploitation attempts.</p></aside>
 
-<p class="actions"><a class="read" href="https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&amp;bbsId=B0000133&amp;searchWrd=&amp;menuNo=205020&amp;pageIndex=1&amp;categoryCode=&amp;nttId=72237">Read at KISA 보호나라 security notices <span aria-hidden="true">↗</span></a></p>
+<p class="actions"><a class="read" href="https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&amp;bbsId=B0000133&amp;searchWrd=&amp;menuNo=205020&amp;pageIndex=1&amp;categoryCode=&amp;nttId=72237">Read at KISA 보호나라 security notices <span aria-hidden="true">↗</span></a><span class="card-act story-act"><button type="button" class="act act-like" aria-label="Like" aria-pressed="false" hidden><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M12 20.5s-7.5-4.6-7.5-10.1A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.8c0 5.5-7.5 10.1-7.5 10.1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button><button type="button" class="act act-share" hidden>Share</button></span></p>
 <section class="reported" aria-labelledby="h-rep"><h2 class="small-h" id="h-rep">Reported by</h2><ul><li><a class="quiet" href="https://www.boho.or.kr/kr/bbs/view.do?searchCnd=&amp;bbsId=B0000133&amp;searchWrd=&amp;menuNo=205020&amp;pageIndex=1&amp;categoryCode=&amp;nttId=72237">KISA 보호나라 security notices</a></li><li><a class="quiet" href="https://isc.sans.edu/diary/rss/33452">SANS Internet Storm Center</a></li><li><a class="quiet" href="https://fortiguard.fortinet.com/psirt/FG-IR-26-186">Fortinet PSIRT</a></li><li><a class="quiet" href="https://www.jpcert.or.jp/at/2026/at260033.html">JPCERT/CC</a></li><li><a class="quiet" href="https://security.paloaltonetworks.com/CVE-2026-109618">Palo Alto Networks advisories</a></li><li><a class="quiet" href="https://sec.cloudapps.cisco.com/security/center/content/CiscoSecurityAdvisory/cisco-sa-php-october26-Jj384Daq?vs_f=Cisco%20Security%20Advisory%26vs_cat=Security%20Intelligence%26vs_type=RSS%26vs_p=Vulnerabilities%20in%20PHP%20Affecting%20Cisco%20Products:%20October%202026%26vs_k=1">Cisco security advisories</a></li><li><a class="quiet" href="https://www.darkreading.com/application-security/exposed-php2shell-cyber-experts-advice">Dark Reading</a></li><li><a class="quiet" href="https://www.securityweek.com/mirai-botnet-operators-join-php2shell-attacks-as-aslr-bypass-exploits-emerge/">SecurityWeek</a></li></ul></section>
-<section class="more" aria-labelledby="h-more"><h2 class="sec-h" id="h-more">More in Cyber</h2><ul class="rows"><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/580394e0c04d.html">Arista VeloCloud Orchestrator: Arista VeloCloud Orchestrator SQL Injection…</a></h3><p class="meta">CISA Known Exploited Vulnerabilities · CVE-2026-114625 · Yesterday 08:00</p></div><span class="thumb" data-outlet="CISA Known Exploited Vulnerabilities" aria-hidden="true"></span></li><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/d291c7256a46.html">Cisco Informational for Emergency Distrust of eMudhra Root and Intermediate Certificate Authorities</a></h3><p class="meta">Cisco security advisories · 00:00</p></div><span class="thumb" data-outlet="Cisco security advisories" aria-hidden="true"></span></li><li class="row"><div class="row-text"><h3 class="hl"><a href="../story/b60d049a4f32.html">Collabora Collabora Online – Built-in CODE Server: Collabora Online – Built-in CODE Server OS Command…</a></h3><p class="meta">CISA Known Exploited Vulnerabilities · CVE-2026-110447 · Yesterday 08:00</p></div><span class="thumb" data-outlet="CISA Known Exploited Vulnerabilities" aria-hidden="true"></span></li></ul></section>
+<section class="upnext" aria-labelledby="h-up"><h2 class="sec-h" id="h-up">Up next</h2><article class="card card--lg" id="c-2d01d6780f6b" tabindex="-1" aria-labelledby="h-2d01d6780f6b"><p class="card-src"><span class="mono" aria-hidden="true">N</span><span class="src-name">Nikkei Asia</span></p><div class="card-media" data-outlet="Nikkei Asia"><img src="https://images.ft.com/v3/image/raw/https%3A%2F%2Fcms-image-bucket-productionv3-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F9%2F5%2F7%2F7%2F13357759-2-eng-GB%2F59f91c4b8751-photo_SXM2026102200012263.jpg?fit=cover&amp;gravity=faces&amp;dpr=2&amp;quality=medium&amp;source=nar-cms&amp;format=jpg&amp;width=800&amp;height=400" srcset="https://images.ft.com/v3/image/raw/https%3A%2F%2Fcms-image-bucket-productionv3-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F9%2F5%2F7%2F7%2F13357759-2-eng-GB%2F59f91c4b8751-photo_SXM2026102200012263.jpg?fit=cover&amp;gravity=faces&amp;dpr=2&amp;quality=medium&amp;source=nar-cms&amp;format=jpg&amp;width=480&amp;height=240 480w, https://images.ft.com/v3/image/raw/https%3A%2F%2Fcms-image-bucket-productionv3-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F9%2F5%2F7%2F7%2F13357759-2-eng-GB%2F59f91c4b8751-photo_SXM2026102200012263.jpg?fit=cover&amp;gravity=faces&amp;dpr=2&amp;quality=medium&amp;source=nar-cms&amp;format=jpg&amp;width=800&amp;height=400 800w, https://images.ft.com/v3/image/raw/https%3A%2F%2Fcms-image-bucket-productionv3-ap-northeast-1-a7d2.s3.ap-northeast-1.amazonaws.com%2Fimages%2F9%2F5%2F7%2F7%2F13357759-2-eng-GB%2F59f91c4b8751-photo_SXM2026102200012263.jpg?fit=cover&amp;gravity=faces&amp;dpr=2&amp;quality=medium&amp;source=nar-cms&amp;format=jpg&amp;width=1200&amp;height=600 1200w" sizes="(max-width:600px) 66vw, (max-width:899px) 50vw, (max-width:1199px) 31vw, (max-width:1439px) 390px, 330px" width="1260" height="630" alt="" data-outlet="Nikkei Asia" decoding="async" loading="lazy"></div><h3 class="card-hl" id="h-2d01d6780f6b"><a href="../story/2d01d6780f6b.html">Japan banks prepared to weather AI crash, global rate spike: BOJ stress test</a></h3><p class="card-hook">Japanese banks would keep capital ratios above regulatory requirements even in a global rate spike and AI-stock collapse, the BOJ said.</p><div class="card-foot"><span class="card-when"><time datetime="2026-10-23T22:45:03Z">06:45</time></span></div></article></section>
+<p class="links-row"><a class="quiet" href="../index.html#c-88c4d581951b">← Back to the feed</a><span aria-hidden="true"> · </span><a class="quiet" href="../s/cyber.html">All Cyber stories</a></p>
 <p class="note">About this summary: Written by AI from the sources, then checked: every number and name must appear in the source text, and most of its words must come from it. Shown in the Saturday 24 October 2026 · Morning edition.</p>
 </article>
 </main>
-<footer class="foot"><div class="col col-wide">
+<footer class="foot"><div class="wrap wrap-read">
 <p>Daybrief updates itself twice a day, at 06:45 and 18:45 Singapore time. Every story links to the outlets that reported it.
 Summaries are written by AI from the source text and checked against it before they appear.</p>
-<p>Images belong to the publishers named and load from their sites. No cookies, no ads, no tracking.
+<p>Images belong to the publishers named and load from their sites. No cookies, no ads, no tracking. This browser remembers which stories are opened and liked, only to put likely favourites first; nothing leaves the device.
 <a class="quiet" href="../feed.xml">Subscribe (RSS)</a></p>
 </div></footer>
 </body>
