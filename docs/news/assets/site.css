@@ -495,3 +495,14 @@ body{background:#fff;color:#000}
 .rows .card--gh .card-media{width:150px;height:75px;aspect-ratio:2/1;border-radius:10px}
 @media (min-width:601px){.rows .card--gh{grid-template-columns:minmax(0,1fr) 220px}.rows .card--gh .card-media{width:220px;height:110px}}
 @media (min-width:900px){.feed>.card--lead[data-s=github] .card-media img{object-fit:contain;background:#fff}}
+/* Manage feed: Your topics */
+.m-sub{margin:0 0 8px;font-size:.875rem;line-height:1.25rem;color:var(--muted)}
+.m-top{display:flex;flex-direction:column;gap:4px;margin:0 0 8px;padding:0;list-style:none}
+.m-top li{display:flex;align-items:center;gap:8px;min-height:44px}
+.m-tn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-f,.m-m,.m-add button{min-height:36px;padding:0 14px;border:1px solid var(--rule);border-radius:18px;background:none;color:var(--ink);font:500 .875rem/1 var(--sans);cursor:pointer}
+.m-f[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.m-m[aria-pressed=true]{color:var(--accent);border-color:var(--accent)}
+.m-tnone{font-size:.875rem;color:var(--muted)}
+.m-add{display:flex;gap:8px;margin:4px 0 16px}
+.m-add input{flex:1;min-width:0;min-height:40px;padding:0 14px;border:1px solid var(--rule);border-radius:20px;background:var(--card);color:var(--ink);font:400 .9375rem/1 var(--sans)}
