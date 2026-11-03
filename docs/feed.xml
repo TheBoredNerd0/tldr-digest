@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Tuesday 3 November 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/03-november-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/03-november-2026.html</guid>
+<pubDate>Tue, 03 Nov 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;GPT-Rosalind-6 System Card Addendum&lt;/li&gt;&lt;li&gt;Anthropic prepares to release Claude Mythos 5.5 model&lt;/li&gt;&lt;li&gt;Google&amp;#39;s Project Suncatcher Generates First AI Response in Orbit&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;310 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Monday 2 November 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/02-november-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/02-november-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/05-october-2026.html</guid>
 <pubDate>Mon, 05 Oct 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;Google froze its open source bug bounty program due to a ‘significant rise’ in AI submissions&lt;/li&gt;&lt;li&gt;tester-army/e2e&lt;/li&gt;&lt;li&gt;coreyhaines31/marketingskills&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;284 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Sunday 4 October 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/04-october-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/04-october-2026.html</guid>
-<pubDate>Sun, 04 Oct 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;The Agent Said It Was Done. The Database Disagreed.&lt;/li&gt;&lt;li&gt;Amazon responds to data center backlash, says it no longer uses NDAs&lt;/li&gt;&lt;li&gt;affaan-m/ECC&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;326 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
