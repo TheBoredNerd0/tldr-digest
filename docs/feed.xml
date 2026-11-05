@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Thursday 5 November 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/05-november-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/05-november-2026.html</guid>
+<pubDate>Thu, 05 Nov 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;Siri AI is now open to all developers&lt;/li&gt;&lt;li&gt;Baseten Introduces Grid, Sandboxes, and Serverless Loops&lt;/li&gt;&lt;li&gt;Fireworks Launches Faster AI Inference and Enterprise Tools&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;310 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Wednesday 4 November 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/04-november-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/04-november-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/07-october-2026.html</guid>
 <pubDate>Wed, 07 Oct 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;OpenAI to Add Text Watermarks&lt;/li&gt;&lt;li&gt;Instinct in group chats&lt;/li&gt;&lt;li&gt;OpenAI in $30 Billion Round Talks With UAE Funds, BlackRock&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;330 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Tuesday 6 October 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/06-october-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/06-october-2026.html</guid>
-<pubDate>Tue, 06 Oct 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;Prime Inference: Fast, Reliable Serving for Frontier Open Models&lt;/li&gt;&lt;li&gt;Aleph Alpha releases open-weight Kolibri with 1M context&lt;/li&gt;&lt;li&gt;Anthropic to invest $100 million to train AI engineer talent&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;292 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
