@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Sunday 22 November 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/22-november-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/22-november-2026.html</guid>
+<pubDate>Sun, 22 Nov 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;GTA 6 rakes in $2.4B overnight&lt;/li&gt;&lt;li&gt;CVE-2026-114938 OpenJDK RCE (Java4Shell): Everything You Need to Know&lt;/li&gt;&lt;li&gt;Introducing mTLS for Network Load Balancer&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;348 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Saturday 21 November 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/21-november-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/21-november-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/24-october-2026.html</guid>
 <pubDate>Sat, 24 Oct 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;OpenAI nears up to $30 billion funding round at $1.25 trillion valuation led by UAE investors&lt;/li&gt;&lt;li&gt;Introducing 1Password for Agents&lt;/li&gt;&lt;li&gt;WorldTUI: I trained a 360M model to pretend to be a terminal&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;335 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Friday 23 October 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/23-october-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/23-october-2026.html</guid>
-<pubDate>Fri, 23 Oct 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;Claude Duet&lt;/li&gt;&lt;li&gt;Introducing Flint&lt;/li&gt;&lt;li&gt;OpenAI models are coming to Google Cloud&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;335 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
