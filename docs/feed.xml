@@ -7,6 +7,13 @@
 <description>A daily one-page digest of AI, tech, security, world and Singapore news from 30 sources.</description>
 <language>en</language>
 <item>
+<title>TLDR Digest — Friday 27 November 2026</title>
+<link>https://theborednerd0.github.io/tldr-digest/27-november-2026.html</link>
+<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/27-november-2026.html</guid>
+<pubDate>Fri, 27 Nov 2026 00:00:00 GMT</pubDate>
+<description>&lt;ul&gt;&lt;li&gt;OpenAI Begins Testing Private Inference&lt;/li&gt;&lt;li&gt;Early outputs: Anthropic is A/B testing Claude Opus 5.6&lt;/li&gt;&lt;li&gt;GPT 6.2 Astra is superhuman in mathematical optimization&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;302 stories.&lt;/p&gt;</description>
+</item>
+<item>
 <title>TLDR Digest — Thursday 26 November 2026</title>
 <link>https://theborednerd0.github.io/tldr-digest/26-november-2026.html</link>
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/26-november-2026.html</guid>
@@ -208,13 +215,6 @@
 <guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/29-october-2026.html</guid>
 <pubDate>Thu, 29 Oct 2026 00:00:00 GMT</pubDate>
 <description>&lt;ul&gt;&lt;li&gt;Liquid AI Launches LFM3 Models for On Device AI&lt;/li&gt;&lt;li&gt;Formalizing the Enormous Theorem&lt;/li&gt;&lt;li&gt;Google’s AI worlds can now talk back&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;360 stories.&lt;/p&gt;</description>
-</item>
-<item>
-<title>TLDR Digest — Wednesday 28 October 2026</title>
-<link>https://theborednerd0.github.io/tldr-digest/28-october-2026.html</link>
-<guid isPermaLink="true">https://theborednerd0.github.io/tldr-digest/28-october-2026.html</guid>
-<pubDate>Wed, 28 Oct 2026 00:00:00 GMT</pubDate>
-<description>&lt;ul&gt;&lt;li&gt;GPT-6.1 Terra&lt;/li&gt;&lt;li&gt;Anthropic Files for an IPO&lt;/li&gt;&lt;li&gt;Gemini 4 Argon: The Model and Safety Cards&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;300 stories.&lt;/p&gt;</description>
 </item>
 </channel>
 </rss>
